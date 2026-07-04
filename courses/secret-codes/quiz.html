@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Code z'Telephone - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../css/tailwind.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #8B5CF6;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option-label:hover {
+            border-color: #8B5CF6;
+            background-color: #faf5ff;
+        }
+        .option-label.selected {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        .option-label.correct {
+            border-color: #10b981;
+            background-color: #dcfce7;
+        }
+        .option-label.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8B5CF6, #10b981);
+            transition: width 0.5s ease;
+        }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ef4444;
+        }
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .certificate-btn {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .certificate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(139, 92, 246, 0.3);
+        }
+        .question-number {
+            width: 35px;
+            height: 35px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .question-number.selected {
+            background: #8B5CF6;
+            color: white;
+            border-color: #8B5CF6;
+        }
+        .question-number.answered {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+        .code-example {
+            font-family: 'Courier New', monospace;
+            background: #1f2937;
+            color: #10b981;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+            border-left: 4px solid #10b981;
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="quiz-container px-4 sm:px-6 lg:px-8">
+            <!-- Quiz Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                    <span class="text-3xl">🔐</span> Quiz - Code z'Telephone
+                </h1>
+                <p class="text-xl text-gray-600">Gereranya ubumenyi bwawe mu bijyanye na code z'itelefone</p>
+            </div>
+
+            <!-- User Info Section -->
+            <div id="user-info" class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">👤 Amakuru Yawe</h2>
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Amazina</label>
+                        <input type="text" id="user-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="Andika amazina yawe" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="user-email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="email@example.com" required>
+                    </div>
+                </div>
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                    <h3 class="font-semibold text-purple-800 mb-2">📋 Amabwiriza</h3>
+                    <ul class="text-purple-700 text-sm space-y-1">
+                        <li>• <strong>Hitamo ibibazo 15</strong> mu 30 ufite</li>
+                        <li>• Ufite <strong>minute 25</strong> zose zose</li>
+                        <li>• <strong>60%</strong> ni by'inshungu (9/15) kugirango winshe</li>
+                        <li>• Imyirondoro yawe izoherezwa muri system</li>
+                        <li>• Code nyinshi zikoresha <strong>* #</strong> mu ntangiriro</li>
+                    </ul>
+                </div>
+                <button id="start-quiz" class="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    🚀 Tangira Quiz
+                </button>
+            </div>
+
+            <!-- Quiz Selection -->
+            <div id="quiz-selection" class="bg-white rounded-2xl shadow-lg p-6 mb-8 hidden">
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">🎯 Hitamo Ibibazo 15</h3>
+                <div class="grid grid-cols-5 md:grid-cols-6 gap-2 mb-4" id="question-grid">
+                    <!-- Question numbers will be generated here -->
+                </div>
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <span id="selected-count" class="text-gray-600 font-semibold">0/15 ibibazo byahiswemo</span>
+                    </div>
+                    <button id="confirm-selection" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                        ✅ Emeza Ibisabwe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Interface -->
+            <div id="quiz-interface" class="hidden">
+                <!-- Progress & Timer -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <span class="text-sm text-gray-600">Ikibazo</span>
+                                <div class="text-xl font-bold text-gray-900">
+                                    <span id="current-question">1</span>/<span id="total-questions">15</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar flex-1 mx-4">
+                                <div id="progress-fill" class="progress-fill" style="width: 6.67%"></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm text-gray-600">Igihe Gisigaye</span>
+                            <div id="timer" class="timer">25:00</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Question Navigation -->
+                    <div class="flex flex-wrap gap-1 justify-center mt-4" id="question-navigation">
+                        <!-- Question numbers will be generated here -->
+                    </div>
+                </div>
+
+                <!-- Question Display -->
+                <div id="question-display">
+                    <!-- Questions will be loaded here -->
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between mt-6">
+                    <button id="prev-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        ⬅️ Subira Inyuma
+                    </button>
+                    <button id="next-btn" class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        Genda Imbere ➡️
+                    </button>
+                    <button id="submit-quiz" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors hidden">
+                        🏁 Tanga Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="hidden">
+                <div class="result-card">
+                    <div id="result-icon" class="text-6xl mb-4">🎉</div>
+                    <h2 id="result-title" class="text-3xl font-bold text-gray-900 mb-4">Watsinze Quiz!</h2>
+                    <div id="result-score" class="text-5xl font-bold text-green-600 mb-4">85%</div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <div class="text-2xl font-bold text-green-600" id="correct-answers">13</div>
+                            <div class="text-sm text-green-700">Byakuwe neza</div>
+                        </div>
+                        <div class="text-center p-4 bg-red-50 rounded-lg">
+                            <div class="text-2xl font-bold text-red-600" id="wrong-answers">2</div>
+                            <div class="text-sm text-red-700">Ntibyakuwe neza</div>
+                        </div>
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-600" id="time-taken">20:15</div>
+                            <div class="text-sm text-blue-700">Igihe wakoresheje</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 p-4 bg-yellow-50 rounded-lg">
+                        <h3 class="font-semibold text-yellow-800 mb-2">📊 Ibisubizo mu Byiciro:</h3>
+                        <div id="category-breakdown" class="text-sm text-yellow-700">
+                            <!-- Category breakdown will be shown here -->
+                        </div>
+                    </div>
+                    
+                    <button id="certificate-btn" class="certificate-btn mb-4">
+                        🏆 Kura Icyangombwa
+                    </button>
+                    <div class="text-sm text-gray-600">
+                        Imyirondoro yawe yoherejwe muri system. Ushobora gusubira quiz iyo ushaka.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Quiz Questions Database (30 questions - Secret Codes)
+        const allQuestions = [
+            // Basic Codes (10 questions)
+            {
+                id: 1,
+                question: "Ni iyihe code yakoreshwa mu gusuzuma numero ya SIM?",
+                options: [
+                    "*#06#",
+                    "*#123#", 
+                    "*#0*#",
+                    "*#21#"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#06# - Irahishura IMEI number ya telefone yawe"
+            },
+            {
+                id: 2,
+                question: "Ushaka kumenya amakuru ya network, ni iyihe code ukoresha?",
+                options: [
+                    "*#0011#",
+                    "*#1234#",
+                    "*#06#",
+                    "*#0*#"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#0011# - Irahishura amakuru ya network signal"
+            },
+            {
+                id: 3,
+                question: "Code *#21# ikora iki?",
+                options: [
+                    "Irekura call diversion",
+                    "Isuzuma IMEI",
+                    "Ihita yaka telefone",
+                    "Irekura internet"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#21# - Isuzuma call diversion settings"
+            },
+            {
+                id: 4,
+                question: "Ni iyihe code yo gusuzuma firmware version?",
+                options: [
+                    "*#1234#",
+                    "*#06#",
+                    "*#0*#",
+                    "*#0011#"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#1234# - Irahishura firmware version ya telefone"
+            },
+            {
+                id: 5,
+                question: "Ushaka gusiba call waiting, ni iyihe code?",
+                options: [
+                    "*#43#",
+                    "*#06#",
+                    "*#21#",
+                    "*#30#"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#43# - Isuzuma call waiting settings"
+            },
+            {
+                id: 6,
+                question: "Code ##002# ikora iki?",
+                options: [
+                    "Ihita yohereza ubutumwa",
+                    "Irekura call diversion yose",
+                    "Isuzuma battery",
+                    "Ihita yaka telefone"
+                ],
+                correct: 1,
+                category: "Code z'Ingenzi",
+                explanation: "##002# - Irekura call diversion settings zose"
+            },
+            {
+                id: 7,
+                question: "*#0*# ni code ya...",
+                options: [
+                    "Samsung service menu",
+                    "iPhone diagnostics",
+                    "Android factory reset",
+                    "Network testing"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#0*# - Service menu ya Samsung phones"
+            },
+            {
+                id: 8,
+                question: "Ni iyihe code yo gusuzuma battery status?",
+                options: [
+                    "*#0228#",
+                    "*#06#",
+                    "*#1234#",
+                    "*#0011#"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#0228# - Isuzuma battery status na voltage"
+            },
+            {
+                id: 9,
+                question: "Code *#*#4636#*#* ikora iki?",
+                options: [
+                    "Testing menu ya Android",
+                    "Gusiba telefone",
+                    "Gukora screenshot",
+                    "Kwinjira mu internet"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#*#4636#*#* - Android testing menu"
+            },
+            {
+                id: 10,
+                question: "Ni iyihe code yakoreshwa mu gusuzuma camera?",
+                options: [
+                    "*#0*#",
+                    "*#06#",
+                    "*#1234#",
+                    "*#0011#"
+                ],
+                correct: 0,
+                category: "Code z'Ingenzi",
+                explanation: "*#0*# - Service menu irimo camera test"
+            },
+
+            // Android Codes (10 questions)
+            {
+                id: 11,
+                question: "Ni iyihe code ya Android yo gusuzuma sensors?",
+                options: [
+                    "*#*#0*#*#*",
+                    "*#*#0589#*#*",
+                    "*#*#4636#*#*",
+                    "*#*#7262626#*#*"
+                ],
+                correct: 1,
+                category: "Code za Android",
+                explanation: "*#*#0589#*#* - Light sensor test"
+            },
+            {
+                id: 12,
+                question: "Code *#*#232338#*#* ikora iki kuri Android?",
+                options: [
+                    "Isuzuma WiFi MAC address",
+                    "Ihita yohereza ubutumwa",
+                    "Irekura Bluetooth",
+                    "Isuzuma battery"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#232338#*#* - Irahishura WiFi MAC address"
+            },
+            {
+                id: 13,
+                question: "Ushaka gusuzuma GPS kuri Android, ni iyihe code?",
+                options: [
+                    "*#*#1472365#*#*",
+                    "*#*#4636#*#*",
+                    "*#*#0*#*#*",
+                    "*#*#232338#*#*"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#1472365#*#* - GPS test menu"
+            },
+            {
+                id: 14,
+                question: "Code *#*#2664#*#* ikora iki kuri Android?",
+                options: [
+                    "Touch screen test",
+                    "Battery test",
+                    "Camera test",
+                    "Speaker test"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#2664#*#* - Touch screen test"
+            },
+            {
+                id: 15,
+                question: "Ni iyihe code yo gusuzuma vibration motor?",
+                options: [
+                    "*#*#0842#*#*",
+                    "*#*#4636#*#*",
+                    "*#*#232338#*#*",
+                    "*#*#1472365#*#*"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#0842#*#* - Vibration test"
+            },
+            {
+                id: 16,
+                question: "Code *#*#7284#*#* ikora iki?",
+                options: [
+                    "USB settings menu",
+                    "Factory reset",
+                    "Network unlock",
+                    "Battery calibration"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#7284#*#* - USB configuration menu"
+            },
+            {
+                id: 17,
+                question: "Ushaka gusuzuma proximity sensor, ni iyihe code?",
+                options: [
+                    "*#*#0588#*#*",
+                    "*#*#4636#*#*",
+                    "*#*#232338#*#*",
+                    "*#*#1472365#*#*"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#0588#*#* - Proximity sensor test"
+            },
+            {
+                id: 18,
+                question: "Code *#*#2663#*#* ikora iki?",
+                options: [
+                    "Touch screen version info",
+                    "Battery health",
+                    "Camera firmware",
+                    "Network signal"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#2663#*#* - Touch screen version information"
+            },
+            {
+                id: 19,
+                question: "Ni iyihe code yo gusuzuma LCD display?",
+                options: [
+                    "*#*#0*#*#*",
+                    "*#*#4636#*#*",
+                    "*#*#232338#*#*",
+                    "*#*#1472365#*#*"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#0*#*#* - LCD display test"
+            },
+            {
+                id: 20,
+                question: "Code *#*#232331#*#* ikora iki?",
+                options: [
+                    "Bluetooth test",
+                    "WiFi test",
+                    "Battery test",
+                    "Camera test"
+                ],
+                correct: 0,
+                category: "Code za Android",
+                explanation: "*#*#232331#*#* - Bluetooth test"
+            },
+
+            // iPhone Codes (5 questions)
+            {
+                id: 21,
+                question: "Ni iyihe code ya iPhone yo gusuzuma IMEI?",
+                options: [
+                    "*#06#",
+                    "*#21#",
+                    "*#30#",
+                    "*#43#"
+                ],
+                correct: 0,
+                category: "Code za iPhone",
+                explanation: "*#06# - Irahishura IMEI number"
+            },
+            {
+                id: 22,
+                question: "Code *3001#12345#* ikora iki kuri iPhone?",
+                options: [
+                    "Field test mode",
+                    "Factory reset",
+                    "Network unlock",
+                    "Battery test"
+                ],
+                correct: 0,
+                category: "Code za iPhone",
+                explanation: "*3001#12345#* - Field test mode"
+            },
+            {
+                id: 23,
+                question: "Ushaka gusuzuma call forwarding kuri iPhone, ni iyihe code?",
+                options: [
+                    "*#21#",
+                    "*#06#",
+                    "*#0*#",
+                    "*#0011#"
+                ],
+                correct: 0,
+                category: "Code za iPhone",
+                explanation: "*#21# - Call forwarding status"
+            },
+            {
+                id: 24,
+                question: "Ni iyihe code yakoreshwa mu gusiba caller ID kuri iPhone?",
+                options: [
+                    "*#31#",
+                    "*#06#",
+                    "*#21#",
+                    "*#43#"
+                ],
+                correct: 0,
+                category: "Code za iPhone",
+                explanation: "*#31# - Caller ID settings"
+            },
+            {
+                id: 25,
+                question: "Code *#5005*7672# ikora iki kuri iPhone?",
+                options: [
+                    "Isuzuma SMS center number",
+                    "Ihita yohereza ubutumwa",
+                    "Irekura internet",
+                    "Isuzuma battery"
+                ],
+                correct: 0,
+                category: "Code za iPhone",
+                explanation: "*#5005*7672# - SMS center number"
+            },
+
+            // Troubleshooting Codes (5 questions)
+            {
+                id: 26,
+                question: "Ufite ikibazo cya network, ni iyihe code yo gusuzuma?",
+                options: [
+                    "*#0011#",
+                    "*#06#",
+                    "*#1234#",
+                    "*#0*#"
+                ],
+                correct: 0,
+                category: "Gukemura Ibibazo",
+                explanation: "*#0011# - Network service menu"
+            },
+            {
+                id: 27,
+                question: "Telefone ifite ikibazo cya screen, ni iyihe code yo gusuzuma?",
+                options: [
+                    "*#0*#",
+                    "*#06#",
+                    "*#0011#",
+                    "*#1234#"
+                ],
+                correct: 0,
+                category: "Gukemura Ibibazo",
+                explanation: "*#0*# - LCD na touch screen test"
+            },
+            {
+                id: 28,
+                question: "Battery irabya, ni iyihe code yo gusuzuma?",
+                options: [
+                    "*#0228#",
+                    "*#06#",
+                    "*#0011#",
+                    "*#1234#"
+                ],
+                correct: 0,
+                category: "Gukemura Ibibazo",
+                explanation: "*#0228# - Battery status test"
+            },
+            {
+                id: 29,
+                question: "Ushaka gusuzuma camera problems, ni iyihe code?",
+                options: [
+                    "*#0*#",
+                    "*#06#",
+                    "*#0011#",
+                    "*#1234#"
+                ],
+                correct: 0,
+                category: "Gukemura Ibibazo",
+                explanation: "*#0*# - Camera test menu"
+            },
+            {
+                id: 30,
+                question: "Ni iyihe code yo gusuzuma sound issues?",
+                options: [
+                    "*#0*#",
+                    "*#06#",
+                    "*#0011#",
+                    "*#1234#"
+                ],
+                correct: 0,
+                category: "Gukemura Ibibazo",
+                explanation: "*#0*# - Speaker na vibration tests"
+            }
+        ];
+
+        class QuizManager {
+            constructor() {
+                this.selectedQuestions = [];
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {};
+                this.quizStarted = false;
+                this.timeLeft = 25 * 60; // 25 minutes in seconds
+                this.timerInterval = null;
+                this.userData = {};
+                this.quizResults = {};
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadUserFromStorage();
+            }
+
+            loadUserFromStorage() {
+                const savedUser = localStorage.getItem('mayeUserProfile');
+                if (savedUser) {
+                    this.userData = JSON.parse(savedUser);
+                    document.getElementById('user-name').value = this.userData.name || '';
+                    document.getElementById('user-email').value = this.userData.email || '';
+                }
+            }
+
+            startQuiz() {
+                const name = document.getElementById('user-name').value.trim();
+                const email = document.getElementById('user-email').value.trim();
+                
+                if (!name || !email) {
+                    alert('Andika amazina na email yawe mbere yo gutangira quiz.');
+                    return;
+                }
+
+                this.userData = { 
+                    name, 
+                    email, 
+                    timestamp: new Date().toISOString(),
+                    course: 'Secret Codes'
+                };
+                
+                localStorage.setItem('mayeUserProfile', JSON.stringify(this.userData));
+                
+                document.getElementById('user-info').classList.add('hidden');
+                document.getElementById('quiz-selection').classList.remove('hidden');
+                
+                this.generateQuestionGrid();
+            }
+
+            generateQuestionGrid() {
+                const grid = document.getElementById('question-grid');
+                grid.innerHTML = '';
+                
+                for (let i = 1; i <= 30; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'question-number';
+                    div.textContent = i;
+                    div.dataset.questionId = i;
+                    
+                    div.addEventListener('click', () => this.toggleQuestionSelection(i));
+                    
+                    grid.appendChild(div);
+                }
+                this.updateSelectionCount();
+            }
+
+            toggleQuestionSelection(questionId) {
+                const index = this.selectedQuestions.indexOf(questionId);
+                const element = document.querySelector(`[data-question-id="${questionId}"]`);
+                
+                if (index === -1) {
+                    if (this.selectedQuestions.length < 15) {
+                        this.selectedQuestions.push(questionId);
+                        element.classList.add('selected');
+                    }
+                } else {
+                    this.selectedQuestions.splice(index, 1);
+                    element.classList.remove('selected');
+                }
+                
+                this.updateSelectionCount();
+            }
+
+            updateSelectionCount() {
+                const count = this.selectedQuestions.length;
+                document.getElementById('selected-count').textContent = `${count}/15 ibibazo byahiswemo`;
+                
+                const confirmBtn = document.getElementById('confirm-selection');
+                confirmBtn.disabled = count !== 15;
+            }
+
+            confirmSelection() {
+                if (this.selectedQuestions.length !== 15) {
+                    alert('Hitamo ibibazo 15 mbere yo gukomeza.');
+                    return;
+                }
+
+                this.selectedQuestions = this.selectedQuestions.sort(() => Math.random() - 0.5);
+                this.quizStarted = true;
+                
+                document.getElementById('quiz-selection').classList.add('hidden');
+                document.getElementById('quiz-interface').classList.remove('hidden');
+                
+                this.startTimer();
+                this.generateQuestionNavigation();
+                this.loadQuestion(0);
+            }
+
+            generateQuestionNavigation() {
+                const nav = document.getElementById('question-navigation');
+                nav.innerHTML = '';
+                
+                this.selectedQuestions.forEach((questionId, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'question-number';
+                    div.textContent = index + 1;
+                    div.dataset.navIndex = index;
+                    
+                    div.addEventListener('click', () => this.loadQuestion(index));
+                    
+                    nav.appendChild(div);
+                });
+            }
+
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    
+                    const minutes = Math.floor(this.timeLeft / 60);
+                    const seconds = this.timeLeft % 60;
+                    document.getElementById('timer').textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (this.timeLeft <= 0) {
+                        this.submitQuiz();
+                    }
+                }, 1000);
+            }
+
+            loadQuestion(index) {
+                this.currentQuestionIndex = index;
+                const questionId = this.selectedQuestions[index];
+                const question = allQuestions.find(q => q.id === questionId);
+                
+                document.getElementById('current-question').textContent = index + 1;
+                document.getElementById('total-questions').textContent = this.selectedQuestions.length;
+                
+                const progress = ((index + 1) / this.selectedQuestions.length) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                
+                this.updateNavigation();
+                
+                document.getElementById('prev-btn').style.display = index === 0 ? 'none' : 'block';
+                document.getElementById('next-btn').style.display = index === this.selectedQuestions.length - 1 ? 'none' : 'block';
+                document.getElementById('submit-quiz').style.display = index === this.selectedQuestions.length - 1 ? 'block' : 'none';
+                
+                this.displayQuestion(question);
+            }
+
+            updateNavigation() {
+                document.querySelectorAll('#question-navigation .question-number').forEach((nav, index) => {
+                    nav.classList.remove('selected', 'answered');
+                    
+                    if (index === this.currentQuestionIndex) {
+                        nav.classList.add('selected');
+                    }
+                    
+                    const questionId = this.selectedQuestions[index];
+                    if (this.userAnswers[questionId] !== undefined) {
+                        nav.classList.add('answered');
+                    }
+                });
+            }
+
+            displayQuestion(question) {
+                const container = document.getElementById('question-display');
+                container.innerHTML = `
+                    <div class="question-card">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm font-semibold text-purple-600 bg-purple-50 px-3 py-1 rounded-full">
+                                ${question.category}
+                            </span>
+                            <span class="text-sm text-gray-500">Ikibazo #${question.id}</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">${question.question}</h3>
+                        ${question.explanation ? `
+                            <div class="code-example mb-4">
+                                <strong>Icyitegererezo:</strong> ${question.explanation}
+                            </div>
+                        ` : ''}
+                        <div class="space-y-3">
+                            ${question.options.map((option, index) => `
+                                <label class="option-label ${this.userAnswers[question.id] === index ? 'selected' : ''}">
+                                    <input type="radio" name="question-${question.id}" value="${index}" 
+                                           ${this.userAnswers[question.id] === index ? 'checked' : ''}
+                                           class="mr-3">
+                                    <span class="flex-1">${String.fromCharCode(65 + index)}. ${option}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                container.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        this.userAnswers[question.id] = parseInt(e.target.value);
+                        this.updateNavigation();
+                    });
+                });
+            }
+
+            nextQuestion() {
+                if (this.currentQuestionIndex < this.selectedQuestions.length - 1) {
+                    this.loadQuestion(this.currentQuestionIndex + 1);
+                }
+            }
+
+            prevQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.loadQuestion(this.currentQuestionIndex - 1);
+                }
+            }
+
+            async submitQuiz() {
+                clearInterval(this.timerInterval);
+                
+                let correct = 0;
+                const categoryStats = {};
+                
+                this.selectedQuestions.forEach(questionId => {
+                    const question = allQuestions.find(q => q.id === questionId);
+                    const category = question.category;
+                    
+                    if (!categoryStats[category]) {
+                        categoryStats[category] = { total: 0, correct: 0 };
+                    }
+                    
+                    categoryStats[category].total++;
+                    
+                    if (this.userAnswers[questionId] === question.correct) {
+                        correct++;
+                        categoryStats[category].correct++;
+                    }
+                });
+                
+                const score = Math.round((correct / this.selectedQuestions.length) * 100);
+                const timeUsed = 25 * 60 - this.timeLeft;
+                const minutes = Math.floor(timeUsed / 60);
+                const seconds = timeUsed % 60;
+                
+                this.quizResults = {
+                    score: score,
+                    correctAnswers: correct,
+                    totalQuestions: this.selectedQuestions.length,
+                    timeUsed: timeUsed,
+                    timeUsedFormatted: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+                    categoryStats: categoryStats,
+                    userAnswers: this.userAnswers,
+                    selectedQuestions: this.selectedQuestions,
+                    timestamp: new Date().toISOString()
+                };
+                
+                localStorage.setItem('current-quiz-result', JSON.stringify(this.quizResults));
+                
+                if (score >= 60) {
+                    await this.saveResultsToFirebase();
+                }
+                
+                this.showResults();
+            }
+
+            async saveResultsToFirebase() {
+                try {
+                    const quizData = {
+                        userName: this.userData.name,
+                        userEmail: this.userData.email,
+                        course: 'Secret Codes',
+                        score: this.quizResults.score,
+                        correctAnswers: this.quizResults.correctAnswers,
+                        totalQuestions: this.quizResults.totalQuestions,
+                        timeUsed: this.quizResults.timeUsed,
+                        categoryStats: this.quizResults.categoryStats,
+                        selectedQuestions: this.quizResults.selectedQuestions,
+                        userAnswers: this.quizResults.userAnswers,
+                        completedAt: new Date().toISOString(),
+                        passed: this.quizResults.score >= 60
+                    };
+                    
+                    await db.collection('quizResults').add(quizData);
+                    console.log('✅ Quiz results saved to Firebase');
+                } catch (error) {
+                    console.error('❌ Error saving to Firebase:', error);
+                }
+            }
+
+            showResults() {
+                document.getElementById('quiz-interface').classList.add('hidden');
+                document.getElementById('results-section').classList.remove('hidden');
+                
+                const resultIcon = document.getElementById('result-icon');
+                const resultTitle = document.getElementById('result-title');
+                
+                if (this.quizResults.score >= 60) {
+                    resultIcon.textContent = '🎉';
+                    resultTitle.textContent = 'Watsinze Quiz!';
+                    resultTitle.className = 'text-3xl font-bold text-green-600 mb-4';
+                    document.getElementById('certificate-btn').style.display = 'block';
+                } else {
+                    resultIcon.textContent = '😔';
+                    resultTitle.textContent = 'Ntuwatsinze Quiz';
+                    resultTitle.className = 'text-3xl font-bold text-red-600 mb-4';
+                    document.getElementById('certificate-btn').style.display = 'none';
+                }
+                
+                document.getElementById('result-score').textContent = `${this.quizResults.score}%`;
+                document.getElementById('correct-answers').textContent = this.quizResults.correctAnswers;
+                document.getElementById('wrong-answers').textContent = this.quizResults.totalQuestions - this.quizResults.correctAnswers;
+                document.getElementById('time-taken').textContent = this.quizResults.timeUsedFormatted;
+                
+                this.showCategoryBreakdown();
+            }
+
+            showCategoryBreakdown() {
+                const container = document.getElementById('category-breakdown');
+                let html = '';
+                
+                for (const [category, stats] of Object.entries(this.quizResults.categoryStats)) {
+                    const percentage = Math.round((stats.correct / stats.total) * 100);
+                    html += `
+                        <div class="flex justify-between items-center mb-1">
+                            <span>${category}:</span>
+                            <span class="font-semibold">${stats.correct}/${stats.total} (${percentage}%)</span>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+            }
+
+            setupEventListeners() {
+                document.getElementById('start-quiz').addEventListener('click', () => this.startQuiz());
+                document.getElementById('confirm-selection').addEventListener('click', () => this.confirmSelection());
+                document.getElementById('next-btn').addEventListener('click', () => this.nextQuestion());
+                document.getElementById('prev-btn').addEventListener('click', () => this.prevQuestion());
+                document.getElementById('submit-quiz').addEventListener('click', () => this.submitQuiz());
+                
+                document.getElementById('certificate-btn').addEventListener('click', () => {
+                    if (this.quizResults.score >= 60) {
+                        const params = new URLSearchParams({
+                            name: this.userData.name,
+                            score: this.quizResults.score,
+                            time: this.quizResults.timeUsedFormatted,
+                            course: 'Secret Codes'
+                        });
+                        window.location.href = `certificate.html?${params}`;
+                    }
+                });
+            }
+        }
+
+        // Load components and initialize quiz
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load header and footer
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load header:', err));
+
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load footer:', err));
+
+            // Initialize quiz manager
+            window.quizManager = new QuizManager();
+        });
+    </script>
+</body>
+</html>

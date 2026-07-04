@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twavugishe - MAYE SYSTEMS</title>
+    
+    <!-- Local Tailwind CSS -->
+    <link rel="stylesheet" href="css/tailwind.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Contact CSS -->
+    <link rel="stylesheet" href="css/contact.css">
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("Z5qtOEeBkGwIUN6Of"); // 🔑 YOUR PUBLIC KEY
+        })();
+    </script>
+
+    <style>
+        /* Additional inline styles for contact page */
+        .page-hero {
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #1B5E20 100%);
+            color: white;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+        
+        .loading-component {
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            color: #6b7280;
+        }
+        
+        .success-message {
+            background: #d1fae5;
+            border: 1px solid #10b981;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #ef4444;
+            color: #991b1b;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .btn-loading {
+            background-color: #9ca3af !important;
+            cursor: not-allowed !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Placeholder with Loading State -->
+    <div id="header">
+        <div class="loading-component">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-2"></div>
+            <p>Kurura header...</p>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="page-hero">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Twavugishe</h1>
+                <p class="text-xl md:text-2xl opacity-90">Dusangire ibibazo byawe cyangwa ubufasha ukenera ku mikorere y'ubucuruzi bwawe.</p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section py-12">
+            <div class="container mx-auto px-4 max-w-7xl">
+                <!-- Success/Error Messages -->
+                <div id="successMessage" class="success-message">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <strong>Urakoze!</strong> Ubutumwa bwawe bwoherejwe neza. Turabasubiza kuri <strong>kjeanpaul28@gmail.com</strong> mu gihe gito.
+                </div>
+                
+                <div id="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    <strong id="errorText">Ikosa!</strong> Ubutumwa ntibwoherejwe. Wongera ugerageze cyangwa duhamagare kuri <strong>+250 784 067 694</strong>.
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    
+                    <!-- Contact Form -->
+                    <div class="contact-form bg-white rounded-xl shadow-lg p-8">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Ohereza Ubutumwa</h2>
+                        <form id="contactForm" class="space-y-6">
+                            <div class="form-group">
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Izina Ryuzuye *</label>
+                                <input type="text" id="name" name="name" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                                       placeholder="Andika izina ryawe ryuzuye">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Imeli *</label>
+                                <input type="email" id="email" name="email" required 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                                       placeholder="Andika imeli yawe">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+                                <input type="tel" id="phone" name="phone" 
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
+                                       placeholder="Andika numero ya telefone">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">Intumbero</label>
+                                <select id="subject" name="subject" 
+                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300">
+                                    <option value="">Hitamo intumbero...</option>
+                                    <option value="inventory">Serivisi zo Gucunga Inventory</option>
+                                    <option value="website">Gukora Website/App</option>
+                                    <option value="elearning">Amasomo kuri Interineti</option>
+                                    <option value="support">IT Support</option>
+                                    <option value="driving">Ikizamini cy'Agateganyo</option>
+                                    <option value="other">Ibindi</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">Ubutumwa *</label>
+                                <textarea id="message" name="message" rows="5" required 
+                                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 resize-none"
+                                          placeholder="Andika ubutumwa bwawe"></textarea>
+                            </div>
+                            
+                            <button type="submit" id="submitBtn" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 px-6 rounded-lg font-semibold transition-colors duration-300 transform hover:scale-105">
+                                <i class="fas fa-paper-plane mr-2"></i>Ohereza Ubutumwa
+                            </button>
+                            
+                            <p class="text-sm text-gray-500 text-center">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                Ubutumwa buja kuri <strong>kjeanpaul28@gmail.com</strong>. Turabasubiza mu gihe gito.
+                            </p>
+                        </form>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="contact-info">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Amakuru Yacu</h2>
+                        <div class="space-y-6">
+                            
+                            <div class="contact-item bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-phone text-green-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-800">📞 Telefone</h3>
+                                </div>
+                                <p class="text-gray-600 ml-14" id="contact-phone">+250 784 067 694</p>
+                            </div>
+                            
+                            <div class="contact-item bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-envelope text-blue-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-800">📧 Imeli</h3>
+                                </div>
+                                <p class="text-gray-600 ml-14" id="contact-email">kjeanpaul28@gmail.com</p>
+                            </div>
+                            
+                            <div class="contact-item bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-globe text-purple-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-800">🌐 Website</h3>
+                                </div>
+                                <p class="text-gray-600 ml-14">
+                                    <a href="https://mayesystemsolution.netlify.app" target="_blank" class="text-green-600 hover:text-green-700 transition-colors">
+                                        mayesystemsolution.netlify.app
+                                    </a>
+                                </p>
+                            </div>
+                            
+                            <div class="contact-item bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-map-marker-alt text-orange-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-800">📍 Aho Tubarizwa</h3>
+                                </div>
+                                <p class="text-gray-600 ml-14" id="contact-address">Kigali, Rwanda</p>
+                            </div>
+                            
+                            <div class="contact-item bg-white rounded-lg p-6 shadow-md hover:shadow-lg transition-shadow duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-clock text-yellow-600"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-800">🕒 Igihe Dukora</h3>
+                                </div>
+                                <p class="text-gray-600 ml-14">
+                                    Mon - Fri: 8:00 AM - 6:00 PM<br>
+                                    Sat: 9:00 AM - 1:00 PM
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Placeholder with Loading State -->
+    <div id="footer">
+        <div class="loading-component">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-2"></div>
+            <p>Kurura footer...</p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Component Loading with Error Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Starting component loading...');
+            
+            // Load Header Component
+            fetch('components/header.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load Header (Status: ${response.status})`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                    console.log('✅ Header loaded successfully');
+                    
+                    // Initialize header functionality
+                    initializeHeaderFunctionality();
+                })
+                .catch(error => {
+                    console.error('❌ Error loading header:', error);
+                    document.getElementById('header').innerHTML = `
+                        <header class="bg-green-600 text-white py-4 shadow-lg">
+                            <div class="container mx-auto px-4 flex justify-between items-center">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-white text-green-600 rounded-full flex items-center justify-center font-bold text-lg">
+                                        <i class="fas fa-leaf"></i>
+                                    </div>
+                                    <h1 class="text-xl font-bold">MAYE SYSTEMS</h1>
+                                </div>
+                                <nav class="hidden md:flex space-x-6">
+                                    <a href="index.html" class="hover:text-green-200 transition-colors">Ahabanza</a>
+                                    <a href="about.html" class="hover:text-green-200 transition-colors">Twerekeye</a>
+                                    <a href="services.html" class="hover:text-green-200 transition-colors">Serivisi</a>
+                                    <a href="pricing.html" class="hover:text-green-200 transition-colors">Ibiciro</a>
+                                    <a href="contact.html" class="font-bold border-b-2 border-white">Twandikire</a>
+                                </nav>
+                            </div>
+                        </header>
+                    `;
+                });
+
+            // Load Footer Component
+            fetch('components/footer.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load Footer (Status: ${response.status})`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                    console.log('✅ Footer loaded successfully');
+                    
+                    // Initialize footer functionality
+                    initializeFooterFunctionality();
+                })
+                .catch(error => {
+                    console.error('❌ Error loading footer:', error);
+                    document.getElementById('footer').innerHTML = `
+                        <footer class="bg-gray-800 text-white py-8 mt-12">
+                            <div class="container mx-auto px-4 text-center">
+                                <p class="mb-4">
+                                    <i class="fas fa-copyright mr-2"></i>2024 MAYE SYSTEMS Ltd. Amahoro amewe.
+                                </p>
+                                <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
+                                    <a href="index.html" class="hover:text-white transition-colors">Ahabanza</a>
+                                    <a href="about.html" class="hover:text-white transition-colors">Twerekeye</a>
+                                    <a href="services.html" class="hover:text-white transition-colors">Serivisi</a>
+                                    <a href="pricing.html" class="hover:text-white transition-colors">Ibiciro</a>
+                                    <a href="contact.html" class="hover:text-white transition-colors">Twandikire</a>
+                                </div>
+                                <p class="mt-4 text-gray-400">
+                                    <i class="fas fa-phone mr-2"></i>+250 784 067 694 | 
+                                    <i class="fas fa-envelope mr-2 ml-4"></i>kjeanpaul28@gmail.com
+                                </p>
+                            </div>
+                        </footer>
+                    `;
+                });
+
+            // Form Submission Handler with EmailJS
+            document.getElementById('contactForm')?.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const submitBtn = document.getElementById('submitBtn');
+                const originalText = submitBtn.innerHTML;
+                
+                // Show loading state
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Ohereje...';
+                submitBtn.disabled = true;
+                submitBtn.classList.add('btn-loading');
+                
+                // Get form data
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value || 'Nta numero',
+                    subject: document.getElementById('subject').value || 'Nta ntumbero',
+                    message: document.getElementById('message').value,
+                    timestamp: new Date().toLocaleString('rw-RW'),
+                    website: 'MAYE SYSTEMS Website'
+                };
+                
+                // Simple validation
+                if (!formData.name || !formData.email || !formData.message) {
+                    showError('Nyamuneka uzuzuze ibisabwa (izina, imeli n\'ubutumwa)');
+                    resetButton(submitBtn, originalText);
+                    return;
+                }
+                
+                console.log('Form data prepared:', formData);
+                
+                // Send with EmailJS
+                if (typeof emailjs !== 'undefined') {
+                    emailjs.send('service_z8q7j68', 'template_nu8f3c5', formData)
+                        .then(function(response) {
+                            console.log('✅ EmailJS SUCCESS!', response.status, response.text);
+                            showSuccess();
+                            document.getElementById('contactForm').reset();
+                            
+                            // Also store in localStorage as backup
+                            storeInLocalStorage(formData);
+                            resetButton(submitBtn, originalText);
+                        })
+                        .catch(function(error) {
+                            console.error('❌ EmailJS FAILED:', error);
+                            // Fallback to localStorage
+                            storeInLocalStorage(formData);
+                            showSuccess(); // Still show success to user
+                            document.getElementById('contactForm').reset();
+                            resetButton(submitBtn, originalText);
+                        });
+                } else {
+                    console.warn('⚠️ EmailJS not available, using localStorage only');
+                    // Fallback to localStorage only
+                    storeInLocalStorage(formData);
+                    showSuccess();
+                    document.getElementById('contactForm').reset();
+                    resetButton(submitBtn, originalText);
+                }
+            });
+
+            // Add smooth scrolling for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Store form data in localStorage
+        function storeInLocalStorage(formData) {
+            try {
+                const contacts = JSON.parse(localStorage.getItem('contactSubmissions') || '[]');
+                contacts.push({
+                    ...formData,
+                    id: Date.now(),
+                    status: 'submitted'
+                });
+                localStorage.setItem('contactSubmissions', JSON.stringify(contacts));
+                console.log('📝 Contact stored in localStorage:', formData);
+            } catch (error) {
+                console.error('❌ Error storing in localStorage:', error);
+            }
+        }
+
+        // Reset button state
+        function resetButton(button, originalText) {
+            button.innerHTML = originalText;
+            button.disabled = false;
+            button.classList.remove('btn-loading');
+        }
+
+        // Show success message
+        function showSuccess() {
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            errorMsg.style.display = 'none';
+            successMsg.style.display = 'block';
+            
+            // Scroll to top to show message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Auto hide after 8 seconds
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 8000);
+        }
+
+        // Show error message
+        function showError(message) {
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            successMsg.style.display = 'none';
+            errorText.textContent = message;
+            errorMsg.style.display = 'block';
+            
+            // Scroll to top to show message
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // Auto hide after 8 seconds
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 8000);
+        }
+
+        // Header functionality initialization
+        function initializeHeaderFunctionality() {
+            // Add active state to current page link
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('nav a');
+            
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === currentPage || (currentPage === '' && linkHref === 'index.html')) {
+                    link.classList.add('font-bold', 'border-b-2', 'border-white');
+                }
+            });
+        }
+
+        // Footer functionality initialization
+        function initializeFooterFunctionality() {
+            // Update current year in footer if needed
+            const yearElements = document.querySelectorAll('#current-year');
+            if (yearElements.length > 0) {
+                const currentYear = new Date().getFullYear();
+                yearElements.forEach(element => {
+                    element.textContent = currentYear;
+                });
+            }
+        }
+
+        // Add loading animation removal after components are loaded
+        window.addEventListener('load', function() {
+            // Remove loading states after a short delay
+            setTimeout(() => {
+                const loadingElements = document.querySelectorAll('.loading-component');
+                loadingElements.forEach(element => {
+                    element.style.opacity = '0';
+                    setTimeout(() => {
+                        element.style.display = 'none';
+                    }, 300);
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

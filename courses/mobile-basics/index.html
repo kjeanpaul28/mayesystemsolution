@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Basics - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../css/tailwind.css">
+    <style>
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button.active {
+            border-bottom-color: #10b981;
+            color: #10b981;
+            font-weight: 600;
+        }
+        .search-container {
+            position: relative;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .search-input {
+            padding-right: 3rem;
+        }
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+        }
+        .certificate-card {
+            border-left: 4px solid #10b981;
+            transition: all 0.3s ease;
+        }
+        .certificate-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .lesson-locked {
+            opacity: 0.6;
+            background-color: #f3f4f6;
+        }
+        .lesson-completed {
+            border-left-color: #10b981 !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+                <a href="../index.html" class="hover:text-green-600 transition-colors">📚 Amasomo</a>
+                <span class="text-gray-400">›</span>
+                <span class="text-green-600 font-medium">📱 Mobile Basics</span>
+            </nav>
+
+            <!-- Course Header -->
+            <div class="text-center mb-12">
+                <div class="flex justify-center mb-4">
+                    <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span class="text-4xl">📱</span>
+                    </div>
+                </div>
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">Mobile Basics</h1>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Menya uko ukoresha telefone yawe mu buryo bwihuse kandi witonze. 
+                    Somera ubwoko bw'itelefone, imirongo ya smartphone, no gukoresha keypad.
+                </p>
+                
+                <!-- Progress Section -->
+                <div class="mt-8 max-w-md mx-auto">
+                    <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>Imikurire Yawe</span>
+                        <span id="overall-progress-percent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div id="overall-progress-bar" class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="bg-white rounded-2xl shadow-lg mb-8">
+                <div class="flex overflow-x-auto border-b border-gray-200">
+                    <button class="tab-button flex-1 px-6 py-4 text-center font-medium text-gray-600 hover:text-green-600 transition-colors active" data-tab="lessons">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span>📚</span>
+                            <span>Ibigize Somo</span>
+                        </div>
+                    </button>
+                    <button class="tab-button flex-1 px-6 py-4 text-center font-medium text-gray-600 hover:text-green-600 transition-colors" data-tab="certificates">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span>🏆</span>
+                            <span>Icyangombwa</span>
+                        </div>
+                    </button>
+                    <button class="tab-button flex-1 px-6 py-4 text-center font-medium text-gray-600 hover:text-green-600 transition-colors" data-tab="search">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span>🔍</span>
+                            <span>Shakisha Icyangombwa</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Lessons Tab -->
+                <div id="lessons" class="tab-content active p-8">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
+                        <div class="bg-blue-50 px-6 py-4 border-b border-blue-100">
+                            <h2 class="text-2xl font-bold text-gray-900">🔢 Ibigize Somo</h2>
+                            <p class="text-gray-600 mt-1">Kurikira ibigize somo ukurikize urutonde</p>
+                        </div>
+                        
+                        <div class="divide-y divide-gray-100">
+                            <!-- Lesson 1 -->
+                            <div class="lesson-item p-6 hover:bg-gray-50 transition-colors border-l-4 border-yellow-400" data-lesson="1">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-yellow-600 font-bold">1</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900">Ubwoko bwa Telefone</h3>
+                                            <p class="text-gray-600 mt-1">Menya ubwoko butandukanye bwa telefone: Feature phones, Smartphones, n'ibindi</p>
+                                            <div class="flex items-center space-x-4 mt-3 text-sm text-gray-500">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    25 min
+                                                </span>
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    5 Ibibazo
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="lessons/1-phone-types.html" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                                        Tangira
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Lesson 2 -->
+                            <div class="lesson-item p-6 hover:bg-gray-50 transition-colors border-l-4 border-gray-200 lesson-locked" data-lesson="2">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-400 font-bold">2</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-600">Imirongo ya Smartphone</h3>
+                                            <p class="text-gray-500 mt-1">Menya imirongo ya smartphone: Sensors, AI features, n'uburyo bikora</p>
+                                            <div class="flex items-center space-x-4 mt-3 text-sm text-gray-400">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    35 min
+                                                </span>
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    6 Ibibazo
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed" disabled>
+                                        Gifunze
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Lesson 3 -->
+                            <div class="lesson-item p-6 hover:bg-gray-50 transition-colors border-l-4 border-gray-200 lesson-locked" data-lesson="3">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-400 font-bold">3</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-600">Gukoresha Keypad</h3>
+                                            <p class="text-gray-500 mt-1">Menya uko ukoresha keypad ya telefone mu bikorwa by'ibanze</p>
+                                            <div class="flex items-center space-x-4 mt-3 text-sm text-gray-400">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    20 min
+                                                </span>
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    4 Ibibazo
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed" disabled>
+                                        Gifunze
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Lesson 4 -->
+                            <div class="lesson-item p-6 hover:bg-gray-50 transition-colors border-l-4 border-gray-200 lesson-locked" data-lesson="4">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-400 font-bold">4</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-600">Gurohoza no Gukoresha Apps</h3>
+                                            <p class="text-gray-500 mt-1">Menya uko urozamo apps, uyisiba, no kuyikoresha mu buryo bwiza</p>
+                                            <div class="flex items-center space-x-4 mt-3 text-sm text-gray-400">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    30 min
+                                                </span>
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    5 Ibibazo
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed" disabled>
+                                        Gifunze
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Lesson 5 -->
+                            <div class="lesson-item p-6 hover:bg-gray-50 transition-colors border-l-4 border-gray-200 lesson-locked" data-lesson="5">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-4">
+                                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-400 font-bold">5</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-600">Umutekano wa Telefone</h3>
+                                            <p class="text-gray-500 mt-1">Menya uko wirinda ibibazo by'umutekano mu koresha telefone</p>
+                                            <div class="flex items-center space-x-4 mt-3 text-sm text-gray-400">
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    40 min
+                                                </span>
+                                                <span class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    8 Ibibazo
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg font-medium cursor-not-allowed" disabled>
+                                        Gifunze
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Actions -->
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="quiz.html" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 px-8 py-3 rounded-lg font-semibold text-center transition-colors flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Gereranya Ubumenyi Bwawe
+                        </a>
+                        <a href="certificate.html" class="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-lg font-semibold text-center transition-colors flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            Reba Icyangombwa
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Certificates Tab -->
+                <div id="certificates" class="tab-content p-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">🏆 Icyangombwa Cyawe</h2>
+                        <p class="text-gray-600">Reba icyangombwa wakuye nyuma yo kurangiza amasomo</p>
+                    </div>
+
+                    <div id="user-certificates" class="grid md:grid-cols-2 gap-6">
+                        <!-- Certificate will be loaded here -->
+                        <div class="text-center py-12">
+                            <div class="text-6xl mb-4">📱</div>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-2">Nta cyangombwa cyabonetse</h3>
+                            <p class="text-gray-500">Rangiza amasomo yose kugirango ubone icyangombwa</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Tab -->
+                <div id="search" class="tab-content p-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-4">🔍 Shakisha Icyangombwa</h2>
+                        <p class="text-gray-600">Shakisha icyangombwa ukoresheje izina cyangwa numero y'icyangombwa</p>
+                    </div>
+
+                    <div class="search-container mb-8">
+                        <input type="text" id="certificate-search" placeholder="Shakisha ku izina cyangwa ID..." 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 search-input">
+                        <div class="search-icon">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div id="search-results" class="space-y-4">
+                        <!-- Search results will appear here -->
+                        <div class="text-center py-8 text-gray-500">
+                            <div class="text-4xl mb-4">🔍</div>
+                            <p>Andika izina cyangwa numero y'icyangombwa mu kibazo cyo shakisha</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        class MobileBasicsManager {
+            constructor() {
+                this.courseId = 'mobile-basics';
+                this.lessons = [
+                    { id: '1', completed: false },
+                    { id: '2', completed: false },
+                    { id: '3', completed: false },
+                    { id: '4', completed: false },
+                    { id: '5', completed: false }
+                ];
+                this.init();
+            }
+
+            init() {
+                this.setupTabs();
+                this.setupProgress();
+                this.setupSearch();
+                this.loadUserCertificates();
+                this.setupEventListeners();
+            }
+
+            setupTabs() {
+                const tabButtons = document.querySelectorAll('.tab-button');
+                const tabContents = document.querySelectorAll('.tab-content');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabId = button.dataset.tab;
+                        
+                        // Remove active class from all buttons and contents
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        
+                        // Add active class to current button and content
+                        button.classList.add('active');
+                        document.getElementById(tabId).classList.add('active');
+                    });
+                });
+            }
+
+            setupProgress() {
+                try {
+                    // FIX: Check if progress exists before using Object.values
+                    const savedProgress = localStorage.getItem(`progress-${this.courseId}`);
+                    
+                    if (savedProgress) {
+                        this.lessons = JSON.parse(savedProgress);
+                    } else {
+                        // Initialize with default values if no progress exists
+                        this.lessons = [
+                            { id: '1', completed: false },
+                            { id: '2', completed: false },
+                            { id: '3', completed: false },
+                            { id: '4', completed: false },
+                            { id: '5', completed: false }
+                        ];
+                        this.saveProgress();
+                    }
+
+                    this.updateProgressUI();
+                    this.setupLessonUnlocking();
+                } catch (error) {
+                    console.error('Error setting up progress:', error);
+                    // Initialize with default values on error
+                    this.lessons = [
+                        { id: '1', completed: false },
+                        { id: '2', completed: false },
+                        { id: '3', completed: false },
+                        { id: '4', completed: false },
+                        { id: '5', completed: false }
+                    ];
+                    this.saveProgress();
+                    this.updateProgressUI();
+                }
+            }
+
+            saveProgress() {
+                localStorage.setItem(`progress-${this.courseId}`, JSON.stringify(this.lessons));
+            }
+
+            updateProgressUI() {
+                try {
+                    const completed = this.lessons.filter(lesson => lesson.completed).length;
+                    const total = this.lessons.length;
+                    const progress = (completed / total) * 100;
+
+                    const progressBar = document.getElementById('overall-progress-bar');
+                    const progressPercent = document.getElementById('overall-progress-percent');
+                    
+                    if (progressBar && progressPercent) {
+                        progressBar.style.width = `${progress}%`;
+                        progressPercent.textContent = `${Math.round(progress)}%`;
+                    }
+                } catch (error) {
+                    console.error('Error updating progress UI:', error);
+                }
+            }
+
+            setupLessonUnlocking() {
+                try {
+                    const lessons = document.querySelectorAll('.lesson-item');
+                    lessons.forEach((lesson, index) => {
+                        const lessonId = lesson.dataset.lesson;
+                        const startButton = lesson.querySelector('button, a');
+                        
+                        if (index === 0 || this.lessons[index - 1]?.completed) {
+                            // First lesson or previous lesson completed
+                            lesson.classList.remove('lesson-locked');
+                            if (startButton) {
+                                startButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                                startButton.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
+                                if (startButton.textContent === 'Gifunze') {
+                                    startButton.textContent = 'Tangira';
+                                }
+                                if (startButton.tagName === 'BUTTON') {
+                                    const link = document.createElement('a');
+                                    link.href = `lessons/${lessonId}-${this.getLessonSlug(lessonId)}.html`;
+                                    link.className = startButton.className;
+                                    link.textContent = 'Tangira';
+                                    startButton.parentNode.replaceChild(link, startButton);
+                                }
+                            }
+                        }
+
+                        // Mark completed lessons
+                        if (this.lessons[index]?.completed) {
+                            lesson.classList.add('lesson-completed');
+                            const button = lesson.querySelector('a');
+                            if (button) {
+                                button.textContent = 'Subira';
+                                button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error setting up lesson unlocking:', error);
+                }
+            }
+
+            getLessonSlug(lessonId) {
+                const slugs = {
+                    '1': 'phone-types',
+                    '2': 'smartphone-features',
+                    '3': 'keypad-usage',
+                    '4': 'apps-installation',
+                    '5': 'security'
+                };
+                return slugs[lessonId] || 'lesson';
+            }
+
+            setupSearch() {
+                const searchInput = document.getElementById('certificate-search');
+                const searchResults = document.getElementById('search-results');
+
+                searchInput.addEventListener('input', (e) => {
+                    const query = e.target.value.trim().toLowerCase();
+                    
+                    if (query.length < 2) {
+                        searchResults.innerHTML = `
+                            <div class="text-center py-8 text-gray-500">
+                                <div class="text-4xl mb-4">🔍</div>
+                                <p>Andika izina cyangwa numero y'icyangombwa mu kibazo cyo shakisha</p>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    this.searchCertificates(query);
+                });
+            }
+
+            async searchCertificates(query) {
+                try {
+                    // Simulate API call - replace with actual Firebase search
+                    const results = await this.mockSearchCertificates(query);
+                    this.displaySearchResults(results);
+                } catch (error) {
+                    console.error('Error searching certificates:', error);
+                    this.displaySearchResults([]);
+                }
+            }
+
+            async mockSearchCertificates(query) {
+                // Mock data - replace with actual Firebase query
+                const mockCertificates = [
+                    {
+                        id: 'MB-2024-001',
+                        name: 'JEAN PAUL',
+                        course: 'Mobile Basics',
+                        score: '85%',
+                        date: '2024-01-15',
+                        verified: true
+                    },
+                    {
+                        id: 'MB-2024-002', 
+                        name: 'MARIE CLAIRE',
+                        course: 'Mobile Basics',
+                        score: '92%',
+                        date: '2024-01-16',
+                        verified: true
+                    },
+                    {
+                        id: 'MB-2024-003',
+                        name: 'ERIC MUGISHA',
+                        course: 'Mobile Basics', 
+                        score: '78%',
+                        date: '2024-01-17',
+                        verified: true
+                    }
+                ];
+
+                return mockCertificates.filter(cert => 
+                    cert.name.toLowerCase().includes(query) || 
+                    cert.id.toLowerCase().includes(query)
+                );
+            }
+
+            displaySearchResults(results) {
+                const container = document.getElementById('search-results');
+                
+                if (results.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-8 text-gray-500">
+                            <div class="text-4xl mb-4">😔</div>
+                            <p>Nta cyangombwa cyabonetse. Gerageza indi shakisha.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = results.map(cert => `
+                    <div class="certificate-card bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900">${cert.name}</h3>
+                                <p class="text-gray-600 text-sm">${cert.course}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-1 rounded">${cert.score}</span>
+                                <p class="text-gray-500 text-sm mt-1">${cert.date}</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-500 font-mono">${cert.id}</span>
+                            <button onclick="viewCertificate('${cert.id}')" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition-colors">
+                                Reba Icyangombwa
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            loadUserCertificates() {
+                // Load user's certificates from localStorage or Firebase
+                const userCertificates = JSON.parse(localStorage.getItem('user-certificates') || '[]');
+                this.displayUserCertificates(userCertificates);
+            }
+
+            displayUserCertificates(certificates) {
+                const container = document.getElementById('user-certificates');
+                
+                if (certificates.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <div class="text-6xl mb-4">📱</div>
+                            <h3 class="text-xl font-semibold text-gray-700 mb-2">Nta cyangombwa cyabonetse</h3>
+                            <p class="text-gray-500">Rangiza amasomo yose kugirango ubone icyangombwa</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = certificates.map(cert => `
+                    <div class="certificate-card bg-white rounded-lg shadow-md p-6">
+                        <div class="text-center mb-4">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="text-2xl text-green-600">🏆</span>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900">${cert.course}</h3>
+                            <p class="text-gray-600">Icyangombwa</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2">${cert.score}</div>
+                            <p class="text-gray-500 text-sm mb-4">Yakiriye: ${cert.date}</p>
+                            <a href="certificate.html?id=${cert.id}" 
+                               class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors inline-block">
+                               Reba Icyangombwa
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            setupEventListeners() {
+                // Add any additional event listeners here
+            }
+        }
+
+        // Global function to view certificate
+        function viewCertificate(certificateId) {
+            window.location.href = `certificate.html?id=${certificateId}`;
+        }
+
+        // Initialize the manager
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load components
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load header:', err));
+
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load footer:', err));
+
+            // Initialize Mobile Basics Manager
+            window.mobileBasicsManager = new MobileBasicsManager();
+        });
+    </script>
+</body>
+</html>

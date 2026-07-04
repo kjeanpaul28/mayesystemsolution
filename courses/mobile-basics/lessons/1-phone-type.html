@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ubwoko bwa Telefone - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../../css/tailwind.css">
+    <style>
+        .lesson-content img {
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .lesson-content img:hover {
+            transform: scale(1.02);
+        }
+        .phone-category {
+            border-left: 4px solid #3b82f6;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transition: all 0.3s ease;
+        }
+        .phone-category:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .comparison-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .comparison-table th {
+            background: #1e40af;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        .glossary-term {
+            border-left: 3px solid #10b981;
+            background: #f0fdf4;
+            transition: all 0.3s ease;
+        }
+        .glossary-term:hover {
+            background: #dcfce7;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+                <a href="../../index.html" class="hover:text-green-600 transition-colors">📚 Amasomo</a>
+                <span class="text-gray-400">›</span>
+                <a href="../index.html" class="hover:text-green-600 transition-colors">📱 Mobile Basics</a>
+                <span class="text-gray-400">›</span>
+                <span class="text-green-600 font-medium">Ubwoko bwa Telefone</span>
+            </nav>
+
+            <!-- Lesson Header -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-xl">📱</span>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900">Ubwoko bwa Telefone</h1>
+                                <p class="text-gray-600 mt-1">Menya ubwoko butandukanye bwa telefone n'ubushobozi bwabyo</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-6 text-sm text-gray-500">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                25 min
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                </svg>
+                                5 Ibibazo
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+                                </svg>
+                                Beginner
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Completion Check -->
+                    <button id="complete-lesson" class="completion-check flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div id="lesson-progress" class="bg-blue-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Lesson Content -->
+            <div class="lesson-content space-y-8">
+                <!-- Introduction Section -->
+                <section id="introduction" class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-3">1</span>
+                        Intangiriro
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                                <strong class="text-blue-600">Telefone</strong> ni igikoresho cy'itumanaho kigenewe:
+                            </p>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span><strong>Guhamagara</strong> - Kuvugana n'abandi</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span><strong>Kohereza ubutumwa</strong> - SMS na messaging apps</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span><strong>Kwinjira kuri internet</strong> - Gushakisha amakuru</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="flex justify-center">
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/mobile-phone-images.webp" 
+                                alt="Ubwoko butandukanye bwa telefone"
+                                class="w-full max-w-sm h-auto rounded-lg"
+                                onerror="this.src='https://via.placeholder.com/400x300?text=Phone+Types'"
+                            >
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Phone Categories Section -->
+                <section id="categories" class="space-y-6">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-3">2</span>
+                        Ubwoko bwa Telefone
+                    </h2>
+
+                    <!-- Feature Phones -->
+                    <div class="phone-category p-6 rounded-lg">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                    <span class="text-xl">📞</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900">A. Feature Phones (Izikoresha ibikorwa by'ibanze)</h3>
+                                    <p class="text-gray-600">Telefoni zoroheje zikoreshwa mu bikorwa by'ibanze</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-green-800 mb-3">🔧 Ibikorwa:</h4>
+                                <ul class="space-y-2 text-green-700">
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Guhamagara
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Kohereza SMS
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        FM Radio
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Flashlight
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-green-800 mb-3">🎯 Ibiranga:</h4>
+                                <ul class="space-y-2 text-green-700">
+                                    <li>• Buto zisanzwe (Keypad)</li>
+                                    <li>• Network: 2G cyangwa 3G</li>
+                                    <li>• Camera itari hejuru</li>
+                                    <li>• Ububiko buke (16MB – 64MB RAM)</li>
+                                    <li>• Zihenze gake</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smartphones -->
+                    <div class="phone-category p-6 rounded-lg">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <span class="text-xl">📱</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900">B. Smartphones (Telefone zigezweho)</h3>
+                                    <p class="text-gray-600">Telefoni zifite ubushobozi bwo gutunganya apps n'ibikorwa byinshi</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-blue-800 mb-3">🚀 Ubushobozi:</h4>
+                                <ul class="space-y-2 text-blue-700">
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Gutunganya apps (Android, iOS)
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Internet (3G/4G/5G, Wi-Fi)
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Camera nziza
+                                    </li>
+                                    <li class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Touchscreen
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-blue-800 mb-3">💫 Ibiranga:</h4>
+                                <ul class="space-y-2 text-blue-700">
+                                    <li>• OS: Android cyangwa iOS</li>
+                                    <li>• RAM: 2GB–16GB</li>
+                                    <li>• Ububiko: 32GB–1TB</li>
+                                    <li>• Camera nziza (AI-Based)</li>
+                                    <li>• Touchscreen yose</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Phone Types -->
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <!-- Basic Phones -->
+                        <div class="phone-category p-4 rounded-lg">
+                            <div class="text-center mb-3">
+                                <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">📟</span>
+                                </div>
+                                <h4 class="font-semibold text-yellow-800">C. Basic Phones</h4>
+                            </div>
+                            <p class="text-sm text-yellow-700 text-center">
+                                Zigerwa hagati ya feature phones na smartphone. Zishobora kugira internet (2G/3G) na browser nkeya.
+                            </p>
+                        </div>
+
+                        <!-- Satellite Phones -->
+                        <div class="phone-category p-4 rounded-lg">
+                            <div class="text-center mb-3">
+                                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">🛰️</span>
+                                </div>
+                                <h4 class="font-semibold text-purple-800">D. Satellite Phones</h4>
+                            </div>
+                            <p class="text-sm text-purple-700 text-center">
+                                Iyo aho uri nta network ya Telecom ihari. Bihuza na Satellite iri mu kirere.
+                            </p>
+                        </div>
+
+                        <!-- VoIP Phones -->
+                        <div class="phone-category p-4 rounded-lg">
+                            <div class="text-center mb-3">
+                                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <span class="text-2xl">🌐</span>
+                                </div>
+                                <h4 class="font-semibold text-red-800">E. VoIP Phones</h4>
+                            </div>
+                            <p class="text-sm text-red-700 text-center">
+                                Zikoresha Internet aho gukoresha network isanzwe. Urugero: Teleconference phones.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Comparison Table -->
+                <section id="comparison" class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mr-3">3</span>
+                        Isesengura ry'Ubwoko
+                    </h2>
+
+                    <div class="comparison-table">
+                        <table class="w-full">
+                            <thead>
+                                <tr>
+                                    <th>Icyiciro</th>
+                                    <th>Feature Phone</th>
+                                    <th>Smartphone</th>
+                                    <th>Satellite Phone</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Network</strong></td>
+                                    <td>2G/3G</td>
+                                    <td>3G/4G/5G</td>
+                                    <td>Satellite</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Screen</strong></td>
+                                    <td>Ntoya – keypad</td>
+                                    <td>Touchscreen</td>
+                                    <td>Ntoya</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Apps</strong></td>
+                                    <td>Ntoya cyane</td>
+                                    <td>Ninshi</td>
+                                    <td>Nkeya</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Battery</strong></td>
+                                    <td>Iramba cyane</td>
+                                    <td>Igihe gito</td>
+                                    <td>Iramba</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Price</strong></td>
+                                    <td>Irahendukira</td>
+                                    <td>Irahenda</td>
+                                    <td>Ihenze cyane</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Images Section -->
+                <section id="images" class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mr-3">4</span>
+                        Ishusho y'Ubwoko
+                    </h2>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/mobilephones.jpg" 
+                                alt="Feature phones na smartphones"
+                                class="w-full h-48 object-cover rounded-lg mb-3"
+                                onerror="this.src='https://via.placeholder.com/300x200?text=Feature+Phones'"
+                            >
+                            <p class="text-sm text-gray-600">Feature phones na smartphones</p>
+                        </div>
+                        <div class="text-center">
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/Different-cellular-phones-positioned-according-to-Style-and-Technology.png" 
+                                alt="Ubwoko butandukanye bwa telefone"
+                                class="w-full h-48 object-cover rounded-lg mb-3"
+                                onerror="this.src='https://via.placeholder.com/300x200?text=Phone+Types'"
+                            >
+                            <p class="text-sm text-gray-600">Ubwoko butandukanye bwa telefone</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-48 bg-gradient-to-br from-blue-400 to-purple-500 rounded-lg flex items-center justify-center mb-3">
+                                <span class="text-white text-4xl">📞→📱</span>
+                            </div>
+                            <p class="text-sm text-gray-600">Imikurire ya telefone</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Glossary Section -->
+                <section id="glossary" class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mr-3">5</span>
+                        Inyito (Glossary)
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="glossary-term p-4 rounded-lg">
+                            <h4 class="font-semibold text-orange-800 mb-2">Touchscreen</h4>
+                            <p class="text-orange-700 text-sm">Screen ukoraho kugira ngo ikore (ukanda, ugukurura)</p>
+                        </div>
+                        <div class="glossary-term p-4 rounded-lg">
+                            <h4 class="font-semibold text-orange-800 mb-2">Keypad</h4>
+                            <p class="text-orange-700 text-sm">Buto za nimero ku feature phone</p>
+                        </div>
+                        <div class="glossary-term p-4 rounded-lg">
+                            <h4 class="font-semibold text-orange-800 mb-2">Operating System (OS)</h4>
+                            <p class="text-orange-700 text-sm">Porogaramu ituma telefone ikora (Android/iOS)</p>
+                        </div>
+                        <div class="glossary-term p-4 rounded-lg">
+                            <h4 class="font-semibold text-orange-800 mb-2">Network Generation</h4>
+                            <p class="text-orange-700 text-sm">Umuvuduko wa internet na network (2G/3G/4G/5G)</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Learning Objectives -->
+                <section id="objectives" class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center mr-3">6</span>
+                        Intego zo Kwiga
+                    </h2>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold text-teal-800 mb-4">🎯 Nyuma y'iki gice uzaba ushobora:</h4>
+                            <ul class="space-y-3 text-teal-700">
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-teal-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span>Gutandukanya ubwoko bwa telefone</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-teal-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span>Kumva uburyo smartphone irusha feature phone ubushobozi</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <svg class="w-5 h-5 text-teal-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span>Gusesengura network generation (2G–5G)</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-teal-800 mb-4">💡 Ingero mu Buzima:</h4>
+                            <ul class="space-y-3 text-teal-700">
+                                <li>• Umujura w'ubucuruzi yakoresha feature phone kubera battery iramba</li>
+                                <li>• Umunyeshuri yifashisha smartphone mu kwiga</li>
+                                <li>• Abashakashatsi mu misozi bakoresha satellite phones</li>
+                                <li>• Call-center agents bakoresha VoIP phones</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Mini-Quiz -->
+                <section id="quiz" class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center mr-3">7</span>
+                        Gereranya Ubumenyi Bwawe
+                    </h2>
+
+                    <div class="space-y-4">
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">1. Ni iyihe telefoni ikoreshwa mu bice bidafite network?</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz1" value="a" class="text-blue-600">
+                                    <span>A) Smartphone</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz1" value="b" class="text-blue-600">
+                                    <span>B) Feature phone</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz1" value="c" class="text-blue-600">
+                                    <span>C) Satellite phone</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz1" value="d" class="text-blue-600">
+                                    <span>D) IP phone</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">2. Ni iki kiranga smartphone?</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz2" value="a" class="text-blue-600">
+                                    <span>A) Keypad gusa</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz2" value="b" class="text-blue-600">
+                                    <span>B) Touchscreen na OS</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz2" value="c" class="text-blue-600">
+                                    <span>C) FM Radio gusa</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz2" value="d" class="text-blue-600">
+                                    <span>D) Nta internet igira</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">3. Ni iyihe telefoni ibika apps nyinshi?</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz3" value="a" class="text-blue-600">
+                                    <span>A) Feature phone</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz3" value="b" class="text-blue-600">
+                                    <span>B) Smartphone</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz3" value="c" class="text-blue-600">
+                                    <span>C) IP phone</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz3" value="d" class="text-blue-600">
+                                    <span>D) Satellite phone</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">4. 2G bivuga iki?</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz4" value="a" class="text-blue-600">
+                                    <span>A) Generation ya kabiri ya network</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz4" value="b" class="text-blue-600">
+                                    <span>B) Generation ya gatanu</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz4" value="c" class="text-blue-600">
+                                    <span>C) VoIP</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz4" value="d" class="text-blue-600">
+                                    <span>D) GPS system</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">5. Ukoresha VoIP phone akenera iki?</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz5" value="a" class="text-blue-600">
+                                    <span>A) Amashanyarazi menshi</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz5" value="b" class="text-blue-600">
+                                    <span>B) Sim card</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz5" value="c" class="text-blue-600">
+                                    <span>C) Internet (Wi-Fi/Ethernet)</span>
+                                </label>
+                                <label class="flex items-center space-x-3">
+                                    <input type="radio" name="quiz5" value="d" class="text-blue-600">
+                                    <span>D) Flash Disk</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="check-quiz" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        🔍 Reba Impinduro
+                    </button>
+
+                    <div id="quiz-result" class="mt-4 hidden p-4 rounded-lg"></div>
+                </section>
+
+                <!-- Summary -->
+                <section id="summary" class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
+                    <h2 class="text-2xl font-bold mb-4 flex items-center">
+                        <span class="w-8 h-8 bg-white text-blue-600 rounded-full flex items-center justify-center mr-3">📝</span>
+                        Aho Twahuje
+                    </h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-3">📞 Ubwoko bwa Telefone:</h4>
+                            <ul class="space-y-2 text-blue-100">
+                                <li>• Feature Phones - Ibikorwa by'ibanze</li>
+                                <li>• Smartphones - Ubushobozi bukomeye</li>
+                                <li>• Basic Phones - Hagati ya feature na smartphone</li>
+                                <li>• Satellite Phones - Nta network ihari</li>
+                                <li>• VoIP Phones - Internet aho sim card</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-3">🎯 Ibisubizo:</h4>
+                            <ul class="space-y-2 text-blue-100">
+                                <li>• Smartphones zifite OS na Touchscreen</li>
+                                <li>• Feature phones ziramba ku mashanyarazi</li>
+                                <li>• Satellite phones zikoresha amashusho</li>
+                                <li>• IP phones zikoresha internet</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+                <a href="../index.html" class="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Subira ku Ngingo</span>
+                </a>
+                
+                <a href="2-smartphone-features.html" class="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <span>Genda ku Gice Gikurikira: Imirongo ya Smartphone</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        // Load components
+        fetch('../../../components/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load header:', err));
+
+        fetch('../../../components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load footer:', err));
+
+        // Lesson Progress Tracking
+        class LessonProgress {
+            constructor() {
+                this.lessonId = '1-phone-types';
+                this.sections = ['introduction', 'categories', 'comparison', 'images', 'glossary', 'objectives', 'quiz', 'summary'];
+                this.completedSections = new Set();
+                this.loadProgress();
+                this.setupEventListeners();
+                this.updateProgressBar();
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem(`lesson-${this.lessonId}`);
+                if (saved) {
+                    this.completedSections = new Set(JSON.parse(saved));
+                }
+            }
+
+            saveProgress() {
+                localStorage.setItem(`lesson-${this.lessonId}`, JSON.stringify([...this.completedSections]));
+            }
+
+            markSectionComplete(section) {
+                this.completedSections.add(section);
+                this.saveProgress();
+                this.updateProgressBar();
+                
+                if (this.completedSections.size === this.sections.length) {
+                    this.enableLessonCompletion();
+                }
+            }
+
+            updateProgressBar() {
+                const progress = (this.completedSections.size / this.sections.length) * 100;
+                const progressBar = document.getElementById('lesson-progress');
+                if (progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                }
+            }
+
+            enableLessonCompletion() {
+                const completeButton = document.getElementById('complete-lesson');
+                if (completeButton) {
+                    completeButton.classList.remove('bg-gray-200', 'text-gray-700');
+                    completeButton.classList.add('bg-blue-600', 'hover:bg-blue-700', 'text-white');
+                    completeButton.innerHTML = `
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    `;
+                }
+            }
+
+            setupEventListeners() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const section = entry.target.id;
+                            if (section && this.sections.includes(section)) {
+                                this.markSectionComplete(section);
+                            }
+                        }
+                    });
+                }, { threshold: 0.6 });
+
+                this.sections.forEach(section => {
+                    const element = document.getElementById(section);
+                    if (element) {
+                        observer.observe(element);
+                    }
+                });
+
+                // Quiz checker
+                document.getElementById('check-quiz')?.addEventListener('click', () => {
+                    this.checkQuiz();
+                });
+
+                // Lesson completion
+                document.getElementById('complete-lesson')?.addEventListener('click', () => {
+                    this.completeLesson();
+                });
+            }
+
+            checkQuiz() {
+                const answers = {
+                    quiz1: 'c',
+                    quiz2: 'b',
+                    quiz3: 'b',
+                    quiz4: 'a',
+                    quiz5: 'c'
+                };
+
+                let correct = 0;
+                let total = 0;
+
+                for (const [question, correctAnswer] of Object.entries(answers)) {
+                    const selected = document.querySelector(`input[name="${question}"]:checked`);
+                    if (selected) {
+                        total++;
+                        if (selected.value === correctAnswer) {
+                            correct++;
+                            selected.parentElement.classList.add('text-green-600', 'font-semibold');
+                        } else {
+                            selected.parentElement.classList.add('text-red-600');
+                        }
+                    }
+                }
+
+                const resultDiv = document.getElementById('quiz-result');
+                if (resultDiv) {
+                    resultDiv.className = `mt-4 p-4 rounded-lg ${correct === total ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`;
+                    resultDiv.innerHTML = `
+                        <strong>Igisubizo:</strong> 
+                        ${correct} ku ${total} byakuwe neza! 
+                        ${correct === total ? '🎉 Wakoze neza! Urashobora gukomeza.' : '💪 Subira usuzume ibyo wize.'}
+                    `;
+                    resultDiv.classList.remove('hidden');
+                }
+
+                if (correct === total) {
+                    this.markSectionComplete('quiz');
+                }
+            }
+
+            completeLesson() {
+                if (this.completedSections.size === this.sections.length) {
+                    const courseProgress = JSON.parse(localStorage.getItem('progress-mobile-basics') || '[]');
+                    const lessonIndex = courseProgress.findIndex(l => l.id === '1');
+                    if (lessonIndex !== -1 && !courseProgress[lessonIndex].completed) {
+                        courseProgress[lessonIndex].completed = true;
+                        localStorage.setItem('progress-mobile-basics', JSON.stringify(courseProgress));
+                    }
+
+                    const completeButton = document.getElementById('complete-lesson');
+                    if (completeButton) {
+                        completeButton.classList.add('bg-blue-700');
+                        completeButton.innerHTML = `
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Warangije! 🎉</span>
+                        `;
+                        completeButton.disabled = true;
+                    }
+
+                    alert('🎉 Warangije neza iki gice! Urashobora gukomeza ku gice gikurikira.');
+                } else {
+                    alert('⚠️ Ntugomba kurangiza ibice byose mbere yo kwemeza kurangiza.');
+                }
+            }
+        }
+
+        // Initialize lesson progress
+        document.addEventListener('DOMContentLoaded', () => {
+            window.lessonProgress = new LessonProgress();
+        });
+    </script>
+</body>
+</html>

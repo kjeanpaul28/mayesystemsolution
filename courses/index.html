@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amasomo - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../css/tailwind.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .courses-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .back-to-elearning {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .back-to-elearning:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .course-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: center;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .course-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .course-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .course-card p {
+            color: #7f8c8d;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .course-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .btn-start-learning {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .btn-start-learning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .progress-container {
+            background: #ecf0f1;
+            border-radius: 10px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .quick-action-card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .course-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .courses-container {
+                padding: 1rem;
+            }
+        }
+
+        /* Header and Footer spacing */
+        .main-content {
+            min-height: calc(100vh - 200px);
+            padding: 2rem 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Component -->
+    <div id="header"></div>
+
+    <div class="main-content">
+        <div class="courses-container">
+            <!-- Header Section -->
+            <div class="header-section">
+                <a href="../elearning.html" class="back-to-elearning">← Subira ku Masomo</a>
+                <h1>📚 Amasomo ya MAYE SYSTEMS</h1>
+                <p class="subtitle">Hitamo isomo ushaka kwiga. Tangira ubu ugere kuri intera yo kuba inzobere!</p>
+            </div>
+
+            <!-- Courses Grid -->
+            <div class="course-grid">
+                
+                <!-- Computer Basics -->
+                <div class="course-card" data-course="computer-basics">
+                    <div class="course-icon">💻</div>
+                    <h3>Computer Basics</h3>
+                    <p>Menya uko ukoresha mudasobwa: hardware, software, internet, n'uburyo bwo kwirinda virus.</p>
+                    
+                    <div class="course-stats">
+                        <div class="stat">
+                            <span class="stat-number">4</span>
+                            <span>Ibigize</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">30min</span>
+                            <span>Igihe</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">★4.8</span>
+                            <span>Icyiza</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-computer" style="width: 0%;"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-computer">0% (Uratangira)</span>
+                    
+                    <button class="btn-start-learning" onclick="startCourse('computer-basics')">
+                        Tangira Kwiga
+                    </button>
+                </div>
+
+                <!-- Mobile Basics -->
+                <div class="course-card" data-course="mobile-basics">
+                    <div class="course-icon">📱</div>
+                    <h3>Mobile Basics</h3>
+                    <p>Menya uko ukoresha telephone: features, apps, security, n'uburyo bwo gukora telephone.</p>
+                    
+                    <div class="course-stats">
+                        <div class="stat">
+                            <span class="stat-number">5</span>
+                            <span>Ibigize</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">45min</span>
+                            <span>Igihe</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">★4.7</span>
+                            <span>Icyiza</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-mobile" style="width: 0%;"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-mobile">0% (Uratangira)</span>
+                    
+                    <button class="btn-start-learning" onclick="startCourse('mobile-basics')">
+                        Tangira Kwiga
+                    </button>
+                </div>
+
+                <!-- Secret Codes -->
+                <div class="course-card" data-course="secret-codes">
+                    <div class="course-icon">🔐</div>
+                    <h3>Code z'Telephone</h3>
+                    <p>Menya code z'ingenzi zo gukora telephone, troubleshooting, n'uburyo bwo gusana ibibazo.</p>
+                    
+                    <div class="course-stats">
+                        <div class="stat">
+                            <span class="stat-number">4</span>
+                            <span>Ibigize</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">25min</span>
+                            <span>Igihe</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">★4.9</span>
+                            <span>Icyiza</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-codes" style="width: 0%;"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-codes">0% (Uratangira)</span>
+                    
+                    <button class="btn-start-learning" onclick="startCourse('secret-codes')">
+                        Tangira Kwiga
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="quick-action-card" onclick="goToElearning()">
+                    <h4>📊 Reba Ibindi Bisomo</h4>
+                    <p>Subira kuri list y'amasomo yose</p>
+                </div>
+                
+                <div class="quick-action-card" onclick="viewProgress()">
+                    <h4>📈 Ibikubiye</h4>
+                    <p>Reba imibereho yawe yo kwiga</p>
+                </div>
+                
+                <div class="quick-action-card" onclick="viewCertificates()">
+                    <h4>🏆 Icyangombwa</h4>
+                    <p>Reba ibyangombwa byo kurangiza</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Component -->
+    <div id="footer"></div>
+
+    <script>
+        // Load Header and Footer Components
+        function loadComponents() {
+            // Load Header
+            fetch('../components/header.html')
+                .then(response => {
+                    if (!response.ok) throw new Error('Header not found');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading header:', error);
+                    document.getElementById('header').innerHTML = `
+                        <header style="background: #2c3e50; color: white; padding: 1rem; text-align: center;">
+                            <h1 style="margin: 0;">📚 MAYE SYSTEMS - Amasomo</h1>
+                            <nav style="margin-top: 1rem;">
+                                <a href="../index.html" style="color: white; margin: 0 1rem; text-decoration: none;">Ahabanza</a>
+                                <a href="../elearning.html" style="color: white; margin: 0 1rem; text-decoration: none;">Amasomo</a>
+                                <a href="../about.html" style="color: white; margin: 0 1rem; text-decoration: none;">Ibyerekeye</a>
+                            </nav>
+                        </header>
+                    `;
+                });
+
+            // Load Footer
+            fetch('../components/footer.html')
+                .then(response => {
+                    if (!response.ok) throw new Error('Footer not found');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading footer:', error);
+                    document.getElementById('footer').innerHTML = `
+                        <footer style="background: #34495e; color: white; padding: 2rem; text-align: center; margin-top: 2rem;">
+                            <div style="max-width: 1200px; margin: 0 auto;">
+                                <p>© 2024 MAYE SYSTEMS. Ibyose bifite uburenganzira.</p>
+                                <p style="margin-top: 1rem; font-size: 0.9rem; color: #bdc3c7;">
+                                    📞 +250 784 067 694 | ✉️ kjeanpaul28@gmail.com
+                                </p>
+                            </div>
+                        </footer>
+                    `;
+                });
+        }
+
+        // Course navigation functions
+        function startCourse(courseName) {
+            // Show loading state
+            const button = event?.target;
+            if (button) {
+                const originalText = button.textContent;
+                button.textContent = 'Gutangira...';
+                button.disabled = true;
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.disabled = false;
+                    window.location.href = `${courseName}/index.html`;
+                }, 800);
+            } else {
+                window.location.href = `${courseName}/index.html`;
+            }
+        }
+
+        function goToElearning() {
+            window.location.href = '../elearning.html';
+        }
+
+        function viewProgress() {
+            alert('📊 Feature yo kureba imikurire izaza mu gihe gito!');
+            // window.location.href = '../system/progress.html';
+        }
+
+        function viewCertificates() {
+            alert('🏆 Feature yo kureba ibyangombwa izaza mu gihe gito!');
+            // window.location.href = '../system/certificates.html';
+        }
+
+        // Load progress from localStorage
+        function loadActualProgress() {
+            const courses = [
+                { id: 'computer', name: 'computer-basics', progressBar: 'progress-computer', text: 'progress-text-computer' },
+                { id: 'mobile', name: 'mobile-basics', progressBar: 'progress-mobile', text: 'progress-text-mobile' },
+                { id: 'codes', name: 'secret-codes', progressBar: 'progress-codes', text: 'progress-text-codes' }
+            ];
+            
+            courses.forEach(course => {
+                const progress = localStorage.getItem(`${course.name}-progress`) || 0;
+                const progressBar = document.getElementById(course.progressBar);
+                const progressText = document.getElementById(course.text);
+                
+                if (progressBar && progressText) {
+                    // Animate progress bar
+                    setTimeout(() => {
+                        progressBar.style.width = `${progress}%`;
+                    }, 500);
+                    
+                    // Update progress text
+                    if (progress == 0) {
+                        progressText.textContent = '0% (Uratangira)';
+                    } else if (progress == 100) {
+                        progressText.textContent = '100% (Warasoje)';
+                        // Update button text if course is completed
+                        const button = progressBar.closest('.course-card').querySelector('.btn-start-learning');
+                        if (button) {
+                            button.textContent = 'Reba Icyangombwa';
+                            button.onclick = function() {
+                                window.location.href = `${course.name}/certificate.html`;
+                            };
+                        }
+                    } else {
+                        progressText.textContent = `${progress}% (Hagati)`;
+                        // Update button text if course is in progress
+                        const button = progressBar.closest('.course-card').querySelector('.btn-start-learning');
+                        if (button && progress > 0) {
+                            button.textContent = 'Komeza Kwiga';
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load header and footer
+            loadComponents();
+            
+            // Load progress
+            loadActualProgress();
+
+            // Make course cards clickable
+            document.querySelectorAll('.course-card').forEach(card => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on button
+                    if (!e.target.closest('.btn-start-learning')) {
+                        const courseName = this.dataset.course;
+                        startCourse(courseName);
+                    }
+                });
+            });
+
+            // Animate progress bars on load
+            const progressBars = document.querySelectorAll('.progress-bar');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                window.location.href = '../elearning.html';
+            }
+            
+            // Number keys for quick course selection
+            if (e.key >= '1' && e.key <= '3') {
+                const courses = ['computer-basics', 'mobile-basics', 'secret-codes'];
+                const courseIndex = parseInt(e.key) - 1;
+                if (courses[courseIndex]) {
+                    startCourse(courses[courseIndex]);
+                }
+            }
+        });
+
+        // Enhanced course tracking
+        function trackCourseView(courseName) {
+            const courseStats = JSON.parse(localStorage.getItem('courseStats') || '{}');
+            if (!courseStats[courseName]) {
+                courseStats[courseName] = { views: 0, lastViewed: null };
+            }
+            courseStats[courseName].views++;
+            courseStats[courseName].lastViewed = new Date().toISOString();
+            localStorage.setItem('courseStats', JSON.stringify(courseStats));
+        }
+    </script>
+</body>
+</html>

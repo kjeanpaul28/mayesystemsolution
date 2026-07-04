@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Learning - MAYE SYSTEMS</title>
+    <meta name="description" content="Amasomo ya Online E-Learning ya MAYE SYSTEMS mu kumenya ibya Business, IT, na Digital Marketing. Tangira kwiga uyu munsi!">
+    
+    <!-- Firebase SDK - Optional for offline functionality -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        /* Fresh Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .elearning-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Connection Status */
+        #connectionStatus {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+            background: #4CAF50;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* User Profile Section */
+        .user-profile-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .user-details h3 {
+            color: #2c3e50;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+
+        /* Featured Course */
+        .featured-course {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .featured-course h2 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .featured-course p {
+            color: #7f8c8d;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Search & Filter */
+        .search-filter-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        #topic-search, #category-filter {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Topics Grid */
+        .topics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .topic-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .topic-icon {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .topic-icon img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #667eea;
+        }
+
+        .topic-card h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .topic-card p {
+            color: #7f8c8d;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Progress */
+        .progress-container {
+            background: #ecf0f1;
+            border-radius: 10px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        /* Certificate Badge */
+        .certificate-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #FFD700, #FFA000);
+            color: #333;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+        }
+
+        /* Buttons */
+        .btn-primary, .start-learning {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .start-learning {
+            width: 100%;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .start-learning.completed {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .start-learning.driving-test {
+            background: linear-gradient(135deg, #f37121, #e4405f);
+        }
+
+        .btn-primary:hover, .start-learning:hover:not(.completed) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ecf0f1;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .topics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-filter-section {
+                flex-direction: column;
+            }
+            
+            .modal-content {
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+
+            .user-profile-section {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .user-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status -->
+    <div id="connectionStatus">
+        <span id="statusText">✅ Local Storage Mode - Ready</span>
+    </div>
+
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="elearning-container">
+        <h1>📚 Amasomo yo Kwiga kuri Interineti</h1>
+        
+        <!-- User Profile Section -->
+        <div class="user-profile-section" id="userProfileSection" style="display: none;">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <h3 id="userName">Umukoresha</h3>
+                    <p id="userEmail">email@example.com</p>
+                </div>
+            </div>
+            <div class="user-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="completedCourses">0</div>
+                    <div class="stat-label">Yarasojwe</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="certificatesCount">0</div>
+                    <div class="stat-label">Icyangombwa</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="progressPercentage">0%</div>
+                    <div class="stat-label">Imikurire</div>
+                </div>
+            </div>
+        </div>
+        
+        <section class="featured-course">
+            <h2>⭐ Isomo Rigezweho Kuri Ubu: Computer Basics</h2>
+            <p>Menya uko ukoresha mudasobwa, software, na internet mu buzima bw'umunsi. <strong>Amaze kwiga: 2,500+</strong></p>
+            <button class="btn-primary" onclick="openRegistrationModal('itbasics')">Iyandikishe Ubu</button>
+        </section>
+
+        <div class="search-filter-section">
+            <input type="text" id="topic-search" placeholder="Shakisha amasomo...">
+            <select id="category-filter">
+                <option value="all">Ibyiciro byose</option>
+                <option value="business">Ubucuruzi</option>
+                <option value="tech">Ikoranabuhanga</option>
+                <option value="driving">Amategeko</option>
+            </select>
+        </div>
+        
+        <div class="topics-grid">
+            
+            <div class="topic-card" data-topic="finance" data-category="business">
+                <div class="topic-icon">
+                    <img src="https://ik.imagekit.io/73qho7kh9/Screenshot_20251121-030355.jpg" alt="Icon y'imari" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiM2NjdlZWEiLz4KPHN2ZyB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMTMuNDUgNi41NUwxOC40MSA0LjcyTDE3LjI5IDkuNUwyMS41NSAxMC40NEwxNy4yOSAxMS4zOUwxOC40MSAxNi4yN0wxMy40NSAxNC40NEwxMiAxOUwxMC41NSAxNC40NEw1LjU5IDE2LjI3TDYuNzEgMTEuMzlMMi40NSAxMC40NEw2LjcxIDkuNUw1LjU5IDQuNzJMMTAuNTUgNi41NVoiLz48L3N2Zz4KPC9zdmc+'">
+                </div>
+                <h3>💰 Business Financial Literacy</h3>
+                <p>Ubumenyi mu micungire y'imari z'ubucuruzi ni ubushobozi bwo kumenya no gusesengura amafaranga yinjira n'asohoka, gukora ingengo y'imari, gucunga cashflow, no gufata ibyemezo bishingiye ku mibare. Tukwigisha no gukoresha ibikoresho by'ikoranabuhanga (website, apk...).</p>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <span class="progress-text">0% (Uratangira)</span>
+                <button class="start-learning" onclick="openRegistrationModal('finance')">Tangira Kwiga</button>
+            </div>
+            
+            <div class="topic-card" data-topic="itbasics" data-category="tech">
+                <div class="certificate-badge" id="computerBasicsBadge" style="display: none;">🎓 Icyangombwa</div>
+                <div class="topic-icon">
+                    <img src="https://ik.imagekit.io/73qho7kh9/large_uYTPNtvOBs1OsBCQZH0y85o_Q5B4teoUdMS9m19gFDQ.jpg" alt="Icon y'ikoranabuhanga" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNGRjk4MDAiLz4KPHN2ZyB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTQgNkgxVjRIM1YxSDRWNFY2Wk0yMCA2VjRIMjFWNkgyMFpNMTcgNEgxNVY2SDE3VjRaTTggNEg2VjZIOFY0Wk00IDE4SDNWMjBINFYxOFpNMjEgMThIMjBWMjBIMjFWMThaTTE3IDIwSDE1VjE4SDE3VjIwWk04IDIwSDZWMThIOFYyMFpNMTIgMkgxNFYyMkgxMlYyWk0yIDEwSDIyVjE0SDJWMTBaIi8+PC9zdmc+Cjwvc3ZnPg=='">
+                </div>
+                <h3>💻 Computer Basics</h3>
+                <p>Menya uko ukoresha mudasobwa na telephone n'uburyo bwo kwirinda ibibazo bya virus. Isomo rikubiyemo Hardware, Software, Internet, n'ibindi.</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="computerBasicsProgress" style="width: 0%;"></div>
+                </div>
+                <span class="progress-text" id="computerBasicsText">0% (Uratangira)</span>
+                <button class="start-learning" id="computerBasicsBtn" onclick="openRegistrationModal('itbasics')">Tangira Kwiga</button>
+            </div>
+            
+            <div class="topic-card" data-topic="marketing" data-category="business">
+                <div class="topic-icon">
+                    <img src="https://ik.imagekit.io/73qho7kh9/1763698399314.jpg" alt="Icon ya Digital Marketing" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNlNzRjM2UiLz4KPHN2ZyB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTMgM0gyMVYxMUExIDEgMCAwIDAgMjAgMTJIMTNBMSAxIDAgMCAwIDEyIDExVjEySDlWMTFBNCA0IDAgMCAxIDUgN0g0QTQgNCAwIDAgMSAwIDExVjIwQTEgMSAwIDAgMCAxIDIxSDIzQTEgMSAwIDAgMCAyNCAyMFYxMUE0IDQgMCAwIDEgMjAgN0gxOUE0IDQgMCAwIDEgMTUgM1pNMiAxMVYxMEEyIDIgMCAwIDEgNCA4SDVBMiAyIDAgMCAxIDcgMTBWMTRIMkwxMSAxMEgxMlYxN0gxMFYxNkg4VjE4SDZWMThINFYxNkgyVjExWk0yMiAyMEgyVjE4SDIyVjIwWk0xOCAxMEEyIDIgMCAwIDEgMjAgOEgyMUEyIDIgMCAwIDEgMjMgMTBWMThIMThWMTRIMjBWMTJIMThWMTBaTTkgMTZIMTJWMTRIOVYxNloiLz48L3N2Zz4KPC9zdmc+'">
+                </div>
+                <h3>📈 Digital Marketing</h3>
+                <p>Menya uko koresha interineti mu gukwiraza abacuruzi n'ibicuruzwa byawe mu buryo bwa kijyambere.</p>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <span class="progress-text">100% (Warasoje)</span>
+                <button class="start-learning completed" disabled>Warasoje</button>
+            </div>
+
+            <div class="topic-card" data-topic="traffic-law" data-category="driving">
+                <div class="certificate-badge" id="drivingTestBadge" style="display: none;">🎓 Icyangombwa</div>
+                <div class="topic-icon">
+                    <img src="https://ik.imagekit.io/73qho7kh9/20251120_001516.png?updatedAt=1763590539091" alt="Icon y'Amategeko y'Umuhanda" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iNDAiIGN5PSI0MCIgcj0iNDAiIGZpbGw9IiNmMzcxMzYiLz4KPHN2ZyB4PSIyMCIgeT0iMjAiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgZmlsbD0id2hpdGUiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIDJMMTMuNDUgNi41NUwxOC40MSA0LjcyTDE3LjI5IDkuNUwyMS41NSAxMC40NEwxNy4yOSAxMS4zOUwxOC40MSAxNi4yN0wxMy40NSAxNC40NEwxMiAxOUwxMC41NSAxNC40NEw1LjU5IDE2LjI3TDYuNzEgMTEuMzlMMi40NSAxMC40NEw2LjcxIDkuNUw1LjU5IDQuNzJMMTAuNTUgNi41NVoiLz48L3N2Zz4KPC9zdmc+'">
+                </div>
+                <h3>🛑 Amategeko Y'UMUHANDA</h3>
+                <p>Urategura ikizamini cyo gutwara? Menya iby'ingenzi mu bimenyetso n'amategeko agenga umuhanda.</p>
+                <div class="progress-container">
+                    <div class="progress-bar" id="drivingTestProgress" style="width: 0%;"></div>
+                </div>
+                <span class="progress-text" id="drivingTestText">0% (Kwitoza)</span>
+                <button class="start-learning driving-test" onclick="startDrivingTest()">Tangira Kwitoza</button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔐 Iyandikishe mu Isomo</h2>
+                <button class="close-modal" onclick="closeRegistrationModal()">&times;</button>
+            </div>
+            <form id="registrationForm">
+                <input type="hidden" id="selectedCourse" name="selectedCourse">
+                
+                <div class="form-group">
+                    <label for="fullName">Amazina Yuzuye:</label>
+                    <input type="text" id="fullName" name="fullName" required placeholder="Andika amazina yawe yuzuye">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="example@email.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telephone:</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="+250 78X XXX XXX">
+                </div>
+
+                <div class="form-group">
+                    <label for="district">Akarere:</label>
+                    <input type="text" id="district" name="district" required placeholder="Akarere wawe">
+                </div>
+
+                <div class="form-group">
+                    <label for="education">Urwego rw'amashuri:</label>
+                    <select id="education" name="education" required>
+                        <option value="">Hitamo urwego</option>
+                        <option value="primary">Amashuri abanza</option>
+                        <option value="secondary">Amashuri yisumbuye</option>
+                        <option value="diploma">Diploma</option>
+                        <option value="bachelor">Bachelor</option>
+                        <option value="master">Master</option>
+                        <option value="other">Ikindí</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience">Ubunararibonye mu ikoranabuhanga:</label>
+                    <select id="experience" name="experience" required>
+                        <option value="">Hitamo ubunararibonye</option>
+                        <option value="beginner">Ntanga (Nta bushobozi)</option>
+                        <option value="intermediate">Hagati (Nshobora gukoresha computer)</option>
+                        <option value="advanced">Inzobere (Nzi gukoresha porogaramu ninshuti)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">🔐 Emeza Iyandikishe</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // === LOCAL STORAGE ONLY SOLUTION ===
+        // No Firebase - Complete offline functionality
+        
+        // === CONNECTION STATUS ===
+        function updateConnectionStatus(message, type = 'success') {
+            const statusElement = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            
+            const colors = {
+                success: '#4CAF50',
+                warning: '#ff9800',
+                error: '#f44336'
+            };
+            
+            statusElement.style.background = colors[type] || colors.success;
+            statusText.textContent = message;
+        }
+
+        // === SAFE DATA FUNCTIONS ===
+        function getUserData() {
+            try {
+                const data = localStorage.getItem('mayeUserProfile');
+                return data ? JSON.parse(data) : null;
+            } catch (error) {
+                console.log('❌ No user data found in localStorage');
+                return null;
+            }
+        }
+
+        function saveUserData(userData) {
+            try {
+                const existingData = getUserData() || {};
+                const updatedData = { ...existingData, ...userData };
+                localStorage.setItem('mayeUserProfile', JSON.stringify(updatedData));
+                console.log('✅ User data saved to localStorage');
+                return true;
+            } catch (error) {
+                console.error('❌ Error saving user data:', error);
+                return false;
+            }
+        }
+
+        function getUserProgress() {
+            try {
+                const progress = localStorage.getItem('userProgress');
+                return progress ? JSON.parse(progress) : {};
+            } catch (error) {
+                console.log('❌ No progress data found');
+                return {};
+            }
+        }
+
+        function saveUserProgress(progress) {
+            try {
+                localStorage.setItem('userProgress', JSON.stringify(progress));
+                console.log('✅ Progress saved to localStorage');
+                return true;
+            } catch (error) {
+                console.error('❌ Error saving progress:', error);
+                return false;
+            }
+        }
+
+        // === USER PROGRESS MANAGEMENT ===
+        function loadUserProgress() {
+            try {
+                const userData = getUserData();
+                if (!userData) {
+                    console.log('No user data found - Please register');
+                    updateConnectionStatus('🔐 Iyandikishe mu masomo', 'warning');
+                    return;
+                }
+
+                // Show user profile section
+                document.getElementById('userProfileSection').style.display = 'flex';
+                document.getElementById('userName').textContent = userData.fullName || 'Umukoresha';
+                document.getElementById('userEmail').textContent = userData.email || 'email@example.com';
+                
+                // Safe character extraction
+                const firstChar = userData.fullName ? 
+                    userData.fullName.charAt(0).toUpperCase() : 'U';
+                document.getElementById('userAvatar').textContent = firstChar;
+
+                // Load progress from localStorage
+                const userProgress = getUserProgress();
+                updateProgressUI(userProgress);
+                
+                updateConnectionStatus('✅ Local Storage Mode - Ready');
+
+            } catch (error) {
+                console.error('❌ Error loading user progress:', error);
+                updateConnectionStatus('❌ Error Loading Data', 'error');
+            }
+        }
+
+        function updateProgressUI(progress) {
+            try {
+                let completedCourses = 0;
+                let certificatesCount = 0;
+                let totalProgress = 0;
+                let courseCount = 0;
+
+                // Update Computer Basics progress
+                if (progress.computerBasics) {
+                    const compProgress = progress.computerBasics;
+                    const progressValue = compProgress.progress || 0;
+                    document.getElementById('computerBasicsProgress').style.width = progressValue + '%';
+                    document.getElementById('computerBasicsText').textContent = progressValue + '% Yarangiye';
+                    
+                    if (compProgress.certificate) {
+                        document.getElementById('computerBasicsBadge').style.display = 'block';
+                        certificatesCount++;
+                    }
+                    
+                    if (progressValue >= 100) completedCourses++;
+                    totalProgress += progressValue;
+                    courseCount++;
+                }
+
+                // Update Driving Test progress
+                if (progress.drivingTest) {
+                    const drivingProgress = progress.drivingTest;
+                    const progressValue = drivingProgress.progress || 0;
+                    document.getElementById('drivingTestProgress').style.width = progressValue + '%';
+                    document.getElementById('drivingTestText').textContent = progressValue + '% Yarangiye';
+                    
+                    if (drivingProgress.certificate) {
+                        document.getElementById('drivingTestBadge').style.display = 'block';
+                        certificatesCount++;
+                    }
+                    
+                    if (progressValue >= 100) completedCourses++;
+                    totalProgress += progressValue;
+                    courseCount++;
+                }
+
+                // Update Finance progress
+                if (progress.finance) {
+                    const financeProgress = progress.finance;
+                    const progressValue = financeProgress.progress || 0;
+                    const financeCard = document.querySelector('[data-topic="finance"]');
+                    if (financeCard) {
+                        const progressBar = financeCard.querySelector('.progress-bar');
+                        const progressText = financeCard.querySelector('.progress-text');
+                        progressBar.style.width = progressValue + '%';
+                        progressText.textContent = progressValue + '% Yarangiye';
+                        
+                        if (progressValue >= 100) completedCourses++;
+                        totalProgress += progressValue;
+                        courseCount++;
+                    }
+                }
+
+                // Update user stats
+                document.getElementById('completedCourses').textContent = completedCourses;
+                document.getElementById('certificatesCount').textContent = certificatesCount;
+                
+                const avgProgress = courseCount > 0 ? Math.round(totalProgress / courseCount) : 0;
+                document.getElementById('progressPercentage').textContent = avgProgress + '%';
+
+            } catch (error) {
+                console.error('❌ Error updating progress UI:', error);
+            }
+        }
+
+        // === COURSE MANAGEMENT ===
+        const courseRoutes = {
+            'finance': 'courses/finance/index.html',
+            'itbasics': 'courses/computer-basics/index.html',
+            'digital-marketing': 'courses/digital-marketing/index.html',
+            'traffic-law': 'driving-test.html'
+        };
+
+        // Special function for Driving Test (no registration required)
+        function startDrivingTest() {
+            try {
+                const button = event.target;
+                const originalText = button.textContent;
+                
+                // Show loading state
+                button.textContent = 'Gutangira...';
+                button.disabled = true;
+                
+                setTimeout(() => {
+                    window.location.href = 'driving-test.html';
+                }, 800);
+            } catch (error) {
+                console.error('Error starting driving test:', error);
+                window.location.href = 'driving-test.html';
+            }
+        }
+
+        // Course Start Function
+        function startCourse(courseId) {
+            try {
+                const courseUrl = courseRoutes[courseId];
+                
+                if (courseUrl) {
+                    // Check if user is registered (for courses other than driving test)
+                    const userData = getUserData();
+                    if (!userData && courseId !== 'traffic-law') {
+                        openRegistrationModal(courseId);
+                        return;
+                    }
+
+                    // Simulate loading
+                    const button = event?.target;
+                    if (button) {
+                        const originalText = button.textContent;
+                        button.textContent = 'Gutangira...';
+                        button.disabled = true;
+                        
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.disabled = false;
+                            window.location.href = courseUrl;
+                        }, 1000);
+                    } else {
+                        window.location.href = courseUrl;
+                    }
+                } else {
+                    alert('⚠️ Isomo rya ' + courseId + ' riracyategurwa. Mwihangane!');
+                }
+            } catch (error) {
+                console.error('Error starting course:', error);
+                alert('❌ Habaye ikibazo mu gutangira isomo. Gerageza nanone.');
+            }
+        }
+
+        // === MODAL FUNCTIONS ===
+        function openRegistrationModal(courseId) {
+            try {
+                const modal = document.getElementById('registrationModal');
+                const courseInput = document.getElementById('selectedCourse');
+                
+                courseInput.value = courseId;
+                modal.style.display = 'flex';
+                
+                // Pre-fill form if user data exists
+                const userData = getUserData();
+                if (userData) {
+                    document.getElementById('fullName').value = userData.fullName || '';
+                    document.getElementById('email').value = userData.email || '';
+                    document.getElementById('phone').value = userData.phone || '';
+                    document.getElementById('district').value = userData.district || '';
+                    document.getElementById('education').value = userData.education || '';
+                    document.getElementById('experience').value = userData.experience || '';
+                }
+            } catch (error) {
+                console.error('Error opening registration modal:', error);
+            }
+        }
+
+        function closeRegistrationModal() {
+            try {
+                const modal = document.getElementById('registrationModal');
+                modal.style.display = 'none';
+            } catch (error) {
+                console.error('Error closing modal:', error);
+            }
+        }
+
+        // Form Submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            try {
+                const formData = {
+                    fullName: document.getElementById('fullName').value,
+                    email: document.getElementById('email').value,
+                    phone: document.getElementById('phone').value,
+                    district: document.getElementById('district').value,
+                    education: document.getElementById('education').value,
+                    experience: document.getElementById('experience').value,
+                    course: document.getElementById('selectedCourse').value,
+                    registrationDate: new Date().toISOString()
+                };
+
+                // Save to localStorage
+                saveUserData(formData);
+                
+                // Initialize progress for this course
+                const progress = getUserProgress();
+                if (!progress[formData.course]) {
+                    progress[formData.course] = {
+                        email: formData.email,
+                        course: formData.course,
+                        progress: 0,
+                        startedAt: new Date().toISOString(),
+                        lastActivity: new Date().toISOString()
+                    };
+                    saveUserProgress(progress);
+                }
+                
+                // Show success message
+                alert('✅ Wowongeye gufungura neza! Ubu ushobora gutangira kwiga.');
+                
+                // Close modal and redirect to course
+                closeRegistrationModal();
+                startCourse(formData.course);
+                
+            } catch (error) {
+                console.error('Error in form submission:', error);
+                alert('❌ Habaye ikibazo mu kwiyandikisha. Gerageza nanone.');
+            }
+        });
+
+        // === PAGE INITIALIZATION ===
+        function loadComponents() {
+            // Load Header
+            fetch('components/header.html')
+                .then(response => {
+                    if (!response.ok) throw new Error('Header not found');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading header:', error);
+                    document.getElementById('header').innerHTML = `
+                        <header style="background: white; padding: 1rem; text-align: center;">
+                            <a href="/" style="font-size: 1.5rem; font-weight: bold; color: #667eea; text-decoration: none;">MAYE SYSTEMS</a>
+                        </header>
+                    `;
+                });
+
+            // Load Footer
+            fetch('components/footer.html')
+                .then(response => {
+                    if (!response.ok) throw new Error('Footer not found');
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading footer:', error);
+                    document.getElementById('footer').innerHTML = `
+                        <footer style="background: #2c3e50; color: white; text-align: center; padding: 2rem;">
+                            <p>© 2024 MAYE SYSTEMS. Ibyose bifite uburenganzira.</p>
+                        </footer>
+                    `;
+                });
+        }
+
+        function initializePage() {
+            try {
+                // Search and Filter Functionality
+                const searchInput = document.getElementById('topic-search');
+                const categoryFilter = document.getElementById('category-filter');
+                const topicCards = document.querySelectorAll('.topic-card');
+
+                function filterTopics() {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    const selectedCategory = categoryFilter.value;
+
+                    topicCards.forEach(card => {
+                        const topic = card.getAttribute('data-topic');
+                        const category = card.getAttribute('data-category');
+                        const title = card.querySelector('h3').textContent.toLowerCase();
+                        const description = card.querySelector('p').textContent.toLowerCase();
+
+                        const matchesSearch = title.includes(searchTerm) || description.includes(searchTerm);
+                        const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
+
+                        card.style.display = (matchesSearch && matchesCategory) ? 'block' : 'none';
+                    });
+                }
+
+                searchInput.addEventListener('input', filterTopics);
+                categoryFilter.addEventListener('change', filterTopics);
+
+                // Progress bars animation
+                const progressBars = document.querySelectorAll('.progress-bar');
+                progressBars.forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 500);
+                });
+            } catch (error) {
+                console.error('Error initializing page:', error);
+            }
+        }
+
+        // === EVENT LISTENERS ===
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // Load components
+                loadComponents();
+                initializePage();
+                loadUserProgress();
+
+                // Set initial connection status
+                updateConnectionStatus('✅ Local Storage Mode - Ready');
+
+            } catch (error) {
+                console.error('Error during page initialization:', error);
+                updateConnectionStatus('❌ Page Initialization Failed', 'error');
+            }
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            try {
+                const modal = document.getElementById('registrationModal');
+                if (e.target === modal) {
+                    closeRegistrationModal();
+                }
+            } catch (error) {
+                console.error('Error handling click outside modal:', error);
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            try {
+                if (e.key === 'Escape') {
+                    closeRegistrationModal();
+                }
+            } catch (error) {
+                console.error('Error handling keyboard shortcut:', error);
+            }
+        });
+    </script>
+</body>
+</html>

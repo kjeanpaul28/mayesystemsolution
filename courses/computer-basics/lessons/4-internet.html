@@ -1,0 +1,1442 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet: Urusobe rw'Isi - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../../css/tailwind.css">
+    <style>
+        /* === MODERN STYLING === */
+        .lesson-content img {
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        .lesson-content img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        /* === TABS STYLING === */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .tabs-header {
+            display: flex;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            overflow-x: auto;
+        }
+        .tab-button {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .tab-button.active {
+            background: rgba(255,255,255,0.2);
+            border-bottom-color: #10b981;
+        }
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === ACCORDION STYLES === */
+        .accordion {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .accordion-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        .accordion-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .accordion-content.active {
+            padding: 1.5rem;
+            max-height: 1000px;
+        }
+
+        /* === POPUP MODAL === */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        /* === PRACTICE EXERCISE STYLES === */
+        .practice-exercise {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        .exercise-step {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 4px solid #0ea5e9;
+        }
+        .step-indicator {
+            width: 35px;
+            height: 35px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* === NOTE STYLES === */
+        .note-box {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        /* === INTERNET SPECIFIC STYLES === */
+        .protocol-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+            border-left: 4px solid #8b5cf6;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .browser-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .browser-item {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+        }
+        .browser-item:hover {
+            transform: translateY(-2px);
+        }
+
+        /* === COMPARISON TABLE === */
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin: 1rem 0;
+        }
+        .comparison-table th {
+            background: #3b82f6;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+        }
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+                <a href="../../index.html" class="hover:text-green-600 transition-colors">📚 Amasomo</a>
+                <span class="text-gray-400">›</span>
+                <a href="../index.html" class="hover:text-green-600 transition-colors">💻 Computer Basics</a>
+                <span class="text-gray-400">›</span>
+                <span class="text-green-600 font-medium">Internet</span>
+            </nav>
+
+            <!-- Lesson Header -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-xl">🌐</span>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900">Internet: Urusobe rw'Isi</h1>
+                                <p class="text-gray-600 mt-1">Menya ibyo Internet ari cyo, amateka yayo, n'uko uyikoresha mu buzima bw'umunsi</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-6 text-sm text-gray-500">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                50 min
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                </svg>
+                                20 Ibibazo
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l1.5-1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+                                </svg>
+                                Intermediate
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Completion Check -->
+                    <button id="complete-lesson" class="completion-check flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div id="lesson-progress" class="bg-green-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Main Tabs Navigation -->
+            <div class="tabs-container mb-8">
+                <div class="tabs-header">
+                    <button class="tab-button active" onclick="switchTab('tab-intro')">🌐 Intangiriro</button>
+                    <button class="tab-button" onclick="switchTab('tab-history')">📜 Amateka</button>
+                    <button class="tab-button" onclick="switchTab('tab-browsers')">🔍 Browsers</button>
+                    <button class="tab-button" onclick="switchTab('tab-protocols')">⚙️ Protocols</button>
+                    <button class="tab-button" onclick="switchTab('tab-safety')">🛡️ Umutekano</button>
+                    <button class="tab-button" onclick="switchTab('tab-applications')">📱 Serivisi</button>
+                    <button class="tab-button" onclick="switchTab('tab-quiz')">🧠 Ibibazo</button>
+                </div>
+
+                <!-- Tab 1: Introduction -->
+                <div id="tab-intro" class="tab-content active">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Icyo Internet Ari Cyo - Urusobe rw'Isi</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8 mb-6">
+                        <div>
+                            <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                                <strong class="text-blue-600">Internet</strong> ni <strong>urusobe rw'imashini zose ziri ku isi</strong> 
+                                (mudasobwa, telefoni, server, routers…) zihuza mu buryo bw'itumanaho zikabasha gusangira amakuru, 
+                                koherezanya ubutumwa, kubika amafishi, gukora ubucuruzi, n'ibindi.
+                            </p>
+                            
+                            <div class="tip-box">
+                                <h4 class="font-semibold text-green-800 mb-2">💡 Akarango k'Ingenzi:</h4>
+                                <p class="text-green-700">
+                                    <strong>Internet</strong> = Urusobe rw'isi (Global Network)<br>
+                                    <strong>WWW</strong> = Igice cya Internet (World Wide Web)<br>
+                                    <strong>Browser</strong> = Porogaramu ibonera Internet
+                                </p>
+                            </div>
+
+                            <!-- Internet Components -->
+                            <div class="comparison-table mt-6">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr>
+                                            <th>Igice cy'Internet</th>
+                                            <th>Icyo Gikora</th>
+                                            <th>Ingero</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="bg-gray-50">
+                                            <td class="font-semibold">Client Devices</td>
+                                            <td>Gufata serivisi za Internet</td>
+                                            <td>Computer, Telephone, Tablet</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="font-semibold">Servers</td>
+                                            <td>Gutanga serivisi na data</td>
+                                            <td>Web servers, Email servers</td>
+                                        </tr>
+                                        <tr class="bg-gray-50">
+                                            <td class="font-semibold">Networking</td>
+                                            <td>Guhuza ibikoresho</td>
+                                            <td>Routers, Switches, Modems</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center justify-center space-y-4">
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/maxresdefault.jpg" 
+                                alt="Internet Global Network"
+                                class="w-full h-64 object-cover rounded-lg"
+                                onerror="this.src='https://via.placeholder.com/400x300?text=Internet+Network'"
+                            >
+                            <button onclick="openModal('internet-modal')" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors">
+                                🔍 Reba Ibisobanuro by'ishusho
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Practice Exercise -->
+                    <div class="practice-exercise">
+                        <h4 class="font-bold text-blue-800 mb-3">🛠️ Practice: Menya Internet yawe</h4>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">1</div>
+                                <div>
+                                    <strong>Fungura browser</strong>
+                                    <p class="text-sm text-gray-600">Kanda Google Chrome, Firefox, cyangwa Edge</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">2</div>
+                                <div>
+                                    <strong>Andika URL</strong>
+                                    <p class="text-sm text-gray-600">Andika "google.com" mu address bar</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">3</div>
+                                <div>
+                                    <strong>Shakisha</strong>
+                                    <p class="text-sm text-gray-600">Shakisha ikintu ushaka kubimenya</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: History -->
+                <div id="tab-history" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Amavu n'Amavuko ya Internet</h2>
+
+                    <div class="grid lg:grid-cols-2 gap-8 mb-6">
+                        <div>
+                            <div class="space-y-6">
+                                <div class="bg-blue-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-blue-800 mb-2">1960: ARPANET</h4>
+                                    <p class="text-blue-700">Yatangiye nka ARPANET, mu rwego rwo gufasha ingabo za USA.</p>
+                                </div>
+                                <div class="bg-green-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-green-800 mb-2">1980-1990: Kwaguka</h4>
+                                    <p class="text-green-700">Yaragutse igera mu bigo by'amashuri n'ubushakashatsi.</p>
+                                </div>
+                                <div class="bg-purple-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-purple-800 mb-2">1991: WWW</h4>
+                                    <p class="text-purple-700">World Wide Web (WWW) yaratangijwe na Tim Berners-Lee.</p>
+                                </div>
+                                <div class="bg-yellow-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-yellow-800 mb-2">2000+: Ubwinshi</h4>
+                                    <p class="text-yellow-700">Internet iba ibikoresho bya buri munsi (Google, Social Media).</p>
+                                </div>
+                                <div class="bg-red-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-red-800 mb-2">Ubu: AI & Cloud</h4>
+                                    <p class="text-red-700">Ikoreshwa mu bucuruzi, uburezi, AI, cloud computing.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center justify-center">
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/download%20(1).jpeg" 
+                                alt="Internet Evolution"
+                                class="w-full h-64 object-cover rounded-lg"
+                                onerror="this.src='https://via.placeholder.com/400x300?text=Internet+History'"
+                            >
+                        </div>
+                    </div>
+
+                    <!-- Practice Exercise -->
+                    <div class="practice-exercise">
+                        <h4 class="font-bold text-blue-800 mb-3">🛠️ Practice: Menya Amateka</h4>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">1</div>
+                                <div>
+                                    <strong>Shakisha "Internet History"</strong>
+                                    <p class="text-sm text-gray-600">Koresha Google gukora ubushakashatsi</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">2</div>
+                                <div>
+                                    <strong>Soma amateka</strong>
+                                    <p class="text-sm text-gray-600">Soma uko Internet yavukiye n'iterambere ryayo</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">3</div>
+                                <div>
+                                    <strong>Andika</strong>
+                                    <p class="text-sm text-gray-600">Andika ibyo wize ku mateka ya Internet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Browsers & Search Engines -->
+                <div id="tab-browsers" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Web Browsers & Search Engines</h2>
+
+                    <div class="note-box">
+                        <h4 class="font-semibold text-yellow-800 mb-2">📝 Icyitegererezo:</h4>
+                        <p class="text-yellow-700">
+                            <strong>Browser</strong> ni nk'umudandaza w'amagare. <strong>Search Engine</strong> ni nk'umuyobozi w'umudandaza. 
+                            Browser ikuyobora mu nzira, Search Engine ikubwira aho ugiye.
+                        </p>
+                    </div>
+
+                    <!-- Browsers Grid -->
+                    <div class="browser-grid">
+                        <div class="browser-item">
+                            <div class="text-3xl mb-2">🌐</div>
+                            <div class="font-semibold text-sm">Google Chrome</div>
+                        </div>
+                        <div class="browser-item">
+                            <div class="text-3xl mb-2">🦊</div>
+                            <div class="font-semibold text-sm">Mozilla Firefox</div>
+                        </div>
+                        <div class="browser-item">
+                            <div class="text-3xl mb-2">⎙</div>
+                            <div class="font-semibold text-sm">Safari</div>
+                        </div>
+                        <div class="browser-item">
+                            <div class="text-3xl mb-2">Ⓜ️</div>
+                            <div class="font-semibold text-sm">Microsoft Edge</div>
+                        </div>
+                        <div class="browser-item">
+                            <div class="text-3xl mb-2">🅾️</div>
+                            <div class="font-semibold text-sm">Opera</div>
+                        </div>
+                    </div>
+
+                    <!-- Search Engines -->
+                    <div class="grid md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-3">🔍 Search Engines:</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    <strong>Google</strong> - Ishingiro ry'ubushakashatsi
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    <strong>Bing</strong> - Ya Microsoft
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    <strong>Yahoo</strong> - Ifite serivisi nyinshi
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-500 mr-2">•</span>
+                                    <strong>DuckDuckGo</strong> - Itabika amakuru
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/istockphoto-1951614109-612x612.jpg" 
+                                alt="Search Engine Concept"
+                                class="w-full h-48 object-cover rounded-lg"
+                                onerror="this.src='https://via.placeholder.com/400x300?text=Search+Engine'"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Protocols -->
+                <div id="tab-protocols" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Internet Protocols (Amategeko y'Itumanaho)</h2>
+
+                    <div class="warning-box">
+                        <h4 class="font-semibold text-red-800 mb-2">⚠️ Icyitonderwa:</h4>
+                        <p class="text-red-700">
+                            Koresha <strong>HTTPS</strong> buri gihe ushaka kwishyura online cyangwa gushyira amakuru yawe. 
+                            "S" ivuga "Secure" (Umutekano).
+                        </p>
+                    </div>
+
+                    <!-- Protocols Grid -->
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div class="protocol-card">
+                            <h4 class="font-bold text-purple-800 mb-2">HTTP</h4>
+                            <p class="text-sm text-gray-600">Yohereza web pages</p>
+                        </div>
+                        <div class="protocol-card">
+                            <h4 class="font-bold text-green-800 mb-2">HTTPS</h4>
+                            <p class="text-sm text-gray-600">HTTP irinzwe (Secure)</p>
+                        </div>
+                        <div class="protocol-card">
+                            <h4 class="font-bold text-blue-800 mb-2">FTP</h4>
+                            <p class="text-sm text-gray-600">File transfer</p>
+                        </div>
+                        <div class="protocol-card">
+                            <h4 class="font-bold text-red-800 mb-2">SMTP</h4>
+                            <p class="text-sm text-gray-600">Kohereza emails</p>
+                        </div>
+                        <div class="protocol-card">
+                            <h4 class="font-bold text-orange-800 mb-2">POP3</h4>
+                            <p class="text-sm text-gray-600">Kuvana emails</p>
+                        </div>
+                        <div class="protocol-card">
+                            <h4 class="font-bold text-indigo-800 mb-2">TCP/IP</h4>
+                            <p class="text-sm text-gray-600">Amategeko y'itumanaho</p>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mt-6">
+                        <div>
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/download%20(2).jpeg" 
+                                alt="Internet Protocols"
+                                class="w-full h-48 object-cover rounded-lg"
+                                onerror="this.src='https://via.placeholder.com/400x300?text=Internet+Protocols'"
+                            >
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-3">🔐 HTTPS vs HTTP:</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start">
+                                    <span class="text-green-500 mr-2">✓</span>
+                                    <div>
+                                        <strong>HTTPS</strong>
+                                        <p class="text-sm text-gray-600">Irinzwe, amakuru yasohotse</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <span class="text-red-500 mr-2">✗</span>
+                                    <div>
+                                        <strong>HTTP</strong>
+                                        <p class="text-sm text-gray-600">Ntirinzwe, abantu bose babisanga</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Safety -->
+                <div id="tab-safety" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Online Safety & Security</h2>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-red-800 mb-3">⚠️ Ibibazo bishobora kuboneka:</h4>
+                            <ul class="space-y-2 text-red-700">
+                                <li>• Hacking (Gutera computer)</li>
+                                <li>• Viruses & Malware</li>
+                                <li>• Spam & Phishing</li>
+                                <li>• Identity theft</li>
+                                <li>• Fake news</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-green-800 mb-3">🛡️ Uko Wirinda:</h4>
+                            <ul class="space-y-2 text-green-700">
+                                <li>• Koresha password zikomeye</li>
+                                <li>• Kanda link zizewe gusa</li>
+                                <li>• Koresha antivirus</li>
+                                <li>• Bika amakuru buri gihe</li>
+                                <li>• Koresha HTTPS websites</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Practice Exercise -->
+                    <div class="practice-exercise mt-6">
+                        <h4 class="font-bold text-blue-800 mb-3">🛠️ Practice: Gutegura Umutekano</h4>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">1</div>
+                                <div>
+                                    <strong>Reba password yawe</strong>
+                                    <p class="text-sm text-gray-600">Menya niba iri nziza (ifite inyuguti nkuru, nto, imibare)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">2</div>
+                                <div>
+                                    <strong>Shakisha HTTPS</strong>
+                                    <p class="text-sm text-gray-600">Reba niba website ifite "🔒" mu address bar</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">3</div>
+                                <div>
+                                    <strong>Menya link mbi</strong>
+                                    <p class="text-sm text-gray-600">Ntukande link zidashimishije mu email</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 6: Applications -->
+                <div id="tab-applications" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Serivisi za Internet</h2>
+
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="feature-card">
+                            <div class="text-4xl mb-4">📧</div>
+                            <h4 class="font-bold text-blue-800 text-lg mb-3">Email</h4>
+                            <p class="text-gray-600 text-sm">Kohereza ubutumwa n'amadosiye</p>
+                            <ul class="mt-3 space-y-1 text-sm text-gray-700">
+                                <li>• Gmail</li>
+                                <li>• Outlook</li>
+                                <li>• Yahoo Mail</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <div class="text-4xl mb-4">💬</div>
+                            <h4 class="font-bold text-green-800 text-lg mb-3">Social Media</h4>
+                            <p class="text-gray-600 text-sm">Itumanaho n'ubwumvane</p>
+                            <ul class="mt-3 space-y-1 text-sm text-gray-700">
+                                <li>• Facebook</li>
+                                <li>• WhatsApp</li>
+                                <li>• Instagram</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <div class="text-4xl mb-4">🛒</div>
+                            <h4 class="font-bold text-purple-800 text-lg mb-3">E-commerce</h4>
+                            <p class="text-gray-600 text-sm">Gucuruza kuri Internet</p>
+                            <ul class="mt-3 space-y-1 text-sm text-gray-700">
+                                <li>• Amazon</li>
+                                <li>• eBay</li>
+                                <li>• Jumia</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <div class="text-4xl mb-4">🎓</div>
+                            <h4 class="font-bold text-yellow-800 text-lg mb-3">E-learning</h4>
+                            <p class="text-gray-600 text-sm">Kwiga kuri Internet</p>
+                            <ul class="mt-3 space-y-1 text-sm text-gray-700">
+                                <li>• YouTube</li>
+                                <li>• Coursera</li>
+                                <li>• Khan Academy</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <div class="text-4xl mb-4">☁️</div>
+                            <h4 class="font-bold text-indigo-800 text-lg mb-3">Cloud Storage</h4>
+                            <p class="text-gray-600 text-sm">Kubika amadosiye kuri Internet</p>
+                            <ul class="mt-3 space-y-1 text-sm text-gray-700">
+                                <li>• Google Drive</li>
+                                <li>• Dropbox</li>
+                                <li>• iCloud</li>
+                            </ul>
+                        </div>
+                        <div class="feature-card">
+                            <div class="text-4xl mb-4">🎵</div>
+                            <h4 class="font-bold text-red-800 text-lg mb-3">Streaming</h4>
+                            <p class="text-gray-600 text-sm">Kumva indirimbo n'amasomo</p>
+                            <ul class="mt-3 space-y-1 text-sm text-gray-700">
+                                <li>• Spotify</li>
+                                <li>• Netflix</li>
+                                <li>• YouTube</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 7: Quiz -->
+<!-- In the quiz tab, replace the questions with these 20 complete questions: -->
+
+<!-- Tab 7: Quiz -->
+<div id="tab-quiz" class="tab-content">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">Gereranya Ubumenyi Bwawe - Ibibazo 20</h2>
+
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="space-y-4">
+            <!-- Question 1 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">1. Internet ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz1" value="a" class="text-blue-600">
+                        <span>A) Urusobe rw'imashini z'isi</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz1" value="b" class="text-blue-600">
+                        <span>B) Porogaramu ya computer</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz1" value="c" class="text-blue-600">
+                        <span>C) Igikoresho cy'amashanyarazi</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">2. Ni ryari WWW yatangijwe?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz2" value="a" class="text-blue-600">
+                        <span>A) 1960</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz2" value="b" class="text-blue-600">
+                        <span>B) 1991</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz2" value="c" class="text-blue-600">
+                        <span>C) 2000</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">3. Browser ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz3" value="a" class="text-blue-600">
+                        <span>A) Igikoresho cy'itumanaho</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz3" value="b" class="text-blue-600">
+                        <span>B) Porogaramu ibonera Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz3" value="c" class="text-blue-600">
+                        <span>C) Server yo kubika amakuru</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">4. Ni iyihe search engine ikunze?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz4" value="a" class="text-blue-600">
+                        <span>A) Google</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz4" value="b" class="text-blue-600">
+                        <span>B) Microsoft Word</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz4" value="c" class="text-blue-600">
+                        <span>C) Windows</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">5. HTTPS ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz5" value="a" class="text-blue-600">
+                        <span>A) HTTP yihuse</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz5" value="b" class="text-blue-600">
+                        <span>B) HTTP yo hejuru</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz5" value="c" class="text-blue-600">
+                        <span>C) HTTP irinzwe</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">6. Email ikoresha ikihe protocol?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz6" value="a" class="text-blue-600">
+                        <span>A) HTTP</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz6" value="b" class="text-blue-600">
+                        <span>B) SMTP</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz6" value="c" class="text-blue-600">
+                        <span>C) FTP</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">7. URL ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz7" value="a" class="text-blue-600">
+                        <span>A) Izina ry'urubuga</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz7" value="b" class="text-blue-600">
+                        <span>B) Porogaramu ya Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz7" value="c" class="text-blue-600">
+                        <span>C) Adresi y'urubuga</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">8. Wi-Fi ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz8" value="a" class="text-blue-600">
+                        <span>A) Itumanaho ridakoresheje umushinga</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz8" value="b" class="text-blue-600">
+                        <span>B) Itumanaho rikoresheje umushinga</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz8" value="c" class="text-blue-600">
+                        <span>C) Ubwoko bwa modem</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">9. Ni izihe social media?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz9" value="a" class="text-blue-600">
+                        <span>A) Google, Yahoo</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz9" value="b" class="text-blue-600">
+                        <span>B) Facebook, WhatsApp</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz9" value="c" class="text-blue-600">
+                        <span>C) Windows, Linux</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">10. E-commerce ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz10" value="a" class="text-blue-600">
+                        <span>A) Kwiga kuri Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz10" value="b" class="text-blue-600">
+                        <span>B) Gukoresha email</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz10" value="c" class="text-blue-600">
+                        <span>C) Ubucuruzi kuri Internet</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <!-- Question 11 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">11. HTTPS isobanura iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz11" value="a" class="text-blue-600">
+                        <span>A) HTTP irinzwe</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz11" value="b" class="text-blue-600">
+                        <span>B) HTTP yihuse</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz11" value="c" class="text-blue-600">
+                        <span>C) HTTP yo hejuru</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 12 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">12. Antivirus ikora iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz12" value="a" class="text-blue-600">
+                        <span>A) Ihutisha Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz12" value="b" class="text-blue-600">
+                        <span>B) Irinda virusi</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz12" value="c" class="text-blue-600">
+                        <span>C) Ihindura amashanyarazi</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 13 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">13. Cloud storage ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz13" value="a" class="text-blue-600">
+                        <span>A) Kubika mu kabati</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz13" value="b" class="text-blue-600">
+                        <span>B) Kubika mu DVD</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz13" value="c" class="text-blue-600">
+                        <span>C) Kubika kuri Internet</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 14 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">14. Download ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz14" value="a" class="text-blue-600">
+                        <span>A) Kumanura amadosiye</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz14" value="b" class="text-blue-600">
+                        <span>B) Kohereza amadosiye</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz14" value="c" class="text-blue-600">
+                        <span>C) Gusiba amadosiye</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 15 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">15. Streaming ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz15" value="a" class="text-blue-600">
+                        <span>A) Gushaka amakuru</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz15" value="b" class="text-blue-600">
+                        <span>B) Kumva indirimbo kuri Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz15" value="c" class="text-blue-600">
+                        <span>C) Kohereza email</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 16 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">16. E-learning ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz16" value="a" class="text-blue-600">
+                        <span>A) Gucuruza kuri Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz16" value="b" class="text-blue-600">
+                        <span>B) Gukoresha social media</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz16" value="c" class="text-blue-600">
+                        <span>C) Kwiga kuri Internet</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 17 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">17. Router ikora iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz17" value="a" class="text-blue-600">
+                        <span>A) Ihuzanya mudasobwa</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz17" value="b" class="text-blue-600">
+                        <span>B) Ihutisha Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz17" value="c" class="text-blue-600">
+                        <span>C) Irinda virusi</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 18 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">18. Modem ikora iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz18" value="a" class="text-blue-600">
+                        <span>A) Ihuzanya mudasobwa</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz18" value="b" class="text-blue-600">
+                        <span>B) Ihindura amashanyarazi</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz18" value="c" class="text-blue-600">
+                        <span>C) Irinda virusi</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 19 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">19. Bandwidth ni iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz19" value="a" class="text-blue-600">
+                        <span>A) Ubwoko bwa Internet</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz19" value="b" class="text-blue-600">
+                        <span>B) Igipimo cy'amafaranga</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz19" value="c" class="text-blue-600">
+                        <span>C) Uburyo bwo gutwara amakuru</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 20 -->
+            <div class="p-4 border border-gray-200 rounded-lg">
+                <h4 class="font-semibold text-gray-800 mb-2">20. Internet yatangiye nka iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz20" value="a" class="text-blue-600">
+                        <span>A) ARPANET</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz20" value="b" class="text-blue-600">
+                        <span>B) WWW</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="quiz20" value="c" class="text-blue-600">
+                        <span>C) Google</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="check-quiz" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors w-full">
+        🔍 Reba Impinduro z'Ibibazo 20 Byose
+    </button>
+
+    <div id="quiz-result" class="mt-4 hidden p-4 rounded-lg"></div>
+</div>
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+                <a href="3-software.html" class="flex items-center space-x-2 text-gray-600 hover:text-green-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Subira ku Software</span>
+                </a>
+                
+                <a href="../quiz.html" class="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <span>Genda ku Bibazo by'Icyiciro</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Modals -->
+    <div id="internet-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900">🔍 Ibisobanuro by'ishusho</h3>
+                <button onclick="closeModal('internet-modal')" class="text-gray-500 hover:text-gray-700">
+                    ✕
+                </button>
+            </div>
+            <img 
+                src="https://ik.imagekit.io/73qho7kh9/maxresdefault.jpg" 
+                alt="Internet Global Network"
+                class="w-full h-48 object-cover rounded-lg mb-4"
+            >
+            <p class="text-gray-700">
+                Iyi shusho yerekana <strong>Internet Global Network</strong>. 
+                Yerekana uko mudasobwa zose z'isi zihuza hakoreshejwe urusobe rw'amashanyarazi, 
+                fiber optic, na satellite connections.
+            </p>
+            <div class="mt-4">
+                <h4 class="font-semibold text-gray-800 mb-2">🌍 Ibintu by'ingenzi:</h4>
+                <ul class="text-sm text-gray-600 space-y-1">
+                    <li>• Global Connectivity (Ubusobe bw'isi)</li>
+                    <li>• Data Centers (Ibikoresho by'amakuru)</li>
+                    <li>• Network Infrastructure (Imiyoboro)</li>
+                    <li>• Wireless Communication (Itumanaho idakoresheje umushinga)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load components
+        fetch('../../../components/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load header:', err));
+
+        fetch('../../../components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load footer:', err));
+
+        // Tab functionality
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Mark section as completed for progress tracking
+            const sectionMap = {
+                'tab-intro': 'introduction',
+                'tab-history': 'history',
+                'tab-browsers': 'browsers',
+                'tab-protocols': 'protocols',
+                'tab-safety': 'safety',
+                'tab-applications': 'applications',
+                'tab-quiz': 'quiz'
+            };
+            
+            if (window.lessonProgress && sectionMap[tabId]) {
+                window.lessonProgress.markSectionComplete(sectionMap[tabId]);
+            }
+        }
+
+        // Accordion functionality
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const arrow = content.previousElementSibling.querySelector('.accordion-arrow');
+            
+            content.classList.toggle('active');
+            arrow.textContent = content.classList.contains('active') ? '▲' : '▼';
+        }
+
+        // Modal functionality
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        });
+
+        // Lesson Progress Tracking
+        class LessonProgress {
+            constructor() {
+                this.lessonId = '4-internet';
+                this.sections = ['introduction', 'history', 'browsers', 'protocols', 'safety', 'applications', 'quiz'];
+                this.completedSections = new Set();
+                this.loadProgress();
+                this.setupEventListeners();
+                this.updateProgressBar();
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem(`lesson-${this.lessonId}`);
+                if (saved) {
+                    this.completedSections = new Set(JSON.parse(saved));
+                }
+            }
+
+            saveProgress() {
+                localStorage.setItem(`lesson-${this.lessonId}`, JSON.stringify([...this.completedSections]));
+            }
+
+            markSectionComplete(section) {
+                this.completedSections.add(section);
+                this.saveProgress();
+                this.updateProgressBar();
+                
+                if (this.completedSections.size === this.sections.length) {
+                    this.enableLessonCompletion();
+                }
+            }
+
+            updateProgressBar() {
+                const progress = (this.completedSections.size / this.sections.length) * 100;
+                const progressBar = document.getElementById('lesson-progress');
+                if (progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                }
+            }
+
+            enableLessonCompletion() {
+                const completeButton = document.getElementById('complete-lesson');
+                if (completeButton) {
+                    completeButton.classList.remove('bg-gray-200', 'text-gray-700');
+                    completeButton.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
+                    completeButton.innerHTML = `
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    `;
+                }
+            }
+
+            setupEventListeners() {
+                // Quiz checker
+                document.getElementById('check-quiz')?.addEventListener('click', () => {
+                    this.checkQuiz();
+                });
+
+                // Lesson completion
+                document.getElementById('complete-lesson')?.addEventListener('click', () => {
+                    this.completeLesson();
+                });
+
+                // Mark first tab as completed when page loads
+                this.markSectionComplete('introduction');
+            }
+
+            // In the checkQuiz() function, replace the answers object with this complete version:
+
+checkQuiz() {
+    const answers = {
+        quiz1: 'a', // Internet ni urusobe rw'imashini z'isi
+        quiz2: 'b', // WWW yatangijwe 1991
+        quiz3: 'b', // Browser ni porogaramu ibonera Internet
+        quiz4: 'a', // Google ni search engine
+        quiz5: 'c', // HTTPS ni HTTP irinzwe
+        quiz6: 'b', // Email ikoresha SMTP
+        quiz7: 'c', // URL ni adresi y'urubuga
+        quiz8: 'a', // Wi-Fi ni itumanaho ridakoresheje umushinga
+        quiz9: 'b', // Social media ni Facebook, WhatsApp
+        quiz10: 'c', // E-commerce ni ubucuruzi kuri Internet
+        quiz11: 'a', // HTTPS isobanura HTTP irinzwe
+        quiz12: 'b', // Antivirus irinda virusi
+        quiz13: 'c', // Cloud storage ni kubika kuri Internet
+        quiz14: 'a', // Download ni kumanura amadosiye
+        quiz15: 'b', // Streaming ni kumva indirimbo kuri Internet
+        quiz16: 'c', // E-learning ni kwiga kuri Internet
+        quiz17: 'a', // Router ihuzanya mudasobwa
+        quiz18: 'b', // Modem ihindura amashanyarazi
+        quiz19: 'c', // Bandwidth ni uburyo bwo gutwara amakuru
+        quiz20: 'a' // Internet yatangiye nka ARPANET
+    };
+    
+    let correct = 0;
+    let total = 0;
+    
+    for (const [question, correctAnswer] of Object.entries(answers)) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        if (selected) {
+            total++;
+            if (selected.value === correctAnswer) {
+                correct++;
+                selected.parentElement.classList.add('text-green-600', 'font-semibold');
+            } else {
+                selected.parentElement.classList.add('text-red-600');
+                
+                // Show correct answer
+                const correctOption = document.querySelector(`input[name="${question}"][value="${correctAnswer}"]`);
+                if (correctOption) {
+                    correctOption.parentElement.classList.add('text-green-600', 'font-semibold');
+                }
+            }
+        }
+    }
+    
+    const resultDiv = document.getElementById('quiz-result');
+    if (resultDiv) {
+        const percentage = Math.round((correct / total) * 100);
+        resultDiv.className = `mt-4 p-4 rounded-lg ${percentage >= 80 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`;
+        
+        let message = '';
+        if (percentage === 100) {
+            message = '🎉 Perfect! Wakoze neza cyane! Urasobanukirwa neza Internet.';
+        } else if (percentage >= 80) {
+            message = '✅ Wakoze neza! Ufite ubumenyi bwiza ku bijyanye na Internet.';
+        } else if (percentage >= 60) {
+            message = '💪 Ibyiza! Ariko usabwa kwiga nanone ibice utarasobanukirwa neza.';
+        } else {
+            message = '📚 Subira usome ibice byose. Hari ibyo usabwa kwiga nanone.';
+        }
+        
+        resultDiv.innerHTML = `
+            <strong>Igisubizo:</strong> 
+            ${correct} ku ${total} byakuwe neza! (${percentage}%)<br><br>
+            ${message}
+        `;
+        resultDiv.classList.remove('hidden');
+    }
+    
+    if (correct === total) {
+        this.markSectionComplete('quiz');
+    }
+}
+            completeLesson() {
+                if (this.completedSections.size === this.sections.length) {
+                    const courseProgress = JSON.parse(localStorage.getItem('progress-computer-basics') || '[]');
+                    const lessonIndex = courseProgress.findIndex(l => l.id === '4');
+                    if (lessonIndex !== -1 && !courseProgress[lessonIndex].completed) {
+                        courseProgress[lessonIndex].completed = true;
+                        localStorage.setItem('progress-computer-basics', JSON.stringify(courseProgress));
+                    }
+
+                    const completeButton = document.getElementById('complete-lesson');
+                    if (completeButton) {
+                        completeButton.classList.add('bg-green-700');
+                        completeButton.innerHTML = `
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Warangije! 🎉</span>
+                        `;
+                        completeButton.disabled = true;
+                    }
+
+                    alert('🎉 Warangije neza iki gice cya Internet! Urashobora gukora quiz y\'icyiciro cyose.');
+                } else {
+                    alert('⚠️ Ntugomba kurangiza ibice byose mbere yo kwemeza kurangiza.');
+                }
+            }
+        }
+
+        // Initialize lesson progress
+        document.addEventListener('DOMContentLoaded', () => {
+            window.lessonProgress = new LessonProgress();
+        });
+    </script>
+</body>
+</html>

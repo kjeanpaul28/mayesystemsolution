@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intangiriro: Icyo Computer Ari Cyo - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../../css/tailwind.css">
+    <style>
+        /* === MODERN STYLING === */
+        .lesson-content img {
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        .lesson-content img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        /* === TABS STYLING === */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .tabs-header {
+            display: flex;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            overflow-x: auto;
+        }
+        .tab-button {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button.active {
+            background: rgba(255,255,255,0.2);
+            border-bottom: 3px solid white;
+        }
+        .tab-button:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.5s ease-in;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === ACCORDION STYLES === */
+        .accordion {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+        .accordion-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .accordion-header:hover {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+        .accordion-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .accordion-content.active {
+            padding: 1.5rem;
+            max-height: 1000px;
+        }
+        .accordion-arrow {
+            transition: transform 0.3s ease;
+        }
+        .accordion-header.active .accordion-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* === NOTE STYLES === */
+        .note-box {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-left: 4px solid #f59e0b;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(245, 158, 11, 0.1);
+            position: relative;
+        }
+        .note-box::before {
+            content: '📝';
+            position: absolute;
+            left: -10px;
+            top: -10px;
+            background: #f59e0b;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .tip-box {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 4px solid #10b981;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.1);
+            position: relative;
+        }
+        .tip-box::before {
+            content: '💡';
+            position: absolute;
+            left: -10px;
+            top: -10px;
+            background: #10b981;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 4px solid #ef4444;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 10px rgba(239, 68, 68, 0.1);
+            position: relative;
+        }
+        .warning-box::before {
+            content: '⚠️';
+            position: absolute;
+            left: -10px;
+            top: -10px;
+            background: #ef4444;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        /* === PRACTICE EXERCISE STYLES === */
+        .practice-exercise {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .practice-exercise::before {
+            content: '🛠️';
+            position: absolute;
+            left: -15px;
+            top: -15px;
+            background: #0ea5e9;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            box-shadow: 0 4px 8px rgba(14, 165, 233, 0.3);
+        }
+        .exercise-step {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            border-left: 4px solid #0ea5e9;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease;
+        }
+        .exercise-step:hover {
+            transform: translateX(5px);
+        }
+        .step-indicator {
+            width: 35px;
+            height: 35px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+        }
+
+        /* === TIMELINE STYLES === */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, #10b981, #3b82f6);
+            border-radius: 2px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2.5rem;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.3rem;
+            top: 1.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #10b981;
+        }
+
+        /* === COMPARISON TABLE === */
+        .comparison-table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin: 1.5rem 0;
+            border: 1px solid #e5e7eb;
+        }
+        .comparison-table th {
+            background: #3b82f6;
+            color: white;
+            padding: 1.2rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        .comparison-table td {
+            padding: 1.2rem;
+            border-bottom: 1px solid #e5e7eb;
+            transition: background 0.2s ease;
+        }
+        .comparison-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        /* === FEATURE CARDS === */
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid #10b981;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        /* === PROGRESS INDICATORS === */
+        .progress-step {
+            display: flex;
+            align-items: center;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        .progress-number {
+            width: 40px;
+            height: 40px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+                <a href="../../index.html" class="hover:text-green-600 transition-colors">📚 Amasomo</a>
+                <span class="text-gray-400">›</span>
+                <a href="../index.html" class="hover:text-green-600 transition-colors">💻 Computer Basics</a>
+                <span class="text-gray-400">›</span>
+                <span class="text-green-600 font-medium">Intangiriro</span>
+            </nav>
+
+            <!-- Lesson Header -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                <span class="text-xl">💻</span>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900">Intangiriro: Icyo Computer Ari Cyo</h1>
+                                <p class="text-gray-600 mt-1">Somera ibyo computer ari cyo, amateka yayo, n'akaranga kayo mu buzima bw'umunsi</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-6 text-sm text-gray-500">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                45 min
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                </svg>
+                                10 Ibibazo
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l1.5-1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+                                </svg>
+                                Beginner
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Completion Check -->
+                    <button id="complete-lesson" class="completion-check flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div id="lesson-progress" class="bg-green-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Lesson Content -->
+            <div class="lesson-content space-y-8">
+                <!-- Definition Section with Tabs -->
+                <section id="definition" class="bg-white rounded-2xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-3">1</span>
+                        Ibisobanuro bya Mudasobwa - Ubwenge bwa Teknoloji
+                    </h2>
+                    
+                    <div class="tabs-container">
+                        <div class="tabs-header">
+                            <button class="tab-button active" onclick="openTab('tab-basics')">🔄 Ibisanzwe</button>
+                            <button class="tab-button" onclick="openTab('tab-workflow')">⚙️ Uko Ikora</button>
+                            <button class="tab-button" onclick="openTab('tab-examples')">💡 Ingero</button>
+                            <button class="tab-button" onclick="openTab('tab-benefits')">🎯 Akamaro</button>
+                        </div>
+                        
+                        <div id="tab-basics" class="tab-content active">
+                            <div class="grid lg:grid-cols-2 gap-8">
+                                <div>
+                                    <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                                        <strong class="text-blue-600">Computer</strong> ni igikoresho cy'ikoranabuhanga gikoreshwa mu kubara, kubika amakuru, no gutunganya ibintu byinshi mu kanya gato.
+                                    </p>
+                                    
+                                    <div class="tip-box">
+                                        <h4 class="font-semibold text-green-800 mb-2">🎯 Interuro ifatika:</h4>
+                                        <p class="text-green-700">
+                                            "Computer ni icyuma gikoresha porogaramu (software) gukora ibikorwa by'ubwenge nk'uko byategetswe. Ikora imirimo itandukanye: kwakira amakuru (input), kuyatunganya (processing), kuyasohora (output), no kuyabika (storage)."
+                                        </p>
+                                    </div>
+
+                                    <div class="note-box mt-4">
+                                        <h4 class="font-semibold text-yellow-800 mb-2">📚 Icyo Wamenya:</h4>
+                                        <ul class="text-yellow-700 space-y-2">
+                                            <li>• Computer ni igikoresho cya elektroniki</li>
+                                            <li>• Gikoresha software (porogaramu)</li>
+                                            <li>• Gikora imirimo itandukanye</li>
+                                            <li>• Gifata amakuru, kuyatunganya, no kuyasohora</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-center justify-center space-y-4">
+                                    <img 
+                                        src="https://ik.imagekit.io/73qho7kh9/1763752534716.jpg?updatedAt=1763758620007" 
+                                        alt="Computer y'ubwoko butandukanye"
+                                        class="w-full h-64 object-cover rounded-lg"
+                                    >
+                                    <p class="text-gray-600 text-sm text-center italic">
+                                        Computer z'ubwoko butandukanye - buri ya zo ifite akamaro kayo
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="tab-workflow" class="tab-content">
+                            <div class="grid lg:grid-cols-2 gap-8">
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-4">🔄 Inzira y'Imikorere ya Computer:</h4>
+                                    
+                                    <div class="progress-step">
+                                        <div class="progress-number">1</div>
+                                        <div>
+                                            <strong class="text-blue-600">INPUT (Kwakira)</strong>
+                                            <p class="text-gray-600 text-sm">Computer yakira amakuru avy'ahandi</p>
+                                            <div class="text-xs text-blue-500 mt-1">Ingero: Keyboard, Mouse, Scanner</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="progress-step">
+                                        <div class="progress-number">2</div>
+                                        <div>
+                                            <strong class="text-green-600">PROCESSING (Gutunganya)</strong>
+                                            <p class="text-gray-600 text-sm">CPU isuzuma amakuru akoresheje software</p>
+                                            <div class="text-xs text-green-500 mt-1">Ingero: Imibare, isesengura</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="progress-step">
+                                        <div class="progress-number">3</div>
+                                        <div>
+                                            <strong class="text-yellow-600">OUTPUT (Gusohora)</strong>
+                                            <p class="text-gray-600 text-sm">Computer isohora ibisubizo</p>
+                                            <div class="text-xs text-yellow-500 mt-1">Ingero: Monitor, Printer, Speaker</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="progress-step">
+                                        <div class="progress-number">4</div>
+                                        <div>
+                                            <strong class="text-purple-600">STORAGE (Kubika)</strong>
+                                            <p class="text-gray-600 text-sm">Amakuru abikwa kugirango akoreshwe mu gihe kizaza</p>
+                                            <div class="text-xs text-purple-500 mt-1">Ingero: Hard Disk, USB, Cloud</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-center justify-center">
+                                    <img 
+                                        src="https://ik.imagekit.io/73qho7kh9/Computer-Hardware-Components-Explained.jpg" 
+                                        alt="Uko computer ikora"
+                                        class="w-full h-64 object-cover rounded-lg"
+                                    >
+                                    <div class="tip-box mt-4">
+                                        <p class="text-green-700 text-sm">
+                                            <strong>Icyitegererezo:</strong> Computer ni nk'umunyamabanga mu biro. Yakira ibyo umukiriya asaba (input), 
+                                            ayakora (processing), ahita asohora inyandiko (output), kandi abika amadosiye (storage).
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="tab-examples" class="tab-content">
+                            <div class="grid lg:grid-cols-2 gap-8">
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-4">💡 Ingero z'Ubwoko bw'Computer:</h4>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div class="feature-card">
+                                            <div class="text-3xl mb-3">🖥️</div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">Desktop</h5>
+                                            <p class="text-gray-600 text-sm">Ikoreshwa mu nzu cyangwa mu biro, ifite ibice bigerekanwa</p>
+                                        </div>
+                                        <div class="feature-card">
+                                            <div class="text-3xl mb-3">💻</div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">Laptop</h5>
+                                            <p class="text-gray-600 text-sm">Ifite bateri, uyikwira aho ushaka, yuzuye</p>
+                                        </div>
+                                        <div class="feature-card">
+                                            <div class="text-3xl mb-3">📱</div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">Tablet</h5>
+                                            <p class="text-gray-600 text-sm">Nto, ikoreshwa n'intoki, ifite touchscreen</p>
+                                        </div>
+                                        <div class="feature-card">
+                                            <div class="text-3xl mb-3">📟</div>
+                                            <h5 class="font-semibold text-gray-800 mb-2">Smartphone</h5>
+                                            <p class="text-gray-600 text-sm">Telephone ifite ubushobozi bwa computer</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-center justify-center">
+                                    <img 
+                                        src="https://ik.imagekit.io/73qho7kh9/unnamed.webp?updatedAt=1763848910350" 
+                                        alt="Ubwoko bw'computer"
+                                        class="w-full h-64 object-cover rounded-lg"
+                                    >
+                                    <div class="note-box mt-4">
+                                        <p class="text-yellow-700 text-sm">
+                                            <strong>Icyitonderwa:</strong> Uyu munsi, telephone yawe ni computer! Ifite processor, memory, 
+                                            storage, kandi ikora imirimo nka computer z'ibanze.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tab-benefits" class="tab-content">
+                            <div class="grid lg:grid-cols-2 gap-8">
+                                <div>
+                                    <h4 class="font-bold text-gray-800 mb-4">🎯 Akamaro k'Computer mu Buzima:</h4>
+                                    
+                                    <div class="space-y-4">
+                                        <div class="flex items-start p-3 bg-green-50 rounded-lg">
+                                            <span class="text-green-600 mr-3 text-xl">⚡</span>
+                                            <div>
+                                                <strong class="text-green-800">Gukora byihuse</strong>
+                                                <p class="text-green-700 text-sm">Ikora ibintu byinshi mu masegonda make</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                                            <span class="text-blue-600 mr-3 text-xl">🎯</span>
+                                            <div>
+                                                <strong class="text-blue-800">Gukora neza</strong>
+                                                <p class="text-blue-700 text-sm">Ntikora amakosa niba yahawe amabwiriza meza</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start p-3 bg-purple-50 rounded-lg">
+                                            <span class="text-purple-600 mr-3 text-xl">💾</span>
+                                            <div>
+                                                <strong class="text-purple-800">Kubika byinshi</strong>
+                                                <p class="text-purple-700 text-sm">Ibika amakuru menshi kurusha ubwenge bw'umuntu</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start p-3 bg-yellow-50 rounded-lg">
+                                            <span class="text-yellow-600 mr-3 text-xl">🔄</span>
+                                            <div>
+                                                <strong class="text-yellow-800">Gukora ibintu byinshi</strong>
+                                                <p class="text-yellow-700 text-sm">Ikora imirimo itandukanye icyarimwe</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col items-center justify-center">
+                                    <img 
+                                        src="https://ik.imagekit.io/73qho7kh9/Random-Access-Memory.jpg?updatedAt=1763841030620" 
+                                        alt="Akamaro k'Computer"
+                                        class="w-full h-64 object-cover rounded-lg"
+                                    >
+                                    <div class="warning-box mt-4">
+                                        <p class="text-red-700 text-sm">
+                                            <strong>Icyitonderwa:</strong> Nubwo computer ifite akamaro kanini, ikenewe gukoreshwa mu buryo bwiza. 
+                                            Koresha computer mu buryo bwizewe kugirango uzirinde ibibazo by'ubuzima.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Practice Exercise -->
+                    <div class="practice-exercise">
+                        <h4 class="font-bold text-blue-800 mb-4">🛠️ Practice: Menya Computer Yawe</h4>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">1</div>
+                                <div>
+                                    <strong>Reba computer yawe</strong>
+                                    <p class="text-sm text-gray-600">Menya aho monitor, keyboard, mouse biri. Tekereza uko bikorana.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">2</div>
+                                <div>
+                                    <strong>Fungura ikintu</strong>
+                                    <p class="text-sm text-gray-600">Kanda buto yo "Start" cyangwa ikirango cy'igikoresho (nka Microsoft Word)</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">3</div>
+                                <div>
+                                    <strong>Kora ikintu</strong>
+                                    <p class="text-sm text-gray-600">Andika amagambo make cyangwa shakisha ikintu kuri Internet</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">4</div>
+                                <div>
+                                    <strong>Andika ibyo wakoze</strong>
+                                    <p class="text-sm text-gray-600">Andika ibintu 3 wakoze: Input, Processing, Output</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+<!-- History Section with Enhanced Accordions -->
+<section id="history" class="bg-white rounded-2xl shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+        <span class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mr-3">2</span>
+        Amateka ya Computer - Inkomoko n'Iterambere
+    </h2>
+
+    <div class="note-box">
+        <h4 class="font-semibold text-yellow-800 mb-2">📚 Icyitegererezo:</h4>
+        <p class="text-yellow-700">
+            Computer yatangiye nk'igikoresho cyo kubara gito cyane, ariko ubu iri gukora ibintu byinshi 
+            kurusha ubwenge bw'umuntu. Iyi ni ingendo y'iterambere!
+        </p>
+    </div>
+
+    <!-- Enhanced Accordions for History -->
+    <div class="space-y-4 mt-6">
+        <!-- Early Tools Accordion -->
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion('early-tools')">
+                <span>🕰️ Ibihe bya Mbere (Before 1900)</span>
+                <span class="accordion-arrow">▼</span>
+            </div>
+            <div id="early-tools" class="accordion-content">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-3">Abacus (5000 BC)</h4>
+                        <p class="text-gray-700 mb-4">
+                            Igikoresho cya kera cyo kubara cyakoreshwaga n'abo Mesopotomyani. 
+                            Cyari gifite imirongo n'impu zerekana imibare.
+                        </p>
+                        <div class="tip-box">
+                            <h5 class="font-semibold text-green-800 mb-2">🔍 Ibisobanuro:</h5>
+                            <ul class="text-green-700 space-y-1 text-sm">
+                                <li>• Yakuwe mu Kiryapani "Abax"</li>
+                                <li>• Yakoreshwaga mu gukora imibare</li>
+                                <li>• Ni cyo cyatumye haboneka imibare</li>
+                                <li>• Hari abantu bakiri bakoresha Abacus uyu munsi</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <img 
+                            src="https://ik.imagekit.io/73qho7kh9/Random-Access-Memory.jpg?updatedAt=1763841030620" 
+                            alt="Abacus - Igikoresho cya kera"
+                            class="w-full h-48 object-cover rounded-lg"
+                        >
+                        <p class="text-gray-600 text-sm text-center mt-2 italic">
+                            Abacus - Computer ya kera yatangiriyeho
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- First Machines Accordion -->
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion('first-machines')">
+                <span>⚙️ Imashini za Mbere (1642-1945)</span>
+                <span class="accordion-arrow">▼</span>
+            </div>
+            <div id="first-machines" class="accordion-content">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-3">Pascaline (1642)</h4>
+                        <p class="text-gray-700 mb-4">
+                            Yakozwe na <strong>Blaise Pascal</strong> mu gihe yari afite imyaka 19 gusa. 
+                            Yari imashini ya mbere ibara ifite ubushobozi bwo gukora imibare.
+                        </p>
+                        
+                        <h4 class="font-bold text-gray-800 mb-3 mt-4">Analytical Engine</h4>
+                        <p class="text-gray-700 mb-4">
+                            <strong>Charles Babbage</strong> (Se wa mudasobwa) ni we wayihanze. 
+                            Yari ifite ubushobozi bwo gukoresha amabwiriza nk'ubu.
+                        </p>
+
+                        <div class="warning-box">
+                            <h5 class="font-semibold text-red-800 mb-2">💡 Icyo Wamenya:</h5>
+                            <p class="text-red-700 text-sm">
+                                Ibi byari ibintu byihariye cyane mu bihe byo. Abantu benshi ntibabyemera 
+                                ko hari icyuma gishobora gukora nk'ubwenge bw'umuntu.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center justify-center">
+                        <img 
+                            src="https://ik.imagekit.io/73qho7kh9/download.jpeg?updatedAt=1763848909778" 
+                            alt="Imashini za mbere"
+                            class="w-full h-48 object-cover rounded-lg"
+                        >
+                        <p class="text-gray-600 text-sm text-center mt-2 italic">
+                            Imashini za mbere - Inkomoko y'ubwenge bwa elektroniki
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modern Era Accordion -->
+        <div class="accordion">
+            <div class="accordion-header" onclick="toggleAccordion('modern-era')">
+                <span>🚀 Igihe cya Gikorabuhanga (1946-Ubu)</span>
+                <span class="accordion-arrow">▼</span>
+            </div>
+            <div id="modern-era" class="accordion-content">
+                <div class="space-y-4">
+                    <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="font-bold text-blue-800 mb-2">ENIAC (1946)</h4>
+                        <p class="text-blue-700">
+                            Mudasobwa ya mbere nini ya gikorabuhanga. Yari ifite toni 30, 
+                            ikoresha amashanyarazi menshi, kandi yari ikora imibare yo ku rugamba.
+                        </p>
+                        <div class="text-xs text-blue-600 mt-2">
+                            📏 Ubunini: 167m² | ⚡ Amashanyarazi: 150kW | 💰 Agaciro: $500,000
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                        <h4 class="font-bold text-green-800 mb-2">Personal Computers (1970s)</h4>
+                        <p class="text-green-700">
+                            Apple na IBM batangije PC. Computer zaguye ku buntu, 
+                            zikora ibintu byinshi, zikaba zigurishwa ku buntu.
+                        </p>
+                        <div class="text-xs text-green-600 mt-2">
+                            🍎 Apple I (1976) | 💻 IBM PC (1981) | 🪟 Windows (1985)
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                        <h4 class="font-bold text-purple-800 mb-2">Internet Era (1990s)</h4>
+                        <p class="text-purple-700">
+                            World Wide Web yatangijwe, computer zongeye gukora intera. 
+                            Abantu batangiye gukoresha email, gushakisha amakuru, no gukora online.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Computer Generations Timeline -->
+    <div class="mt-8">
+        <h4 class="font-bold text-gray-800 mb-4">🔄 Ibihe bya Computer (Generations)</h4>
+        <div class="grid md:grid-cols-5 gap-3 text-center">
+            <div class="bg-red-50 p-4 rounded-lg border border-red-200 hover:shadow-md transition-shadow">
+                <div class="text-2xl mb-2">1️⃣</div>
+                <div class="font-bold text-red-800 text-sm mb-1">1946-1959</div>
+                <div class="text-red-700 text-xs">Vacuum Tubes</div>
+                <div class="text-red-600 text-2xs mt-1">ENIAC, UNIVAC</div>
+            </div>
+            <div class="bg-orange-50 p-4 rounded-lg border border-orange-200 hover:shadow-md transition-shadow">
+                <div class="text-2xl mb-2">2️⃣</div>
+                <div class="font-bold text-orange-800 text-sm mb-1">1959-1965</div>
+                <div class="text-orange-700 text-xs">Transistors</div>
+                <div class="text-orange-600 text-2xs mt-1">IBM 1401</div>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200 hover:shadow-md transition-shadow">
+                <div class="text-2xl mb-2">3️⃣</div>
+                <div class="font-bold text-yellow-800 text-sm mb-1">1965-1971</div>
+                <div class="text-yellow-700 text-xs">ICs</div>
+                <div class="text-yellow-600 text-2xs mt-1">IBM 360</div>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg border border-green-200 hover:shadow-md transition-shadow">
+                <div class="text-2xl mb-2">4️⃣</div>
+                <div class="font-bold text-green-800 text-sm mb-1">1971-2000</div>
+                <div class="text-green-700 text-xs">Microprocessors</div>
+                <div class="text-green-600 text-2xs mt-1">PC, Apple</div>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg border border-blue-200 hover:shadow-md transition-shadow">
+                <div class="text-2xl mb-2">5️⃣</div>
+                <div class="font-bold text-blue-800 text-sm mb-1">2000-Ubu</div>
+                <div class="text-blue-700 text-xs">AI & Cloud</div>
+                <div class="text-blue-600 text-2xs mt-1">Smartphones, IoT</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Practice Exercise for History -->
+    <div class="practice-exercise mt-6">
+        <h4 class="font-bold text-blue-800 mb-3">🛠️ Practice: Tekereza Iterambere</h4>
+        <div class="exercise-step">
+            <div class="flex items-start">
+                <div class="step-indicator">1</div>
+                <div>
+                    <strong>Reba telephone yawe</strong>
+                    <p class="text-sm text-gray-600">Menya ko telephone yawe ni computer nini mu gifunze</p>
+                </div>
+            </div>
+        </div>
+        <div class="exercise-step">
+            <div class="flex items-start">
+                <div class="step-indicator">2</div>
+                <div>
+                    <strong>Tekereza ibyihuse</strong>
+                    <p class="text-sm text-gray-600">Computer yatangiye nini nka urugo, ubu iri mu gifunze</p>
+                </div>
+            </div>
+        </div>
+        <div class="exercise-step">
+            <div class="flex items-start">
+                <div class="step-indicator">3</div>
+                <div>
+                    <strong>Andika ibitekerezo</strong>
+                    <p class="text-sm text-gray-600">Andika ibyo utekerezaho ku iterambere rya teknoloji</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Computer Types Section -->
+<section id="types" class="bg-white rounded-2xl shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+        <span class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mr-3">3</span>
+        Ubwoko bw'Computer - Ibyiciro by'Ingenzi
+    </h2>
+
+    <div class="tabs-container">
+        <div class="tabs-header">
+            <button class="tab-button active" onclick="openTab('types-by-size')">📏 Ku Bunini</button>
+            <button class="tab-button" onclick="openTab('types-by-use')">🎯 Ku Gikoresho</button>
+            <button class="tab-button" onclick="openTab('types-by-purpose')">💼 Ku Ntego</button>
+        </div>
+        
+        <div id="types-by-size" class="tab-content active">
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="feature-card text-center">
+                    <div class="text-4xl mb-3">🖥️</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Desktop</h4>
+                    <p class="text-gray-600 text-sm">Ikoreshwa mu nzu/mu biro, ifite ibice bigerekanwa</p>
+                    <div class="text-xs text-blue-600 mt-2">📏 Nini | 🔌 Itazima</div>
+                </div>
+                <div class="feature-card text-center">
+                    <div class="text-4xl mb-3">💻</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Laptop</h4>
+                    <p class="text-gray-600 text-sm">Ifite bateri, uyikwira aho ushaka, yuzuye</p>
+                    <div class="text-xs text-green-600 mt-2">📏 Igerekeye | 🔋 Itazima</div>
+                </div>
+                <div class="feature-card text-center">
+                    <div class="text-4xl mb-3">📱</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Tablet</h4>
+                    <p class="text-gray-600 text-sm">Nto, ikoreshwa n'intoki, ifite touchscreen</p>
+                    <div class="text-xs text-purple-600 mt-2">📏 Nto | 👆 Touchscreen</div>
+                </div>
+                <div class="feature-card text-center">
+                    <div class="text-4xl mb-3">📟</div>
+                    <h4 class="font-bold text-gray-800 mb-2">Smartphone</h4>
+                    <p class="text-gray-600 text-sm">Telephone ifite ubushobozi bwa computer</p>
+                    <div class="text-xs text-red-600 mt-2">📏 Cyane | 📞 Telephone</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="types-by-use" class="tab-content">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-3">🏠 Computer zo mu Rugo:</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                            Personal Computers (PC)
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                            Laptops na Tablets
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                            Gaming Computers
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-gray-800 mb-3">🏢 Computer zo mu Bigo:</h4>
+                    <ul class="space-y-2 text-gray-600">
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Workstations
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Servers
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                            Mainframes
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div id="types-by-purpose" class="tab-content">
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl mb-2">💼</div>
+                    <h4 class="font-semibold text-gray-800">Business</h4>
+                    <p class="text-gray-600 text-xs mt-1">Gukora raporo, email, meetings</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl mb-2">🎮</div>
+                    <h4 class="font-semibold text-gray-800">Gaming</h4>
+                    <p class="text-gray-600 text-xs mt-1">Kurara imikino, graphics nziza</p>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl mb-2">🎨</div>
+                    <h4 class="font-semibold text-gray-800">Design</h4>
+                    <p class="text-gray-600 text-xs mt-1">Gushushanya, video editing</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Comprehensive Quiz Section -->
+<section id="quiz" class="bg-white rounded-2xl shadow-lg p-8">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+        <span class="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center mr-3">4</span>
+        Gereranya Ubumenyi Bwawe - Ibibazo 10
+    </h2>
+
+    <div class="note-box">
+        <h4 class="font-semibold text-yellow-800 mb-2">📝 Amabwiriza:</h4>
+        <p class="text-yellow-700">
+            Hitamo impinduro nziza ku kibazo cyose. Reba impinduro zose mbere wo guhitamo. 
+            Niba udahugiye, subira usome ibyo wize.
+        </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-6 mt-4">
+        <div class="space-y-4">
+            <!-- Question 1 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">1. Ni iki computer?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz1" value="a" class="text-blue-600">
+                        <span>A) Igikoresho gikoreshwa mu guteka</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz1" value="b" class="text-blue-600">
+                        <span>B) Igikoresho gikoreshwa mu gutunganya amakuru</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz1" value="c" class="text-blue-600">
+                        <span>C) Ikinyabiziga</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">2. Ni iyihe computer uyikwira aho ushaka?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz2" value="a" class="text-blue-600">
+                        <span>A) Desktop</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz2" value="b" class="text-blue-600">
+                        <span>B) Laptop</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz2" value="c" class="text-blue-600">
+                        <span>C) Supercomputer</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">3. Ni nde azwi nka "Se wa mudasobwa"?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz3" value="a" class="text-blue-600">
+                        <span>A) Bill Gates</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz3" value="b" class="text-blue-600">
+                        <span>B) Charles Babbage</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz3" value="c" class="text-blue-600">
+                        <span>C) Steve Jobs</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">4. Computer ikoreshwa mu buzi mu buryo ki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz4" value="a" class="text-blue-600">
+                        <span>A) E-learning n'amashuli</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz4" value="b" class="text-blue-600">
+                        <span>B) Guteka</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz4" value="c" class="text-blue-600">
+                        <span>C) Kubaka inzu</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">5. Ikihe gikoresho computer yakira amakuru?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz5" value="a" class="text-blue-600">
+                        <span>A) Monitor</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz5" value="b" class="text-blue-600">
+                        <span>B) Keyboard</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz5" value="c" class="text-blue-600">
+                        <span>C) Printer</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="space-y-4">
+            <!-- Questions 6-10 would continue here with similar structure -->
+            <!-- Question 6 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">6. Computer ya mbere yari ifite izina riki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz6" value="a" class="text-blue-600">
+                        <span>A) ENIAC</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz6" value="b" class="text-blue-600">
+                        <span>B) MAC</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz6" value="c" class="text-blue-600">
+                        <span>C) PC</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Continue with questions 7-10 in similar format -->
+            <!-- Question 7 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">7. Ikihe ni kimwe mu bintu computer ikora?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz7" value="a" class="text-blue-600">
+                        <span>A) Guteka</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz7" value="b" class="text-blue-600">
+                        <span>B) Kubika amakuru</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz7" value="c" class="text-blue-600">
+                        <span>C) Kurya</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">8. Telephone ifite ubushobozi bwa computer ni iyihe?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz8" value="a" class="text-blue-600">
+                        <span>A) Smartphone</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz8" value="b" class="text-blue-600">
+                        <span>B) Telephone ya kera</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz8" value="c" class="text-blue-600">
+                        <span>C) Radio</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">9. Ikihe gikoresho computer isohoreramo amakuru?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz9" value="a" class="text-blue-600">
+                        <span>A) Mouse</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz9" value="b" class="text-blue-600">
+                        <span>B) Monitor</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz9" value="c" class="text-blue-600">
+                        <span>C) Keyboard</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="p-4 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors">
+                <h4 class="font-semibold text-gray-800 mb-2">10. Computer ikora imirimo ingana iki?</h4>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz10" value="a" class="text-blue-600">
+                        <span>A) Imwe gusa</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz10" value="b" class="text-blue-600">
+                        <span>B) Ebyiri</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-2 hover:bg-gray-50 rounded cursor-pointer">
+                        <input type="radio" name="quiz10" value="c" class="text-blue-600">
+                        <span>C) Byinshi icyarimwe</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button id="check-quiz" class="mt-6 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors w-full text-lg">
+        🔍 Reba Impinduro z'Ibibazo 10 Byose
+    </button>
+
+    <div id="quiz-result" class="mt-4 hidden p-4 rounded-lg"></div>
+</section>
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+                <a href="../index.html" class="flex items-center space-x-2 text-gray-600 hover:text-green-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Subira ku Ngingo</span>
+                </a>
+                
+                <a href="2-hardware.html" class="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <span>Genda ku Gice Gikurikira: Hardware</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        // Load components
+        fetch('../../../components/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load header:', err));
+
+        fetch('../../../components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load footer:', err));
+
+        // Tabs functionality
+        function openTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show the selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to the clicked button
+            event.currentTarget.classList.add('active');
+        }
+
+        // Accordion functionality
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const header = content.previousElementSibling;
+            const arrow = header.querySelector('.accordion-arrow');
+            
+            content.classList.toggle('active');
+            header.classList.toggle('active');
+            arrow.textContent = content.classList.contains('active') ? '▲' : '▼';
+        }
+
+// === LESSON PROGRESS TRACKING SYSTEM ===
+class LessonProgress {
+    constructor() {
+        this.lessonId = '1-introduction';
+        this.sections = ['definition', 'history', 'types', 'quiz'];
+        this.completedSections = new Set();
+        this.loadProgress();
+        this.setupEventListeners();
+        this.updateProgressBar();
+        this.setupSectionObserver();
+    }
+
+    // === LOAD PROGRESS FROM LOCALSTORAGE ===
+    loadProgress() {
+        try {
+            const saved = localStorage.getItem(`lesson-${this.lessonId}`);
+            if (saved) {
+                this.completedSections = new Set(JSON.parse(saved));
+                console.log('📊 Loaded progress:', this.completedSections);
+            }
+        } catch (error) {
+            console.error('❌ Error loading progress:', error);
+            this.completedSections = new Set();
+        }
+    }
+
+    // === SAVE PROGRESS TO LOCALSTORAGE ===
+    saveProgress() {
+        try {
+            localStorage.setItem(`lesson-${this.lessonId}`, JSON.stringify([...this.completedSections]));
+            console.log('💾 Saved progress:', this.completedSections);
+        } catch (error) {
+            console.error('❌ Error saving progress:', error);
+        }
+    }
+
+    // === MARK SECTION AS COMPLETED ===
+    markSectionComplete(section) {
+        if (!this.completedSections.has(section)) {
+            this.completedSections.add(section);
+            this.saveProgress();
+            this.updateProgressBar();
+            this.showCompletionNotification(section);
+            
+            // Check if all sections are completed
+            if (this.completedSections.size === this.sections.length) {
+                this.enableLessonCompletion();
+            }
+        }
+    }
+
+    // === UPDATE PROGRESS BAR VISUALLY ===
+    updateProgressBar() {
+        const progress = (this.completedSections.size / this.sections.length) * 100;
+        const progressBar = document.getElementById('lesson-progress');
+        
+        if (progressBar) {
+            progressBar.style.width = `${progress}%`;
+            progressBar.setAttribute('aria-valuenow', progress);
+            
+            // Add animation effect
+            progressBar.style.transition = 'width 0.8s ease-in-out';
+            
+            console.log(`📈 Progress: ${Math.round(progress)}% (${this.completedSections.size}/${this.sections.length} sections)`);
+        }
+    }
+
+    // === SHOW COMPLETION NOTIFICATION ===
+    showCompletionNotification(section) {
+        const sectionNames = {
+            'definition': 'Ibisobanuro',
+            'history': 'Amateka',
+            'types': 'Ubwoko bw\'Computer',
+            'quiz': 'Ibibazo'
+        };
+        
+        const sectionName = sectionNames[section] || section;
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce';
+        notification.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <span>✅</span>
+                <span>Uranditse: <strong>${sectionName}</strong></span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+
+    // === ENABLE LESSON COMPLETION BUTTON ===
+    enableLessonCompletion() {
+        const completeButton = document.getElementById('complete-lesson');
+        if (completeButton) {
+            completeButton.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+            completeButton.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white', 'animate-pulse');
+            completeButton.innerHTML = `
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span>Emeza Kurangiza Iki Gice 🎉</span>
+            `;
+            
+            // Add celebration effect
+            this.celebrateCompletion();
+        }
+    }
+
+    // === CELEBRATION EFFECT FOR COMPLETION ===
+    celebrateCompletion() {
+        // Add confetti effect or other celebration
+        console.log('🎉 All sections completed! Ready for final submission.');
+        
+        // Show completion message
+        const message = document.createElement('div');
+        message.className = 'fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-green-500 to-blue-500 text-white px-6 py-3 rounded-full shadow-xl z-50';
+        message.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <span>🎓</span>
+                <span class="font-semibold">Warangije ibice byose! Emeza kurangiza.</span>
+            </div>
+        `;
+        
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+            message.remove();
+        }, 5000);
+    }
+
+    // === SETUP INTERSECTION OBSERVER FOR SECTIONS ===
+    setupSectionObserver() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+                    const section = entry.target.id;
+                    if (section && this.sections.includes(section)) {
+                        this.markSectionComplete(section);
+                        console.log(`👀 Section visible: ${section}`);
+                    }
+                }
+            });
+        }, { 
+            threshold: 0.6,
+            rootMargin: '0px 0px -10% 0px'
+        });
+
+        // Observe each section
+        this.sections.forEach(section => {
+            const element = document.getElementById(section);
+            if (element) {
+                observer.observe(element);
+                console.log(`🔍 Observing section: ${section}`);
+            } else {
+                console.warn(`⚠️ Section not found: ${section}`);
+            }
+        });
+    }
+
+    // === SETUP EVENT LISTENERS ===
+    setupEventListeners() {
+        // Quiz checker
+        const checkQuizButton = document.getElementById('check-quiz');
+        if (checkQuizButton) {
+            checkQuizButton.addEventListener('click', () => {
+                this.checkQuiz();
+            });
+        }
+
+        // Lesson completion
+        const completeButton = document.getElementById('complete-lesson');
+        if (completeButton) {
+            completeButton.addEventListener('click', () => {
+                this.completeLesson();
+            });
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl + Enter to complete lesson
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                this.completeLesson();
+            }
+            
+            // Space to check quiz
+            if (e.key === ' ' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                const checkButton = document.getElementById('check-quiz');
+                if (checkButton) checkButton.click();
+            }
+        });
+
+        // Beforeunload event to save progress
+        window.addEventListener('beforeunload', () => {
+            this.saveProgress();
+        });
+    }
+
+    // === QUIZ CHECKING SYSTEM ===
+    checkQuiz() {
+        const answers = {
+            quiz1: 'b',
+            quiz2: 'b',
+            quiz3: 'b',
+            quiz4: 'a',
+            quiz5: 'b',
+            quiz6: 'a',
+            quiz7: 'b',
+            quiz8: 'a',
+            quiz9: 'b',
+            quiz10: 'c'
+        };
+
+        let correct = 0;
+        let total = 0;
+
+        // Check each question
+        for (const [question, correctAnswer] of Object.entries(answers)) {
+            const selected = document.querySelector(`input[name="${question}"]:checked`);
+            if (selected) {
+                total++;
+                if (selected.value === correctAnswer) {
+                    correct++;
+                    // Mark correct answer
+                    selected.parentElement.classList.add('text-green-600', 'font-semibold');
+                    selected.parentElement.classList.remove('text-red-600');
+                } else {
+                    // Mark wrong answer
+                    selected.parentElement.classList.add('text-red-600');
+                    selected.parentElement.classList.remove('text-green-600', 'font-semibold');
+                    
+                    // Highlight correct answer
+                    const correctOption = document.querySelector(`input[name="${question}"][value="${correctAnswer}"]`);
+                    if (correctOption) {
+                        correctOption.parentElement.classList.add('text-green-600', 'font-semibold');
+                    }
+                }
+            }
+        }
+
+        // Show results
+        this.showQuizResults(correct, total);
+        
+        // Mark quiz as completed if passed
+        if (correct === total) {
+            this.markSectionComplete('quiz');
+        }
+    }
+
+    // === SHOW QUIZ RESULTS ===
+    showQuizResults(correct, total) {
+        const resultDiv = document.getElementById('quiz-result');
+        if (!resultDiv) return;
+
+        const percentage = Math.round((correct / total) * 100);
+        const isPassed = percentage >= 70;
+
+        resultDiv.className = `mt-6 p-6 rounded-lg border-2 ${
+            isPassed 
+            ? 'bg-green-50 border-green-200 text-green-800' 
+            : 'bg-yellow-50 border-yellow-200 text-yellow-800'
+        }`;
+        
+        resultDiv.innerHTML = `
+            <div class="text-center">
+                <div class="text-2xl mb-2">${isPassed ? '🎉' : '💪'}</div>
+                <h4 class="font-bold text-lg mb-2">Igisubizo:</h4>
+                <div class="text-3xl font-bold mb-2">${correct} / ${total}</div>
+                <div class="text-xl mb-4">(${percentage}%)</div>
+                <p class="mb-4">
+                    ${isPassed 
+                        ? 'Wakoze neza! Urasobanukirwa neza ibyo wize ku bijyanye na Computer.' 
+                        : 'Hari ibyo usabwa kwiga nanone. Subira usome ibice utarasobanukirwa neza.'
+                    }
+                </p>
+                ${!isPassed ? `
+                    <button onclick="window.location.reload()" 
+                            class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
+                        🔄 Subira Kwiga
+                    </button>
+                ` : ''}
+            </div>
+        `;
+        
+        resultDiv.classList.remove('hidden');
+        resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // === COMPLETE LESSON FINALLY ===
+    completeLesson() {
+        if (this.completedSections.size === this.sections.length) {
+            // Update course progress
+            this.updateCourseProgress();
+            
+            // Show success message
+            this.showCompletionMessage();
+            
+            // Disable completion button
+            const completeButton = document.getElementById('complete-lesson');
+            if (completeButton) {
+                completeButton.disabled = true;
+                completeButton.innerHTML = `
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Warangije! 🎓</span>
+                `;
+                completeButton.classList.remove('animate-pulse');
+            }
+        } else {
+            this.showIncompleteWarning();
+        }
+    }
+
+    // === UPDATE COURSE PROGRESS ===
+    updateCourseProgress() {
+        try {
+            const courseProgress = JSON.parse(localStorage.getItem('progress-computer-basics') || '[]');
+            const lessonIndex = courseProgress.findIndex(l => l.id === '1');
+            
+            if (lessonIndex !== -1) {
+                courseProgress[lessonIndex].completed = true;
+                courseProgress[lessonIndex].completedAt = new Date().toISOString();
+                courseProgress[lessonIndex].score = this.calculateOverallScore();
+            } else {
+                courseProgress.push({
+                    id: '1',
+                    title: 'Intangiriro: Icyo Computer Ari Cyo',
+                    completed: true,
+                    completedAt: new Date().toISOString(),
+                    score: this.calculateOverallScore()
+                });
+            }
+            
+            localStorage.setItem('progress-computer-basics', JSON.stringify(courseProgress));
+            console.log('📚 Course progress updated:', courseProgress);
+        } catch (error) {
+            console.error('❌ Error updating course progress:', error);
+        }
+    }
+
+    // === CALCULATE OVERALL SCORE ===
+    calculateOverallScore() {
+        // Simple scoring based on completed sections
+        return Math.round((this.completedSections.size / this.sections.length) * 100);
+    }
+
+    // === SHOW COMPLETION MESSAGE ===
+    showCompletionMessage() {
+        const message = document.createElement('div');
+        message.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+        message.innerHTML = `
+            <div class="bg-white rounded-2xl p-8 max-w-md mx-4 text-center">
+                <div class="text-6xl mb-4">🎓</div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Warangije neza!</h3>
+                <p class="text-gray-600 mb-6">
+                    Uranditse igice cya mbere cy'amasomo ya Computer Basics. 
+                    Urashobora gukomeza ku gice gikurikira.
+                </p>
+                <div class="flex space-x-4">
+                    <button onclick="window.location.href='../index.html'" 
+                            class="flex-1 bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors">
+                        📚 Subira
+                    </button>
+                    <button onclick="window.location.href='2-hardware.html'" 
+                            class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                        ⚡ Genda Ku Gikurikira
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(message);
+        
+        // Close modal when clicking outside
+        message.addEventListener('click', (e) => {
+            if (e.target === message) {
+                message.remove();
+            }
+        });
+    }
+
+    // === SHOW INCOMPLETE WARNING ===
+    showIncompleteWarning() {
+        const incompleteSections = this.sections.filter(s => !this.completedSections.has(s));
+        const sectionNames = {
+            'definition': 'Ibisobanuro',
+            'history': 'Amateka',
+            'types': 'Ubwoko bw\'Computer',
+            'quiz': 'Ibibazo'
+        };
+        
+        const missingNames = incompleteSections.map(s => sectionNames[s] || s);
+        
+        alert(`⚠️ Ntugomba kurangiza ibice byose mbere yo kwemeza kurangiza.\n\nIbice usigaye: ${missingNames.join(', ')}`);
+    }
+}
+
+// === INITIALIZE LESSON PROGRESS WHEN PAGE LOADS ===
+document.addEventListener('DOMContentLoaded', () => {
+    // Add some custom styles for progress elements
+    const style = document.createElement('style');
+    style.textContent = `
+        .progress-step.completed {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .progress-step.completed .progress-number {
+            background: white;
+            color: #10b981;
+        }
+        @keyframes celebrate {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        .celebrate {
+            animation: celebrate 0.5s ease-in-out 3;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Initialize lesson progress
+    window.lessonProgress = new LessonProgress();
+    console.log('🚀 Lesson Progress System Initialized');
+});
+    </script>
+</body>
+</html>

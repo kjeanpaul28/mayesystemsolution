@@ -1,0 +1,758 @@
+/* ==================================== */
+/* 1. General Pricing Styles - UPDATED */
+/* ==================================== */
+
+.pricing-hero {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #1B5E20 100%);
+    color: white;
+    padding: 5rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.pricing-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+    background-size: cover;
+}
+
+.pricing-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.pricing-hero p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.25rem;
+    opacity: 0.95;
+    line-height: 1.6;
+    position: relative;
+}
+
+/* ==================================== */
+/* 2. Pricing Cards - UPDATED */
+/* ==================================== */
+
+.price-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.price-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.price-card.featured {
+    border-color: #f59e0b;
+    background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+    transform: scale(1.02);
+}
+
+.price-card.featured:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 1rem;
+    right: -2rem;
+    background: #f59e0b;
+    color: white;
+    padding: 0.5rem 3rem;
+    transform: rotate(45deg);
+    font-size: 0.875rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    z-index: 10;
+}
+
+/* Card Header Styles */
+.card-icon {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.5rem;
+}
+
+.card-icon.starter {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #3b82f6;
+}
+
+.card-icon.featured {
+    background: linear-gradient(135deg, #fffbeb, #fed7aa);
+    color: #f59e0b;
+}
+
+.card-icon.learning {
+    background: linear-gradient(135deg, #faf5ff, #e9d5ff);
+    color: #8b5cf6;
+}
+
+.price-card h3 {
+    color: #1f2937;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.card-description {
+    color: #6b7280;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+/* ==================================== */
+/* 3. Pricing Tags - UPDATED */
+/* ==================================== */
+
+.price-tag {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #10b981;
+    margin: 1rem 0;
+    text-align: center;
+    line-height: 1;
+}
+
+.price-card.featured .price-tag {
+    color: #f59e0b;
+}
+
+.price-currency {
+    font-size: 1rem;
+    font-weight: 600;
+    vertical-align: top;
+    margin-right: 0.25rem;
+}
+
+.price-period {
+    font-size: 1rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-left: 0.25rem;
+}
+
+/* ==================================== */
+/* 4. Features List - UPDATED */
+/* ==================================== */
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    flex-grow: 1;
+}
+
+.features-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed #e5e7eb;
+    display: flex;
+    align-items: center;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.features-list li:last-child {
+    border-bottom: none;
+}
+
+.features-list li::before {
+    content: '✓';
+    color: #10b981;
+    font-weight: bold;
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.features-list li strong {
+    color: #1f2937;
+    font-weight: 600;
+}
+
+/* ==================================== */
+/* 5. Action Buttons - UPDATED */
+/* ==================================== */
+
+.pricing-btn {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    margin-top: auto;
+}
+
+.btn-starter {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-starter:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+.btn-featured {
+    background: #f59e0b;
+    color: white;
+}
+
+.btn-featured:hover {
+    background: #d97706;
+    transform: translateY(-2px);
+}
+
+.btn-learning {
+    background: #8b5cf6;
+    color: white;
+}
+
+.btn-learning:hover {
+    background: #7c3aed;
+    transform: translateY(-2px);
+}
+
+.btn-custom {
+    background: #10b981;
+    color: white;
+    display: inline-block;
+    width: auto;
+    padding: 0.75rem 2rem;
+}
+
+.btn-custom:hover {
+    background: #059669;
+    transform: translateY(-2px);
+}
+
+/* ==================================== */
+/* 6. Custom Quote Section - UPDATED */
+/* ==================================== */
+
+.custom-quote-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 1rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-quote-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+}
+
+.quote-icon {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    color: #10b981;
+    font-size: 2rem;
+}
+
+.custom-quote-section h2 {
+    color: #1f2937;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.quote-description {
+    color: #6b7280;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ==================================== */
+/* 7. Benefits Section - UPDATED */
+/* ==================================== */
+
+.benefits-section {
+    background: white;
+    padding: 3rem 1rem;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.benefit-item {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.benefit-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 1.25rem;
+}
+
+.benefit-icon.sync {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #3b82f6;
+}
+
+.benefit-icon.shield {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    color: #10b981;
+}
+
+.benefit-icon.support {
+    background: linear-gradient(135deg, #faf5ff, #e9d5ff);
+    color: #8b5cf6;
+}
+
+.benefit-item h3 {
+    color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.benefit-item p {
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* ==================================== */
+/* 8. Loading States - UPDATED */
+/* ==================================== */
+
+.loading-component {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+    transition: all 0.3s ease;
+}
+
+.loading-spinner {
+    border: 2px solid #f3f4f6;
+    border-top: 2px solid #10b981;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==================================== */
+/* 9. Animation Utilities - UPDATED */
+/* ==================================== */
+
+.fade-in {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.slide-up {
+    animation: slideUp 0.8s ease-out;
+}
+
+.stagger-animation > * {
+    opacity: 0;
+    animation: slideUp 0.8s ease-out forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================================== */
+/* 10. Responsive Design - UPDATED */
+/* ==================================== */
+
+@media (max-width: 768px) {
+    .pricing-hero {
+        padding: 3rem 1rem;
+    }
+    
+    .pricing-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .pricing-hero p {
+        font-size: 1.125rem;
+    }
+    
+    .price-card {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .price-card.featured {
+        transform: none;
+    }
+    
+    .price-card.featured:hover {
+        transform: translateY(-8px);
+    }
+    
+    .price-tag {
+        font-size: 2.5rem;
+    }
+    
+    .features-list li {
+        padding: 0.5rem 0;
+        font-size: 0.95rem;
+    }
+    
+    .custom-quote-section {
+        padding: 2rem 1rem;
+    }
+    
+    .custom-quote-section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .quote-description {
+        font-size: 1rem;
+    }
+    
+    .benefits-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .benefit-item {
+        padding: 1.5rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .pricing-hero h1 {
+        font-size: 1.75rem;
+    }
+    
+    .price-card h3 {
+        font-size: 1.25rem;
+    }
+    
+    .price-tag {
+        font-size: 2rem;
+    }
+    
+    .featured-badge {
+        font-size: 0.75rem;
+        padding: 0.375rem 2.5rem;
+        right: -1.5rem;
+    }
+    
+    .custom-quote-section h2 {
+        font-size: 1.25rem;
+    }
+    
+    .quote-description {
+        font-size: 0.9rem;
+    }
+}
+
+/* ==================================== */
+/* 11. Container Utilities - UPDATED */
+/* ==================================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container-narrow {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ==================================== */
+/* 12. Color Scheme Variables - UPDATED */
+/* ==================================== */
+
+:root {
+    --primary-green: #10b981;
+    --primary-blue: #3b82f6;
+    --primary-orange: #f59e0b;
+    --primary-purple: #8b5cf6;
+    --text-dark: #1f2937;
+    --text-gray: #6b7280;
+    --bg-light: #f8f9fa;
+    --border-light: #e5e7eb;
+}
+
+/* ==================================== */
+/* 13. Utility Classes - UPDATED */
+/* ==================================== */
+
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.mt-8 {
+    margin-top: 2rem;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.gap-8 {
+    gap: 2rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+/* ==================================== */
+/* 14. Print Styles - UPDATED */
+/* ==================================== */
+
+@media print {
+    .price-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 2px solid #e5e7eb;
+    }
+    
+    .pricing-btn {
+        display: none;
+    }
+    
+    .featured-badge {
+        background: #6b7280 !important;
+        color: white !important;
+    }
+    
+    .price-card.featured {
+        background: white !important;
+        border-color: #e5e7eb !important;
+    }
+}
+
+/* ==================================== */
+/* 15. Focus States for Accessibility */
+/* ==================================== */
+
+.pricing-btn:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.price-card:focus-within {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ==================================== */
+/* 16. High Contrast Mode Support */
+/* ==================================== */
+
+@media (prefers-contrast: high) {
+    .price-card {
+        border: 2px solid #000;
+    }
+    
+    .features-list li::before {
+        color: #000;
+    }
+    
+    .price-tag {
+        color: #000;
+    }
+}
+
+/* ==================================== */
+/* 17. Reduced Motion Support */
+/* ==================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .price-card {
+        transition: none;
+    }
+    
+    .price-card:hover {
+        transform: none;
+    }
+    
+    .pricing-btn:hover {
+        transform: none;
+    }
+    
+    .loading-spinner {
+        animation: none;
+    }
+    
+    .fade-in,
+    .slide-up {
+        animation: none;
+        opacity: 1;
+    }
+}

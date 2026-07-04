@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate: Code z'Telephone - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../css/tailwind.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        /* === ONE PAGE PDF OPTIMIZATION === */
+        .certificate-card {
+            width: 190mm; /* A4 Landscape width */
+            height: 120mm; /* A4 Landscape height - fits one page */
+            background: #ffffff;
+            border: 12px solid #8B5CF6;
+            border-radius: 8px;
+            padding: 15mm; /* Consistent padding for print */
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+            font-size: 14px; /* Base font size for print */
+            overflow: hidden;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><rect width="100%" height="100%" fill="none"/><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="%23f5f3ff"/><stop offset="100%" stop-color="%23ffffff"/></linearGradient></defs><rect width="100%" height="100%" fill="url(%23g)"/></svg>');
+            background-size: cover;
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Border inside */
+        .certificate-border {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            border: 3px solid #A78BFA;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+
+        /* Logo Styling */
+        .logo-container {
+            position: absolute;
+            top: 15mm;
+            right: 15mm;
+            z-index: 10;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid #8B5CF6;
+            padding: 2px;
+            background: white;
+            object-fit: cover;
+        }
+
+        .watermark {
+            position: absolute;
+            opacity: 0.03;
+            font-size: 60px;
+            transform: rotate(-45deg);
+            pointer-events: none;
+            z-index: 0;
+            font-weight: 900;
+            color: #8B5CF6;
+        }
+        
+        .gold-text {
+            background: linear-gradient(45deg, #D4AF37, #FFD700, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+        
+        /* Signature Area */
+        .signature-line {
+            border-top: 2px dashed #8B5CF6;
+            width: 80px;
+            margin: 5px auto;
+        }
+
+        .signature-area {
+            font-size: 12px;
+            padding-top: 8px;
+        }
+        
+        /* ID Area */
+        .certificate-id-section {
+            padding-top: 5px;
+            border-top: 1px solid #ddd;
+            margin-top: 5px;
+            line-height: 1.3;
+        }
+
+        /* Course Specific Colors */
+        .course-color {
+            color: #8B5CF6;
+        }
+        
+        .course-bg {
+            background-color: #8B5CF6;
+        }
+
+        /* === CRITICAL PRINT OPTIMIZATION FOR ONE PAGE === */
+        @media print {
+            body, html {
+                width: 297mm !important; /* A4 Landscape width */
+                height: 210mm !important; /* A4 Landscape height */
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            @page {
+                size: A4 landscape;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            
+            .certificate-card {
+                width: 190mm !important;
+                height: 120mm !important;
+                margin: 0 auto !important;
+                padding: 15mm !important;
+                box-shadow: none !important;
+                border: 12px solid #8B5CF6 !important;
+                position: absolute !important;
+                top: 45mm !important; /* Center vertically on A4 */
+                left: 53.5mm !important; /* Center horizontally on A4 */
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: avoid !important;
+                page-break-before: avoid !important;
+            }
+            
+            /* Force black text for better printing */
+            .certificate-card,
+            .certificate-card * {
+                color: #000000 !important;
+                print-color-adjust: exact !important;
+                -webkit-print-color-adjust: exact !important;
+            }
+            
+            /* Ensure gradients work in print */
+            .gold-text {
+                color: #000000 !important;
+                background: none !important;
+                -webkit-text-fill-color: #000000 !important;
+            }
+        }
+
+        /* Connection Status */
+        #connectionStatus {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 1000;
+            background: #ff9800;
+            color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        /* Code-specific styling */
+        .code-icon {
+            display: inline-block;
+            margin: 0 5px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-5px);}
+            60% {transform: translateY(-3px);}
+        }
+
+        /* Student name styling */
+        .student-name {
+            font-size: 24px;
+            font-weight: 900;
+            color: #8B5CF6;
+            margin: 10px 0;
+            padding: 10px;
+            border: 3px solid #A78BFA;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f5f3ff, #ede9fe);
+            text-shadow: 2px 2px 4px rgba(139, 92, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Connection Status -->
+    <div id="connectionStatus">
+        <span id="statusText">🔄 Checking Connection...</span>
+    </div>
+
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="container mx-auto px-4 py-6">
+        <div class="text-center mb-6 no-print">
+            <h1 class="text-2xl font-bold text-purple-800 mb-2">
+                <span class="code-icon">🔐</span>
+                ICYANGOMBWA CY'UBUMENYI
+                <span class="code-icon">🔐</span>
+            </h1>
+            <p class="text-gray-600">Code z'Telephone - MAYE SYSTEMS</p>
+            <p class="text-red-500 text-sm mt-2 font-bold">⚠️ Koresha Print (Ctrl+P) - Izasohoka kuri page imwe!</p>
+            <p class="text-blue-500 text-xs mt-1">✅ Optimized for A4 Landscape - One Page PDF</p>
+        </div>
+
+        <!-- CERTIFICATE CARD - ONE PAGE OPTIMIZED -->
+        <div class="certificate-card" id="certificate-content">
+            <div class="logo-container">
+                <img src="https://ik.imagekit.io/73qho7kh9/file_0000000025ec61f7a8b577d8c1123063%20(1).jpeg?updatedAt=1763875513113" 
+                     alt="MAYE Systems Logo" class="logo-img"
+                     onerror="this.style.display='none'">
+            </div>
+
+            <div class="watermark" style="top: 20%; left: 10%;">MAYE SYSTEMS</div>
+            <div class="watermark" style="bottom: 20%; right: 10%;">CERTIFICATE</div>
+            <div class="certificate-border"></div>
+            
+            <div class="certificate-content">
+                <!-- HEADER SECTION -->
+                <div class="text-center mb-4 border-b-2 border-yellow-500 pb-3">
+                    <div class="flex justify-center items-center mb-2">
+                        <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center mr-3">
+                            <span class="text-white text-lg font-bold">✓</span>
+                        </div>
+                        <h2 class="text-2xl font-black gold-text tracking-wide">
+                            <span class="code-icon">🔐</span>
+                            ICYANGOMBWA CY'UBUMENYI
+                            <span class="code-icon">🔐</span>
+                        </h2>
+                    </div>
+                    <p class="text-gray-700 text-base font-semibold">MAYE SYSTEMS</p>
+                </div>
+
+                <!-- MAIN CONTENT -->
+                <div class="main-content text-center">
+                    <p class="text-gray-700 text-base mb-2 font-medium">Turabahamagarira tubishimye ko:</p>
+                    <div class="student-name" id="student-name">
+                        [IZINA RY'UMUNYESHURI]
+                    </div>
+                    
+                    <div class="my-4">
+                        <p class="text-gray-600 text-base mb-1 font-medium">Yarangije amasomo:</p>
+                        <h3 class="course-title text-purple-800 font-bold text-xl">CODE Z'TELEPHONE</h3>
+                        <p class="text-gray-700 text-sm italic">
+                            <span class="code-icon">📞</span>
+                            Ubumenyi mu gusuzuma no gukora telefone ukoresheje code
+                            <span class="code-icon">💻</span>
+                        </p>
+                    </div>
+
+                    <div class="achievement-text text-gray-700 text-base leading-relaxed">
+                        <strong>Yagaragaje ubushobozi buhamye</strong> mu gukoresha code z'ingenzi, 
+                        <strong>gusuzuma ibikoresho bya telefone</strong>, 
+                        <strong>gukemura ibibazo</strong>, no 
+                        <strong>gukoresha code za Android na iPhone</strong> nk'uko bikwiye.
+                    </div>
+                </div>
+
+                <!-- INFO BOXES -->
+                <div class="grid grid-cols-3 gap-3 mb-4 text-center">
+                    <div class="info-box">
+                        <div class="text-purple-800 font-bold text-sm">📅 ITARIKI YATANGEWE</div>
+                        <div class="text-gray-800 font-semibold text-base mt-1" id="issue-date">[YYYY-MM-DD]</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="text-purple-800 font-bold text-sm">⏱️ IGIHE CY'AMASOMO</div>
+                        <div class="text-gray-800 font-semibold text-base mt-1" id="course-duration">2 Amasaha</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="text-purple-800 font-bold text-sm">📊 IGIPIMO CY'IKIZAMINI</div>
+                        <div class="text-gray-800 font-semibold text-base mt-1" id="quiz-score">[Score]%</div>
+                    </div>
+                </div>
+
+                <!-- SIGNATURE AREA -->
+                <div class="grid grid-cols-3 gap-4 signature-area border-t border-gray-400 pt-4">
+                    <div class="text-center">
+                        <div class="signature-line"></div>
+                        <div class="font-bold text-purple-800 text-sm mt-2">Umuyobozi Mukuru</div>
+                        <div class="text-gray-600 text-xs">MAYE SYSTEMS</div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <div class="signature-line"></div>
+                        <div class="font-bold text-purple-800 text-sm mt-2">Umwarimu w'Itumanaho</div>
+                        <div class="text-gray-600 text-xs">Mobile Technology Expert</div>
+                    </div>
+
+                    <div class="text-center certificate-id-section">
+                        <div class="text-gray-600 text-xs font-medium">Ikirango Cy'Icyangombwa:</div>
+                        <div class="text-sm text-purple-900 font-mono font-extrabold mt-1" id="certificate-id">SC-2024-001</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="text-center mt-6 no-print">
+            <div class="flex flex-wrap gap-3 justify-center items-center mb-4">
+                <button onclick="printCertificate()" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 flex items-center gap-2 shadow-lg">
+                    <span class="text-lg">🖨️</span>
+                    Capa (One Page PDF)
+                </button>
+                
+                <button onclick="shareCertificate()" 
+                        class="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 flex items-center gap-2 shadow">
+                    <span class="text-lg">📤</span>
+                    Sanga
+                </button>
+
+                <button onclick="saveToFirebase()" 
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 flex items-center gap-2 shadow">
+                    <span class="text-lg">💾</span>
+                    Bika kuri Cloud
+                </button>
+                
+                <a href="../index.html" 
+                   class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 flex items-center gap-2 no-underline shadow">
+                    <span class="text-lg">📚</span>
+                    Subira ku Masomo
+                </a>
+
+                <a href="quiz.html" 
+                   class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition duration-300 transform hover:scale-105 flex items-center gap-2 no-underline shadow">
+                    <span class="text-lg">🧠</span>
+                    Subira Quiz
+                </a>
+            </div>
+
+            <!-- PRINT INSTRUCTIONS -->
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 max-w-2xl mx-auto">
+                <h3 class="font-bold text-purple-800 mb-2">💡 Inama zo Gucapa (One Page PDF):</h3>
+                <div class="text-left text-sm text-purple-700 space-y-1">
+                    <div>• <strong>Kanda Ctrl+P</strong> cyangwa kanda buto yo "Capa"</div>
+                    <div>• <strong>Destination:</strong> Hitamo "Save as PDF"</div>
+                    <div>• <strong>Pages:</strong> "All"</div>
+                    <div>• <strong>Layout:</strong> "Landscape" (Bitera)</div>
+                    <div>• <strong>Margins:</strong> "None" cyangwa "Minimum"</div>
+                    <div>• <strong>Options:</strong> "Background graphics" (Emeza)</div>
+                </div>
+            </div>
+
+            <!-- COURSE COMPLETION STATS -->
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 max-w-2xl mx-auto mt-4">
+                <h3 class="font-bold text-green-800 mb-2">🎓 Ubukure Bwawe:</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-bold text-green-600" id="completed-courses">1</div>
+                        <div class="text-xs text-green-700">Amasomo Arangije</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-purple-600" id="certificates-earned">1</div>
+                        <div class="text-xs text-purple-700">Icyangombwa</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-blue-600" id="total-score">85%</div>
+                        <div class="text-xs text-blue-700">Igipimo</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-yellow-600" id="learning-time">2h</div>
+                        <div class="text-xs text-yellow-700">Igihe</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script>
+        // === FIREBASE CONFIGURATION ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+
+        // Firebase Variables
+        let db;
+        let firebaseInitialized = false;
+
+        // === FIREBASE INITIALIZATION ===
+        function initializeFirebase() {
+            try {
+                if (typeof firebase === 'undefined') {
+                    console.error('❌ Firebase SDK not loaded');
+                    updateConnectionStatus('error', 'Firebase SDK not loaded');
+                    return false;
+                }
+                
+                // Initialize Firebase
+                firebase.initializeApp(firebaseConfig);
+                db = firebase.firestore();
+                firebaseInitialized = true;
+                
+                console.log('✅ Firebase initialized successfully');
+                updateConnectionStatus('success', 'Connected to Database');
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Firebase initialization failed:', error);
+                updateConnectionStatus('error', 'Database Connection Failed');
+                return false;
+            }
+        }
+
+        // === CONNECTION STATUS ===
+        function updateConnectionStatus(status, message) {
+            const statusElement = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('statusText');
+            
+            switch(status) {
+                case 'success':
+                    statusElement.style.background = '#4CAF50';
+                    statusText.textContent = '✅ ' + message;
+                    break;
+                case 'warning':
+                    statusElement.style.background = '#ff9800';
+                    statusText.textContent = '⚠️ ' + message;
+                    break;
+                case 'error':
+                    statusElement.style.background = '#f44336';
+                    statusText.textContent = '❌ ' + message;
+                    break;
+                default:
+                    statusElement.style.background = '#ff9800';
+                    statusText.textContent = '🔄 ' + message;
+            }
+        }
+
+        // === CERTIFICATE DATA MANAGEMENT ===
+        function loadCertificateData() {
+            try {
+                const userData = getUserData();
+                const quizResults = JSON.parse(localStorage.getItem('current-quiz-result') || '{}');
+                const urlParams = new URLSearchParams(window.location.search);
+                
+                // Get student name
+                let userName = urlParams.get('name') || userData?.fullName || userData?.name;
+                if (!userName || userName === '[IZINA RY\'UMUNYESHURI]') {
+                    userName = 'UMUNYESHURI MWIZA';
+                }
+                
+                document.getElementById('student-name').textContent = userName.toUpperCase();
+                
+                // Format date
+                const now = new Date();
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('issue-date').textContent = now.toLocaleDateString('rw-RW', options);
+                
+                // Get score
+                const score = quizResults.score || urlParams.get('score') || Math.floor(Math.random() * 15) + 75;
+                document.getElementById('quiz-score').textContent = `${score}%`;
+                
+                // Get course duration
+                const courseDuration = quizResults.timeUsed ? 
+                    `${Math.ceil(quizResults.timeUsed / 60)} Min` : 
+                    '2 Amasaha';
+                document.getElementById('course-duration').textContent = courseDuration;
+                
+                // Generate certificate ID
+                const certId = `SC-${now.getFullYear()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+                document.getElementById('certificate-id').textContent = certId;
+                
+                // Update course completion stats
+                updateCourseStats();
+                
+                // Save certificate data locally
+                const certData = {
+                    id: certId,
+                    name: userName,
+                    score: score,
+                    date: now.toISOString(),
+                    course: 'Code z\'Telephone',
+                    printOptimized: true
+                };
+                localStorage.setItem('lastCertificate', JSON.stringify(certData));
+                
+                console.log('✅ Certificate data loaded:', certData);
+                
+            } catch (error) {
+                console.error('Error loading certificate data:', error);
+                // Fallback data
+                const now = new Date();
+                document.getElementById('student-name').textContent = 'UMUNYESHURI MWIZA';
+                document.getElementById('issue-date').textContent = now.toLocaleDateString('rw-RW');
+                document.getElementById('quiz-score').textContent = '85%';
+                document.getElementById('course-duration').textContent = '2 Amasaha';
+                document.getElementById('certificate-id').textContent = `SC-${now.getFullYear()}-${Date.now().toString(36).toUpperCase()}`;
+                updateCourseStats();
+            }
+        }
+
+        // === UPDATE COURSE COMPLETION STATS ===
+        function updateCourseStats() {
+            try {
+                const userProgress = JSON.parse(localStorage.getItem('userProgress') || '{}');
+                const completedCourses = userProgress.completedCourses || ['Code z\'Telephone'];
+                const certificates = userProgress.certificates || 1;
+                const totalScore = userProgress.averageScore || 85;
+                const totalTime = userProgress.totalLearningTime || '2h';
+                
+                document.getElementById('completed-courses').textContent = completedCourses.length;
+                document.getElementById('certificates-earned').textContent = certificates;
+                document.getElementById('total-score').textContent = `${totalScore}%`;
+                document.getElementById('learning-time').textContent = totalTime;
+                
+            } catch (error) {
+                console.error('Error updating course stats:', error);
+                document.getElementById('completed-courses').textContent = '1';
+                document.getElementById('certificates-earned').textContent = '1';
+                document.getElementById('total-score').textContent = '85%';
+                document.getElementById('learning-time').textContent = '2h';
+            }
+        }
+
+        // === SAVE CERTIFICATE TO FIREBASE ===
+        async function saveToFirebase() {
+            if (!firebaseInitialized || !db) {
+                alert('❌ Firebase not available. Saving to local storage only.');
+                return;
+            }
+
+            try {
+                const userData = getUserData();
+                if (!userData || !userData.email) {
+                    alert('❌ Nta makuru y\'umukoresha. Banza wiyandikishe mu masomo.');
+                    return;
+                }
+
+                const certificateData = {
+                    studentName: document.getElementById('student-name').textContent,
+                    studentEmail: userData.email,
+                    course: 'Code z\'Telephone',
+                    score: document.getElementById('quiz-score').textContent,
+                    issueDate: document.getElementById('issue-date').textContent,
+                    certificateId: document.getElementById('certificate-id').textContent,
+                    issuedAt: new Date().toISOString(),
+                    verified: true,
+                    courseType: 'secret-codes'
+                };
+
+                // Save to Firebase
+                await db.collection('certificates').doc(certificateData.certificateId).set(certificateData);
+                
+                // Update user progress
+                await db.collection('userProgress').doc(`${userData.email}_secretCodes`).set({
+                    email: userData.email,
+                    course: 'secretCodes',
+                    progress: 100,
+                    certificate: true,
+                    certificateId: certificateData.certificateId,
+                    completedAt: new Date().toISOString(),
+                    lastActivity: new Date().toISOString(),
+                    quizScore: certificateData.score
+                }, { merge: true });
+
+                // Update local progress
+                updateLocalProgress();
+
+                console.log('✅ Certificate saved to Firebase:', certificateData);
+                updateConnectionStatus('success', 'Certificate Saved to Cloud!');
+                alert('✅ Icyangombwa cyawe cyabitswe neza kuri Cloud!');
+
+            } catch (error) {
+                console.error('❌ Error saving certificate to Firebase:', error);
+                updateConnectionStatus('error', 'Failed to Save Certificate');
+                alert('❌ Icyangombwa nticyabitswe kuri Cloud. Gerageza nanone.');
+            }
+        }
+
+        // === UPDATE LOCAL PROGRESS ===
+        function updateLocalProgress() {
+            try {
+                const userProgress = JSON.parse(localStorage.getItem('userProgress') || '{}');
+                
+                // Initialize if not exists
+                if (!userProgress.completedCourses) {
+                    userProgress.completedCourses = [];
+                }
+                if (!userProgress.certificates) {
+                    userProgress.certificates = 0;
+                }
+                
+                // Add this course if not already added
+                if (!userProgress.completedCourses.includes('Code z\'Telephone')) {
+                    userProgress.completedCourses.push('Code z\'Telephone');
+                    userProgress.certificates = (userProgress.certificates || 0) + 1;
+                }
+                
+                // Calculate average score
+                const currentScore = parseInt(document.getElementById('quiz-score').textContent);
+                userProgress.averageScore = Math.round(
+                    ((userProgress.averageScore || 0) * (userProgress.completedCourses.length - 1) + currentScore) / 
+                    userProgress.completedCourses.length
+                );
+                
+                // Update learning time
+                userProgress.totalLearningTime = '2h';
+                
+                localStorage.setItem('userProgress', JSON.stringify(userProgress));
+                updateCourseStats();
+                
+            } catch (error) {
+                console.error('Error updating local progress:', error);
+            }
+        }
+
+        // === LOCAL STORAGE FUNCTIONS ===
+        function getUserData() {
+            const data = localStorage.getItem('mayeUserProfile');
+            return data ? JSON.parse(data) : null;
+        }
+
+        // === CERTIFICATE FUNCTIONS ===
+        function printCertificate() {
+            // Add print-specific styling for one page
+            const printStyle = document.createElement('style');
+            printStyle.textContent = `
+                @media print {
+                    body * {
+                        visibility: hidden;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    #certificate-content, #certificate-content * {
+                        visibility: visible;
+                    }
+                    #certificate-content {
+                        position: absolute !important;
+                        top: 45mm !important;
+                        left: 53.5mm !important;
+                        margin: 0 !important;
+                        page-break-inside: avoid !important;
+                        break-inside: avoid !important;
+                    }
+                }
+            `;
+            document.head.appendChild(printStyle);
+            
+            // Trigger print
+            window.print();
+            
+            // Clean up
+            setTimeout(() => {
+                if (document.head.contains(printStyle)) {
+                    document.head.removeChild(printStyle);
+                }
+            }, 1000);
+        }
+
+        function shareCertificate() {
+            const studentName = document.getElementById('student-name').textContent;
+            const score = document.getElementById('quiz-score').textContent;
+            const certId = document.getElementById('certificate-id').textContent;
+            
+            const shareText = `🔐 ${studentName} - Code z'Telephone Certificate (${score}) - ${certId} - MAYE SYSTEMS`;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Icyangombwa - Code z\'Telephone - MAYE SYSTEMS',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText + '\n' + window.location.href).then(() => {
+                    alert('✅ Amakuru yakopiwe! Kohereza abandi.');
+                });
+            }
+        }
+
+        // === INITIALIZATION ===
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Firebase
+            initializeFirebase();
+            
+            // Load certificate data
+            loadCertificateData();
+            
+            // Load components
+            loadComponents();
+
+            // Network monitoring
+            window.addEventListener('online', () => {
+                updateConnectionStatus('success', 'Back Online');
+                if (!firebaseInitialized) initializeFirebase();
+            });
+
+            window.addEventListener('offline', () => {
+                updateConnectionStatus('warning', 'You are Offline');
+            });
+        });
+
+        function loadComponents() {
+            // Load Header
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('header').innerHTML = `
+                        <header class="bg-white shadow py-3 no-print">
+                            <div class="container mx-auto px-4 text-center">
+                                <a href="/" class="text-xl font-bold text-purple-600 no-underline">
+                                    <span class="code-icon">🔐</span>
+                                    MAYE SYSTEMS - CODE Z'TELEPHONE CERTIFICATE
+                                    <span class="code-icon">🔐</span>
+                                </a>
+                            </div>
+                        </header>
+                    `;
+                });
+
+            // Load Footer
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(() => {
+                    document.getElementById('footer').innerHTML = `
+                        <footer class="bg-gray-800 text-white py-4 no-print">
+                            <div class="container mx-auto text-center">
+                                <p>© 2024 MAYE SYSTEMS. Ibyose bifite uburenganzira.</p>
+                            </div>
+                        </footer>
+                    `;
+                });
+        }
+    </script>
+</body>
+</html>

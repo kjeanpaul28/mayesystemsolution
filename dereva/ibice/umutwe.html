@@ -1,0 +1,966 @@
+<div id="headerSection" class="fade-in no-print" role="banner" aria-label="Umutwe w'urubuga rwa Driving Test">
+
+  <style>
+    /* ===== HEADER WITH BEAUTIFUL BACKGROUND - MOBILE FIRST ===== */
+    #headerSection {
+      /* Beautiful gradient background - matches footer */
+      background: linear-gradient(145deg, 
+        #0a2351 0%,      /* Deep Navy Blue */
+        #1e3a8a 30%,     /* Police Blue */
+        #b22234 70%,     /* Fire Brick Red */
+        #8b0000 100%     /* Dark Red */
+      );
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      border-bottom: 4px solid #fbbf24;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated overlay for extra beauty */
+    #headerSection::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 80% 30%, rgba(251, 191, 36, 0.15) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 1;
+      animation: headerGlow 8s ease-in-out infinite;
+    }
+
+    /* Second overlay for shimmer effect */
+    #headerSection::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        transparent 100%
+      );
+      animation: headerShimmer 8s ease-in-out infinite;
+      z-index: 1;
+    }
+
+    @keyframes headerGlow {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.7; }
+    }
+
+    @keyframes headerShimmer {
+      0% { transform: translateX(-100%); }
+      40% { transform: translateX(100%); }
+      100% { transform: translateX(200%); }
+    }
+
+    /* ===== CONTAINER - MOBILE FIRST ===== */
+    #headerSection .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 1rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 2;
+      backdrop-filter: blur(2px);
+    }
+
+    /* ===== LOGO SECTION - MOBILE ===== */
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: white;
+      position: relative;
+      z-index: 3;
+      flex: 0 1 auto;
+    }
+
+    .logo-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 2px solid rgba(251, 191, 36, 0.5);
+      object-fit: cover;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+      border-color: #fbbf24;
+    }
+
+    .logo-text h1 {
+      font-size: 1rem;
+      margin: 0;
+      font-weight: 700;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(135deg, #fff, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+
+    .logo-text p {
+      font-size: 0.6rem;
+      margin: 0.1rem 0 0;
+      color: #fbbf24;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    /* ===== MOBILE MENU BUTTON (Hamburger) ===== */
+    .mobile-menu-btn {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 30px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 0.5rem;
+      position: relative;
+      z-index: 20;
+    }
+
+    .mobile-menu-btn span {
+      width: 100%;
+      height: 3px;
+      background: #fbbf24;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .mobile-menu-btn.active span:nth-child(1) {
+      transform: translateY(10px) rotate(45deg);
+    }
+
+    .mobile-menu-btn.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .mobile-menu-btn.active span:nth-child(3) {
+      transform: translateY(-10px) rotate(-45deg);
+    }
+
+    /* ===== MOBILE NAVIGATION OVERLAY ===== */
+    .mobile-nav-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 35, 81, 0.98);
+      backdrop-filter: blur(10px);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: translateX(100%);
+      transition: transform 0.3s ease-in-out;
+      padding: 2rem;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .mobile-nav-overlay.active {
+      transform: translateX(0);
+    }
+
+    .mobile-nav-items {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .mobile-nav-item {
+      color: white;
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: 600;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      width: 100%;
+      text-align: center;
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .mobile-nav-item:hover,
+    .mobile-nav-item.active {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #0a2351;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(251, 191, 36, 0.3);
+    }
+
+    /* Special style for login item in mobile menu */
+    .mobile-nav-item.login-item {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #0a2351;
+      font-weight: 700;
+      border: 2px solid white;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .mobile-nav-item.login-item i {
+      font-size: 1.1rem;
+    }
+
+    .mobile-nav-item.login-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 20px rgba(251, 191, 36, 0.4);
+    }
+
+    .mobile-nav-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: transparent;
+      border: none;
+      color: #fbbf24;
+      font-size: 2rem;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+      z-index: 10001;
+    }
+
+    .mobile-nav-close:hover {
+      background: rgba(251, 191, 36, 0.2);
+      transform: rotate(90deg);
+    }
+
+    /* ===== DESKTOP NAVIGATION ===== */
+    .desktop-nav {
+      display: none;
+    }
+
+    .desktop-main-nav {
+      display: none;
+    }
+
+    .desktop-test-nav {
+      display: none;
+    }
+
+    /* ===== CTA BUTTON / USER INFO - MOBILE ===== */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      position: relative;
+      z-index: 3;
+    }
+
+    .login-cta {
+      background: linear-gradient(135deg, 
+        #fbbf24 0%,
+        #f59e0b 50%,
+        #d97706 100%
+      );
+      color: #0a2351;
+      padding: 0.4rem 0.8rem;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 3;
+      font-size: 0.7rem;
+    }
+
+    .login-cta i {
+      font-size: 0.8rem;
+    }
+
+    .login-cta span {
+      display: none; /* Hide text on mobile, show only icon */
+    }
+
+    .login-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(251, 191, 36, 0.4);
+      background: linear-gradient(135deg, 
+        #f59e0b 0%,
+        #fbbf24 50%,
+        #f59e0b 100%
+      );
+    }
+
+    /* User Info Display (when logged in) - MOBILE */
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(10, 35, 81, 0.4);
+      padding: 0.2rem 0.5rem;
+      border-radius: 50px;
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      position: relative;
+      z-index: 3;
+    }
+
+    .user-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0a2351;
+      font-weight: bold;
+      font-size: 0.8rem;
+      box-shadow: 0 4px 8px rgba(251, 191, 36, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .user-name {
+      font-weight: 600;
+      font-size: 0.7rem;
+      color: white;
+      text-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
+      display: none; /* Hide on mobile */
+    }
+
+    .user-menu {
+      display: flex;
+      gap: 0.2rem;
+    }
+
+    .user-menu button {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: white;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 30px;
+      transition: all 0.3s ease;
+      font-size: 0.65rem;
+      backdrop-filter: blur(5px);
+    }
+
+    .user-menu button:hover {
+      background: #fbbf24;
+      color: #0a2351;
+      transform: scale(1.1);
+    }
+
+    /* ===== DECORATION ===== */
+    .header-decoration {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150px;
+      height: 100%;
+      background: radial-gradient(circle at 100% 0%, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ===== TABLET STYLES (481px - 1023px) ===== */
+    @media (min-width: 481px) {
+      #headerSection .container {
+        padding: 0.5rem 1.5rem;
+      }
+
+      .logo-img {
+        width: 45px;
+        height: 45px;
+      }
+
+      .logo-text h1 {
+        font-size: 1.2rem;
+      }
+
+      .logo-text p {
+        font-size: 0.7rem;
+      }
+
+      .login-cta {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+      }
+
+      .login-cta span {
+        display: inline; /* Show text on tablet */
+      }
+
+      .user-name {
+        display: inline; /* Show username on tablet */
+        font-size: 0.8rem;
+      }
+
+      .user-info {
+        gap: 0.5rem;
+        padding: 0.3rem 0.8rem;
+      }
+
+      .user-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* ===== DESKTOP STYLES (1024px and above) ===== */
+    @media (min-width: 1024px) {
+      #headerSection .container {
+        padding: 0.8rem 2rem;
+      }
+
+      /* Hide mobile menu button on desktop */
+      .mobile-menu-btn {
+        display: none;
+      }
+
+      /* Show desktop navigation */
+      .desktop-nav {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 3;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.3rem 1.2rem;
+        border-radius: 50px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+      }
+
+      .desktop-nav a {
+        color: rgba(255, 255, 255, 0.95);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 8px 0;
+        border-bottom: 2px solid transparent;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        position: relative;
+      }
+
+      .desktop-nav a::before {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #fbbf24;
+        transition: width 0.3s ease;
+      }
+
+      .desktop-nav a:hover::before,
+      .desktop-nav a.active::before {
+        width: 100%;
+      }
+
+      .desktop-nav a:hover,
+      .desktop-nav a.active {
+        color: #fbbf24;
+        transform: translateY(-1px);
+      }
+
+      /* Test navigation */
+      .desktop-test-nav {
+        display: flex;
+        gap: 15px;
+        background: rgba(10, 35, 81, 0.4);
+        padding: 0.5rem 1.2rem;
+        border-radius: 50px;
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(251, 191, 36, 0.3);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 3;
+      }
+
+      .desktop-test-nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 6px 15px;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .desktop-test-nav a::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(251, 191, 36, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.4s ease, height 0.4s ease;
+        z-index: -1;
+      }
+
+      .desktop-test-nav a:hover::before {
+        width: 150%;
+        height: 150%;
+      }
+
+      .desktop-test-nav a:hover {
+        color: #fbbf24;
+        transform: translateY(-2px);
+      }
+
+      .desktop-test-nav a.active {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        color: #0a2351;
+        font-weight: 700;
+        box-shadow: 0 8px 15px rgba(251, 191, 36, 0.3);
+      }
+
+      .desktop-test-nav a.active:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 20px rgba(251, 191, 36, 0.4);
+      }
+
+      /* Main navigation */
+      .desktop-main-nav {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 3;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 0.3rem 1rem;
+        border-radius: 50px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(251, 191, 36, 0.2);
+      }
+
+      .desktop-main-nav a {
+        color: rgba(255, 255, 255, 0.95);
+        text-decoration: none;
+        font-weight: 600;
+        padding: 6px 12px;
+        border-radius: 30px;
+        transition: all 0.3s ease;
+        font-size: 0.9rem;
+      }
+
+      .desktop-main-nav a:hover,
+      .desktop-main-nav a.active {
+        background: rgba(251, 191, 36, 0.2);
+        color: #fbbf24;
+        transform: translateY(-1px);
+      }
+
+      /* Logo section */
+      .logo-img {
+        width: 55px;
+        height: 55px;
+      }
+
+      .logo-text h1 {
+        font-size: 1.5rem;
+      }
+
+      .logo-text p {
+        font-size: 0.8rem;
+      }
+
+      /* Login button */
+      .login-cta {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        gap: 0.8rem;
+      }
+
+      .login-cta i {
+        font-size: 1rem;
+      }
+
+      .login-cta span {
+        display: inline;
+      }
+
+      /* User info */
+      .user-info {
+        gap: 1rem;
+        padding: 0.5rem 1.2rem;
+      }
+
+      .user-avatar {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+      }
+
+      .user-name {
+        display: inline;
+        font-size: 0.95rem;
+      }
+
+      .user-menu button {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.85rem;
+      }
+
+      /* Hide mobile overlay on desktop */
+      .mobile-nav-overlay {
+        display: none;
+      }
+    }
+
+    /* ===== LARGE DESKTOP ===== */
+    @media (min-width: 1400px) {
+      .logo-img {
+        width: 60px;
+        height: 60px;
+      }
+
+      .logo-text h1 {
+        font-size: 1.6rem;
+      }
+
+      .logo-text p {
+        font-size: 0.85rem;
+      }
+
+      .desktop-nav {
+        gap: 30px;
+        padding: 0.4rem 1.5rem;
+      }
+
+      .desktop-nav a {
+        font-size: 1rem;
+      }
+    }
+  </style>
+
+  <div class="container">
+
+    <!-- Logo Section -->
+    <a href="/driving-test.html" class="logo-section">
+      <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png"
+           alt="Logo ya MAYE-SYSTEM"
+           class="logo-img" />
+      <div class="logo-text">
+        <h1>🚗 MAYE-SYSTEM</h1>
+        <p>IKIZAMINI CY'AGATEGANYO</p>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation - Test Nav (visible only on desktop) -->
+    <nav class="desktop-test-nav">
+      <a href="/driving-test.html" class="active">🏠 Ahabanza</a>
+      <a href="/driving-test.html#categories">📚 Ibyiciro</a>
+      <a href="/driving-test.html#results">📊 Ibisubizo</a>
+      <a href="/driving-test.html#study">📖 Kwiga</a>
+      <a href="/driving-test.html#help">❓ Ubufasha</a>
+    </nav>
+
+    <!-- Desktop Navigation - Main Nav (visible only on desktop) -->
+    <nav class="desktop-main-nav">
+      <a href="/driving-test.html" class="active">Home</a>
+      <a href="/driving-test.html#categories">Ibyiciro</a>
+      <a href="/driving-test.html#study">Kwiga</a>
+      <a href="/driving-test.html#results">Ibisubizo</a>
+      <a href="/dereva/admin/results.html" target="_blank">Admin</a>
+    </nav>
+
+    <!-- Right side: User Info/Login + Mobile Menu Button -->
+    <div class="header-actions">
+      <!-- User Info / Login Button - Dynamic based on auth state -->
+      <div id="headerAuthSection">
+        <a href="/dereva/auth/auth.html" class="login-cta" id="loginButton">
+          <i class="fas fa-car"></i>
+          <span>Injira / Iyandikishe</span>
+        </a>
+      </div>
+
+      <!-- Mobile Menu Button (visible only on mobile) -->
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+  </div>
+
+  <!-- Mobile Navigation Overlay with Login Item -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Funga menu">
+      <i class="fas fa-times"></i>
+    </button>
+    <div class="mobile-nav-items">
+      <a href="/driving-test.html" class="mobile-nav-item active">🏠 Ahabanza</a>
+      <a href="/driving-test.html#categories" class="mobile-nav-item">📚 Ibyiciro</a>
+      <a href="/driving-test.html#results" class="mobile-nav-item">📊 Ibisubizo</a>
+      <a href="/driving-test.html#study" class="mobile-nav-item">📖 Kwiga</a>
+      <a href="/driving-test.html#help" class="mobile-nav-item">❓ Ubufasha</a>
+      <a href="/dereva/auth/auth.html" class="mobile-nav-item login-item" id="mobileLoginItem">
+        <i class="fas fa-car"></i>
+        <span>Injira / Iyandikishe</span>
+      </a>
+      <a href="/dereva/admin/results.html" target="_blank" class="mobile-nav-item">👑 Admin</a>
+    </div>
+  </div>
+  
+  <!-- Decorative element -->
+  <div class="header-decoration"></div>
+</div>
+
+<script>
+  // ============================================
+  // HEADER SCRIPT - FIXED FOR MOBILE MENU
+  // ============================================
+  (function() {
+    // Function to initialize header
+    function initHeader() {
+      console.log('🚀 Initializing header with mobile menu...');
+      
+      // Get elements
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+      const mobileNavClose = document.getElementById('mobileNavClose');
+      
+      // Check if elements exist
+      if (!mobileMenuBtn) {
+        console.error('❌ mobileMenuBtn not found!');
+        return;
+      }
+      
+      if (!mobileNavOverlay) {
+        console.error('❌ mobileNavOverlay not found!');
+        return;
+      }
+      
+      console.log('✅ Header elements found, attaching events...');
+      
+      // Force display for mobile
+      if (window.innerWidth < 1024) {
+        mobileMenuBtn.style.display = 'flex';
+      }
+      
+      // Toggle menu function
+      function toggleMenu(show) {
+        if (show === undefined) {
+          // Toggle
+          const isActive = mobileNavOverlay.classList.contains('active');
+          if (isActive) {
+            mobileNavOverlay.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+            document.body.style.overflow = '';
+          } else {
+            mobileNavOverlay.classList.add('active');
+            mobileMenuBtn.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          }
+        } else {
+          // Set specific state
+          if (show) {
+            mobileNavOverlay.classList.add('active');
+            mobileMenuBtn.classList.add('active');
+            document.body.style.overflow = 'hidden';
+          } else {
+            mobileNavOverlay.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
+            document.body.style.overflow = '';
+          }
+        }
+      }
+      
+      // Open menu when clicking hamburger button
+      mobileMenuBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('📱 Mobile menu button clicked');
+        toggleMenu();
+      };
+      
+      // Close menu with close button
+      if (mobileNavClose) {
+        mobileNavClose.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('❌ Close button clicked');
+          toggleMenu(false);
+        };
+      }
+      
+      // Close menu when clicking on any mobile nav link
+      const mobileNavLinks = document.querySelectorAll('.mobile-nav-item');
+      for (let i = 0; i < mobileNavLinks.length; i++) {
+        mobileNavLinks[i].onclick = function(e) {
+          console.log('🔗 Mobile nav link clicked');
+          // Close menu after a short delay
+          setTimeout(function() {
+            toggleMenu(false);
+          }, 100);
+        };
+      }
+      
+      // Close menu when clicking outside (on overlay background)
+      mobileNavOverlay.onclick = function(e) {
+        if (e.target === mobileNavOverlay) {
+          console.log('👆 Clicked on overlay background');
+          toggleMenu(false);
+        }
+      };
+      
+      // Handle window resize
+      window.onresize = function() {
+        if (window.innerWidth >= 1024) {
+          // Desktop mode - hide mobile menu if open
+          toggleMenu(false);
+          mobileMenuBtn.style.display = 'none';
+        } else {
+          // Mobile mode - show hamburger
+          mobileMenuBtn.style.display = 'flex';
+        }
+      };
+      
+      // Initial resize check
+      if (window.innerWidth >= 1024) {
+        mobileMenuBtn.style.display = 'none';
+      } else {
+        mobileMenuBtn.style.display = 'flex';
+      }
+      
+      console.log('✅ Mobile menu initialized successfully');
+    }
+
+    // Check if user is logged in
+    function checkUserLogin() {
+      try {
+        // Check if Firebase is available
+        if (typeof firebase !== 'undefined' && firebase.auth) {
+          firebase.auth().onAuthStateChanged(function(user) {
+            const headerAuthSection = document.getElementById('headerAuthSection');
+            const mobileLoginItem = document.getElementById('mobileLoginItem');
+            
+            if (headerAuthSection) {
+              if (user) {
+                // User is logged in - show user info
+                const displayName = user.displayName || (user.email ? user.email.split('@')[0] : 'Umukoresha');
+                const initial = displayName.charAt(0).toUpperCase();
+                
+                headerAuthSection.innerHTML = `
+                  <div class="user-info">
+                    <div class="user-avatar">${initial}</div>
+                    <span class="user-name">${displayName}</span>
+                    <div class="user-menu">
+                      <button onclick="window.location.href='/dereva/dashboard.html'" title="Dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                      </button>
+                      <button onclick="firebase.auth().signOut().then(() => window.location.reload())" title="Sohoka">
+                        <i class="fas fa-sign-out-alt"></i>
+                      </button>
+                    </div>
+                  </div>
+                `;
+
+                // Update mobile menu login item
+                if (mobileLoginItem) {
+                  mobileLoginItem.innerHTML = `
+                    <i class="fas fa-user"></i>
+                    <span>Konti yanjye</span>
+                  `;
+                  mobileLoginItem.href = '/dereva/dashboard.html';
+                }
+              } else {
+                // User is not logged in - show login button
+                headerAuthSection.innerHTML = `
+                  <a href="/dereva/auth/auth.html" class="login-cta">
+                    <i class="fas fa-car"></i>
+                    <span>Injira / Iyandikishe</span>
+                  </a>
+                `;
+
+                // Update mobile menu login item
+                if (mobileLoginItem) {
+                  mobileLoginItem.innerHTML = `
+                    <i class="fas fa-car"></i>
+                    <span>Injira / Iyandikishe</span>
+                  `;
+                  mobileLoginItem.href = '/dereva/auth/auth.html';
+                }
+              }
+            }
+          });
+        } else {
+          console.log('Firebase not loaded, using static login button');
+        }
+      } catch (error) {
+        console.error('Error checking user login:', error);
+      }
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function() {
+        initHeader();
+        checkUserLogin();
+      });
+    } else {
+      // DOM already loaded
+      initHeader();
+      checkUserLogin();
+    }
+
+    // Also initialize after a short delay to ensure everything is loaded
+    setTimeout(function() {
+      console.log('⏰ Delayed header initialization check...');
+      // Check if menu is working
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      if (mobileMenuBtn && !mobileMenuBtn._initialized) {
+        console.log('🔄 Re-initializing header...');
+        initHeader();
+        mobileMenuBtn._initialized = true;
+      }
+    }, 500);
+  })();
+</script>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYE SYSTEMS - Guhuza Ikoranabuhanga n'Ubucuruzi</title>
+    <meta name="description" content="MAYE SYSTEMS: Serivisi zo Gucunga Inventory, E-Learning, na IT Support ku buntu kuri SME n'amashyirahamwe mu Rwanda.">
+    
+    <!-- Local Tailwind CSS -->
+    <link rel="stylesheet" href="css/tailwind.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Additional inline styles for homepage */
+        .hero-section {
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #1B5E20 100%);
+            color: white;
+            padding: 6rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: #10b981;
+        }
+        
+        .loading-component {
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            color: #6b7280;
+        }
+        
+        .cta-section {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 4rem 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header Placeholder with Loading State -->
+    <div id="header">
+        <div class="loading-component">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-2"></div>
+            <p>Kurura header...</p>
+        </div>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container mx-auto px-4 max-w-6xl relative">
+                <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-leaf text-white text-4xl"></i>
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-6">MAYE SYSTEMS</h1>
+                <p class="text-xl md:text-2xl opacity-90 mb-8 max-w-3xl mx-auto">
+                    Guhuza <strong class="text-yellow-300">Ikoranabuhanga</strong> na <strong class="text-yellow-300">Ubucuruzi</strong> 
+                    mu Rwanda. Dufasha SME n'amashyirahamwe gukoresha digital mu muco w'igihe.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="services.html" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors duration-300 transform hover:scale-105">
+                        <i class="fas fa-rocket mr-2"></i>Tangira Noneho
+                    </a>
+                    <a href="about.html" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-300 transform hover:scale-105">
+                        <i class="fas fa-info-circle mr-2"></i>Menya Byinshi
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4">Ibisubizo Twatanga</h2>
+                <p class="text-xl text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                    Dutanga serivisi z'ikoranabuhanga zihendutse kuri SME, zihuze n'ubumenyi bw'abacuruzi.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Feature 1: Inventory Management -->
+                    <div class="feature-card">
+                        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-boxes text-green-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Gucunga Inventory</h3>
+                        <p class="text-gray-600 mb-4">
+                            Systems zo gucunga ibicuruzwa n'abakiriya, zihuse kandi zihendutse. 
+                            Menya uko ibicuruzwa byawe bihagaze buri gihe.
+                        </p>
+                        <a href="services.html#inventory" class="text-green-600 hover:text-green-700 font-semibold inline-flex items-center">
+                            Menya byinshi <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+
+                    <!-- Feature 2: E-Learning -->
+                    <div class="feature-card">
+                        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-graduation-cap text-blue-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">Amasomo kuri Interineti</h3>
+                        <p class="text-gray-600 mb-4">
+                            Wige Digital Marketing, Financial Literacy, n'ibindi mu Kinyarwanda. 
+                            Kuboneza amasomo n'ibyemezo byihariye.
+                        </p>
+                        <a href="elearning.html" class="text-blue-600 hover:text-blue-700 font-semibold inline-flex items-center">
+                            Tangira Kwiga <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+
+                    <!-- Feature 3: IT Support -->
+                    <div class="feature-card">
+                        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-headset text-purple-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-3">IT Support Ku Buntu</h3>
+                        <p class="text-gray-600 mb-4">
+                            Inama z'ikoranabuhanga ku buntu. Dufasha guhitamo software, 
+                            gucunga website, no gukoresha teknoloji mu bucuruzi.
+                        </p>
+                        <a href="contact.html" class="text-purple-600 hover:text-purple-700 font-semibold inline-flex items-center">
+                            Sabwa Inama <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Driving Test Section -->
+        <section class="py-16 bg-gradient-to-r from-green-500 to-blue-500 text-white">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ikizamini cy'Agateganyo</h2>
+                        <p class="text-xl mb-6 opacity-90">
+                            <strong>440 Ibibazo bya Police</strong> - Bihuje n'ikizamini kuri machine. 
+                            Wige amategeko y'umuhanda mu Kinyarwanda kandi ujye witegura ikizamini cy'ukuri.
+                        </p>
+                        <ul class="space-y-3 text-lg mb-8">
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-yellow-300 mr-3"></i>
+                                <span>Ibibazo 440 byose bya Police</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-yellow-300 mr-3"></i>
+                                <span>Ibyiciro 22 by'Ikizamini</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-yellow-300 mr-3"></i>
+                                <span>Certificate ihabwa abatsinze</span>
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check-circle text-yellow-300 mr-3"></i>
+                                <span>Kugerageza ubwa mbere ku buntu</span>
+                            </li>
+                        </ul>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="driving-test.html" class="bg-white text-green-600 hover:bg-gray-100 px-6 py-3 rounded-lg font-semibold text-lg transition-colors duration-300 transform hover:scale-105 text-center">
+                                <i class="fas fa-car mr-2"></i>Tangira Ikizamini
+                            </a>
+                            <a href="about.html#driving" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold text-lg transition-colors duration-300 transform hover:scale-105 text-center">
+                                <i class="fas fa-info-circle mr-2"></i>Ibindi Birenze
+                            </a>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-48 h-48 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                            <i class="fas fa-shield-alt text-white text-6xl"></i>
+                        </div>
+                        <p class="text-lg opacity-90">
+                            <strong>Bihuje 100%</strong> n'ikizamini cya Police<br>
+                            Witegure neza mbere yo kujya gukora ikizamini cy'ukuri
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Preview Section -->
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <h2 class="text-3xl md:text-4xl font-bold text-center text-gray-800 mb-4">Ibiciro Bihendutse</h2>
+                <p class="text-xl text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+                    Hitamo gahunda ikwiye ubucuruzi bwawe. Dutanga serivisi ku gihe cy'amezi 3 kugirango wizere.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <!-- Starter Plan -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center border-2 border-transparent hover:border-green-500 transition-all duration-300">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Gahunda y'Intangiriro</h3>
+                        <div class="text-3xl font-bold text-green-600 mb-4">RWF 20k<span class="text-lg text-gray-500">/Ukwezi</span></div>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li>Inventory Management</li>
+                            <li>Abakoresha 2</li>
+                            <li>Support ya Email</li>
+                            <li>Raporo z'amezi 3</li>
+                        </ul>
+                        <a href="pricing.html#starter" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-300 block">
+                            Hitamo Iyi
+                        </a>
+                    </div>
+
+                    <!-- Professional Plan -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center border-2 border-orange-500 transform scale-105 relative">
+                        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                            Birasabwe
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Gahunda Igezweho</h3>
+                        <div class="text-3xl font-bold text-orange-600 mb-4">RWF 50k<span class="text-lg text-gray-500">/Ukwezi</span></div>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li>Inventory + Website</li>
+                            <li>Abakoresha bose</li>
+                            <li>Support ya Telefone</li>
+                            <li>Digital Marketing</li>
+                        </ul>
+                        <a href="pricing.html#professional" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-300 block">
+                            Tangira Noneho
+                        </a>
+                    </div>
+
+                    <!-- E-Learning Plan -->
+                    <div class="bg-white rounded-xl shadow-lg p-6 text-center border-2 border-transparent hover:border-purple-500 transition-all duration-300">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2">Amasomo</h3>
+                        <div class="text-3xl font-bold text-purple-600 mb-4">RWF 10k<span class="text-lg text-gray-500">/Ukwezi</span></div>
+                        <ul class="space-y-2 text-gray-600 mb-6">
+                            <li>Amasomo Yose</li>
+                            <li>Ibyemezo</li>
+                            <li>IT Support</li>
+                            <li>Practice Materials</li>
+                        </ul>
+                        <a href="pricing.html#elearning" class="bg-purple-500 hover:bg-purple-600 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-300 block">
+                            Kwiyandikisha
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-8">
+                    <a href="pricing.html" class="text-green-600 hover:text-green-700 font-semibold text-lg inline-flex items-center">
+                        Reba Ibiciro Byuzuye <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container mx-auto px-4 max-w-4xl">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Dutegeke Gufasha Ubucuruzi Bwawe?</h2>
+                <p class="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                    Twandikire ubu kugirango dusangire ibibazo byawe. Duguha inama ku buntu kandi dukagufasha guhitamo ibisubizo bikwiye.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="contact.html" class="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3 rounded-lg font-semibold text-lg transition-colors duration-300 transform hover:scale-105">
+                        <i class="fas fa-envelope mr-2"></i>Twandikire Ubu
+                    </a>
+                    <a href="tel:+250784067694" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-colors duration-300 transform hover:scale-105">
+                        <i class="fas fa-phone mr-2"></i>Duhamagara
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Placeholder with Loading State -->
+    <div id="footer">
+        <div class="loading-component">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600 mx-auto mb-2"></div>
+            <p>Kurura footer...</p>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced Component Loading with Error Handling
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Starting component loading...');
+            
+            // Load Header Component
+            fetch('components/header.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load Header (Status: ${response.status})`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                    console.log('✅ Header loaded successfully');
+                    
+                    // Initialize header functionality
+                    initializeHeaderFunctionality();
+                })
+                .catch(error => {
+                    console.error('❌ Error loading header:', error);
+                    document.getElementById('header').innerHTML = `
+                        <header class="bg-green-600 text-white py-4 shadow-lg">
+                            <div class="container mx-auto px-4 flex justify-between items-center">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-white text-green-600 rounded-full flex items-center justify-center font-bold text-lg">
+                                        <i class="fas fa-leaf"></i>
+                                    </div>
+                                    <h1 class="text-xl font-bold">MAYE SYSTEMS</h1>
+                                </div>
+                                <nav class="hidden md:flex space-x-6">
+                                    <a href="index.html" class="font-bold border-b-2 border-white">Ahabanza</a>
+                                    <a href="about.html" class="hover:text-green-200 transition-colors">Twerekeye</a>
+                                    <a href="services.html" class="hover:text-green-200 transition-colors">Serivisi</a>
+                                    <a href="pricing.html" class="hover:text-green-200 transition-colors">Ibiciro</a>
+                                    <a href="contact.html" class="hover:text-green-200 transition-colors">Twandikire</a>
+                                </nav>
+                            </div>
+                        </header>
+                    `;
+                });
+
+            // Load Footer Component
+            fetch('components/footer.html')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Failed to load Footer (Status: ${response.status})`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                    console.log('✅ Footer loaded successfully');
+                    
+                    // Initialize footer functionality
+                    initializeFooterFunctionality();
+                })
+                .catch(error => {
+                    console.error('❌ Error loading footer:', error);
+                    document.getElementById('footer').innerHTML = `
+                        <footer class="bg-gray-800 text-white py-8 mt-12">
+                            <div class="container mx-auto px-4 text-center">
+                                <p class="mb-4">
+                                    <i class="fas fa-copyright mr-2"></i>2024 MAYE SYSTEMS Ltd. Amahoro amewe.
+                                </p>
+                                <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
+                                    <a href="index.html" class="hover:text-white transition-colors">Ahabanza</a>
+                                    <a href="about.html" class="hover:text-white transition-colors">Twerekeye</a>
+                                    <a href="services.html" class="hover:text-white transition-colors">Serivisi</a>
+                                    <a href="pricing.html" class="hover:text-white transition-colors">Ibiciro</a>
+                                    <a href="contact.html" class="hover:text-white transition-colors">Twandikire</a>
+                                    <a href="driving-test.html" class="hover:text-white transition-colors">Ikizamini</a>
+                                </div>
+                                <p class="mt-4 text-gray-400">
+                                    <i class="fas fa-phone mr-2"></i>+250 784 067 694 | 
+                                    <i class="fas fa-envelope mr-2 ml-4"></i>kjeanpaul28@gmail.com
+                                </p>
+                            </div>
+                        </footer>
+                    `;
+                });
+
+            // Add smooth scrolling for better UX
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        });
+
+        // Header functionality initialization
+        function initializeHeaderFunctionality() {
+            // Add active state to current page link
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('nav a');
+            
+            navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+                if (linkHref === currentPage || (currentPage === '' && linkHref === 'index.html')) {
+                    link.classList.add('font-bold', 'border-b-2', 'border-white');
+                }
+            });
+        }
+
+        // Footer functionality initialization
+        function initializeFooterFunctionality() {
+            // Update current year in footer if needed
+            const yearElements = document.querySelectorAll('#current-year');
+            if (yearElements.length > 0) {
+                const currentYear = new Date().getFullYear();
+                yearElements.forEach(element => {
+                    element.textContent = currentYear;
+                });
+            }
+        }
+
+        // Add loading animation removal after components are loaded
+        window.addEventListener('load', function() {
+            // Remove loading states after a short delay
+            setTimeout(() => {
+                const loadingElements = document.querySelectorAll('.loading-component');
+                loadingElements.forEach(element => {
+                    element.style.opacity = '0';
+                    setTimeout(() => {
+                        element.style.display = 'none';
+                    }, 300);
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

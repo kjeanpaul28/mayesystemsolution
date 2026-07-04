@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code z'Telefone - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../css/tailwind.css">
+    <style>
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+        .tab-button.active::before {
+            width: 100%;
+        }
+        .tab-button.active {
+            color: #10b981;
+            font-weight: 700;
+            transform: translateY(-2px);
+        }
+        .tab-button:hover {
+            transform: translateY(-2px);
+            color: #10b981;
+        }
+        .search-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 50px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .search-input {
+            padding: 1rem 1.5rem;
+            padding-right: 4rem;
+            border: none;
+            background: transparent;
+            width: 100%;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            transform: scale(1.02);
+        }
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            transition: all 0.3s ease;
+        }
+        .search-container:focus-within .search-icon {
+            color: #10b981;
+            transform: translateY(-50%) scale(1.1);
+        }
+        .certificate-card {
+            border-left: 4px solid #10b981;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .certificate-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.05), transparent);
+            transition: left 0.6s ease;
+        }
+        .certificate-card:hover::before {
+            left: 100%;
+        }
+        .certificate-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-left-color: #059669;
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.8s ease-in-out;
+        }
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .lesson-locked {
+            opacity: 0.7;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            position: relative;
+        }
+        .lesson-locked::after {
+            content: '🔒';
+            position: absolute;
+            top: 50%;
+            right: 1rem;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+        .lesson-completed {
+            border-left-color: #10b981 !important;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+        .code-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        .shape-1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        .shape-2 {
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        .shape-3 {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        .certificate-verified {
+            position: relative;
+            overflow: hidden;
+        }
+        .certificate-verified::after {
+            content: '✅';
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            font-size: 1.25rem;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-green-50 font-sans relative">
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape shape-1 text-6xl">🔐</div>
+        <div class="shape shape-2 text-4xl">📱</div>
+        <div class="shape shape-3 text-5xl">💻</div>
+    </div>
+
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-8">
+                <a href="../index.html" class="hover:text-green-600 transition-colors duration-300 flex items-center">
+                    <span class="text-lg">📚</span>
+                    <span class="ml-2">Amasomo</span>
+                </a>
+                <span class="text-gray-400">›</span>
+                <span class="text-green-600 font-semibold flex items-center">
+                    <span class="text-lg">🔐</span>
+                    <span class="ml-2">Code z'Telefone</span>
+                </span>
+            </nav>
+
+            <!-- Course Header -->
+            <div class="text-center mb-16">
+                <div class="flex justify-center mb-6">
+                    <div class="w-28 h-28 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center glow-effect">
+                        <span class="text-5xl">🔐</span>
+                    </div>
+                </div>
+                <h1 class="text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    Code z'Telefone
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Menya code zihariye zo gusuzuma, gukora, no kurinda telefone yawe. 
+                    Somera code za GSM, Android, iPhone, n'uburyo bwo gukoresha code mu gukemura ibibazo.
+                </p>
+                
+                <!-- Progress Section -->
+                <div class="mt-12 max-w-md mx-auto">
+                    <div class="flex justify-between text-sm text-gray-600 mb-3">
+                        <span class="font-medium">Imikurire Yawe</span>
+                        <span id="overall-progress-percent" class="font-bold text-green-600">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                        <div id="overall-progress-bar" class="bg-gradient-to-r from-green-400 to-emerald-600 h-4 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl mb-12 overflow-hidden border border-white/20">
+                <div class="flex overflow-x-auto bg-gradient-to-r from-gray-50 to-green-50/30">
+                    <button class="tab-button flex-1 px-8 py-6 text-center font-semibold text-gray-700 hover:text-green-700 transition-all duration-400 active" data-tab="lessons">
+                        <div class="flex items-center justify-center space-x-3">
+                            <span class="text-2xl">📚</span>
+                            <div class="text-left">
+                                <div class="text-lg">Ibigize Somo</div>
+                                <div class="text-xs text-gray-500 font-normal mt-1">Amasomo 4 • Ibigereranyo 4</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="tab-button flex-1 px-8 py-6 text-center font-semibold text-gray-700 hover:text-green-700 transition-all duration-400" data-tab="certificates">
+                        <div class="flex items-center justify-center space-x-3">
+                            <span class="text-2xl">🏆</span>
+                            <div class="text-left">
+                                <div class="text-lg">Icyangombwa</div>
+                                <div class="text-xs text-gray-500 font-normal mt-1">Ibyakiriwe • Ibyo ubonye</div>
+                            </div>
+                        </div>
+                    </button>
+                    <button class="tab-button flex-1 px-8 py-6 text-center font-semibold text-gray-700 hover:text-green-700 transition-all duration-400" data-tab="search">
+                        <div class="flex items-center justify-center space-x-3">
+                            <span class="text-2xl">🔍</span>
+                            <div class="text-left">
+                                <div class="text-lg">Shakisha Icyangombwa</div>
+                                <div class="text-xs text-gray-500 font-normal mt-1">Shakisha ku izina/ID</div>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Lessons Tab -->
+                <div id="lessons" class="tab-content active p-10">
+                    <div class="bg-white rounded-2xl shadow-lg overflow-hidden mb-10">
+                        <div class="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-6">
+                            <h2 class="text-3xl font-bold text-white">🔢 Ibigize Somo</h2>
+                            <p class="text-green-100 mt-2 text-lg">Kurikira ibigize somo ukurikize urutonde - Code z'ingenzi zo kwinjira mu telefone</p>
+                        </div>
+                        
+                        <div class="divide-y divide-gray-100/50">
+                            <!-- Lesson 1 -->
+                            <div class="lesson-item p-8 hover:bg-green-50/30 transition-all duration-400 border-l-4 border-yellow-400" data-lesson="1">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-6">
+                                        <div class="w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                                            <span class="text-yellow-600 font-bold text-xl">1</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <h3 class="text-2xl font-bold text-gray-900">Code z'Ingenzi: GSM & USSD</h3>
+                                                <span class="code-badge">*123#</span>
+                                            </div>
+                                            <p class="text-gray-600 text-lg leading-relaxed mb-4">
+                                                Menya code z'ibanze: *123#, *131#, *140# n'izindi. 
+                                                Code zo gusuzuma airtime, gukora transferi, no kubona amakuru ya konti.
+                                            </p>
+                                            <div class="flex items-center space-x-6 text-sm text-gray-500">
+                                                <span class="flex items-center space-x-2 bg-blue-50 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>15 min</span>
+                                                </span>
+                                                <span class="flex items-center space-x-2 bg-purple-50 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>4 Ibibazo</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <a href="lessons/1-basic-codes.html" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                        Tangira
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- Lesson 2 -->
+                            <div class="lesson-item p-8 hover:bg-green-50/30 transition-all duration-400 border-l-4 border-gray-300 lesson-locked" data-lesson="2">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-6">
+                                        <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-400 font-bold text-xl">2</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <h3 class="text-2xl font-semibold text-gray-600">Code za Android Phones</h3>
+                                                <span class="code-badge opacity-50">*#06#</span>
+                                            </div>
+                                            <p class="text-gray-500 text-lg leading-relaxed mb-4">
+                                                Menya code zihariye kuri telefone za Android: IMEI check, service menu, hardware test, n'ibindi.
+                                            </p>
+                                            <div class="flex items-center space-x-6 text-sm text-gray-400">
+                                                <span class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>20 min</span>
+                                                </span>
+                                                <span class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>6 Ibibazo</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="bg-gray-300 text-gray-500 px-8 py-4 rounded-xl font-semibold cursor-not-allowed shadow-inner" disabled>
+                                        Gifunze
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Lesson 3 -->
+                            <div class="lesson-item p-8 hover:bg-green-50/30 transition-all duration-400 border-l-4 border-gray-300 lesson-locked" data-lesson="3">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-6">
+                                        <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-400 font-bold text-xl">3</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <h3 class="text-2xl font-semibold text-gray-600">Code za iPhone</h3>
+                                                <span class="code-badge opacity-50">*#5005*7672#</span>
+                                            </div>
+                                            <p class="text-gray-500 text-lg leading-relaxed mb-4">
+                                                Menya code zihariye kuri telefone za Apple: Field test, call forwarding, IMEI display, n'ibindi.
+                                            </p>
+                                            <div class="flex items-center space-x-6 text-sm text-gray-400">
+                                                <span class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>20 min</span>
+                                                </span>
+                                                <span class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>5 Ibibazo</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="bg-gray-300 text-gray-500 px-8 py-4 rounded-xl font-semibold cursor-not-allowed shadow-inner" disabled>
+                                        Gifunze
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Lesson 4 -->
+                            <div class="lesson-item p-8 hover:bg-green-50/30 transition-all duration-400 border-l-4 border-gray-300 lesson-locked" data-lesson="4">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex items-start space-x-6">
+                                        <div class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center flex-shrink-0">
+                                            <span class="text-gray-400 font-bold text-xl">4</span>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-3 mb-3">
+                                                <h3 class="text-2xl font-semibold text-gray-600">Gukoresha Code mu Gukemura Ibibazo</h3>
+                                                <span class="code-badge opacity-50">*#*#4636#*#*</span>
+                                            </div>
+                                            <p class="text-gray-500 text-lg leading-relaxed mb-4">
+                                                Menya uko ukoresha code mu gukemura ibibazo by'itelefone: network issues, battery problems, performance.
+                                            </p>
+                                            <div class="flex items-center space-x-6 text-sm text-gray-400">
+                                                <span class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>25 min</span>
+                                                </span>
+                                                <span class="flex items-center space-x-2 bg-gray-100 px-3 py-1 rounded-full">
+                                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span>8 Ibibazo</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="bg-gray-300 text-gray-500 px-8 py-4 rounded-xl font-semibold cursor-not-allowed shadow-inner" disabled>
+                                        Gifunze
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Actions -->
+                    <div class="flex flex-col lg:flex-row gap-6 justify-center items-center">
+                        <a href="quiz.html" class="group bg-gradient-to-r from-yellow-400 to-amber-500 hover:from-yellow-500 hover:to-amber-600 text-gray-900 px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-3">
+                            <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Gereranya Ubumenyi Bwawe</span>
+                        </a>
+                        <a href="certificate.html" class="group bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-3">
+                            <svg class="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Reba Icyangombwa</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Certificates Tab -->
+                <div id="certificates" class="tab-content p-10">
+                    <div class="text-center mb-12">
+                        <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <span class="text-3xl text-white">🏆</span>
+                        </div>
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">🏆 Icyangombwa Cyawe</h2>
+                        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Reba icyangombwa wakuye nyuma yo kurangiza amasomo ya Code z'Telefone</p>
+                    </div>
+
+                    <div id="user-certificates" class="grid md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        <!-- Certificates will be loaded here -->
+                        <div class="text-center py-16 bg-white/50 rounded-3xl border-2 border-dashed border-gray-300">
+                            <div class="text-7xl mb-6 opacity-50">📜</div>
+                            <h3 class="text-2xl font-semibold text-gray-500 mb-4">Nta cyangombwa cyabonetse</h3>
+                            <p class="text-gray-400 text-lg">Rangiza amasomo yose kugirango ubone icyangombwa</p>
+                            <button class="mt-6 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                                Tangira Kwiga
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Tab -->
+                <div id="search" class="tab-content p-10">
+                    <div class="text-center mb-12">
+                        <div class="w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
+                            <span class="text-3xl text-white">🔍</span>
+                        </div>
+                        <h2 class="text-4xl font-bold text-gray-900 mb-4">🔍 Shakisha Icyangombwa</h2>
+                        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Shakisha icyangombwa ukoresheje izina ry'umunyeshuri cyangwa numero y'icyangombwa</p>
+                    </div>
+
+                    <div class="search-container mb-12">
+                        <input type="text" id="certificate-search" placeholder="Andika izina ry'umunyeshuri cyangwa ID y'icyangombwa..." 
+                               class="search-input text-lg">
+                        <div class="search-icon">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div id="search-results" class="space-y-6">
+                        <!-- Search results will appear here -->
+                        <div class="text-center py-16 bg-white/50 rounded-3xl border-2 border-dashed border-gray-300">
+                            <div class="text-6xl mb-6 opacity-50">🔍</div>
+                            <h3 class="text-2xl font-semibold text-gray-500 mb-4">Shakisha Icyangombwa</h3>
+                            <p class="text-gray-400 text-lg">Andika izina cyangwa numero y'icyangombwa mu kibazo cyo shakisha kugirango ubone amakuru</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        class SecretCodesManager {
+            constructor() {
+                this.courseId = 'secret-codes';
+                this.lessons = [
+                    { id: '1', completed: false },
+                    { id: '2', completed: false },
+                    { id: '3', completed: false },
+                    { id: '4', completed: false }
+                ];
+                this.init();
+            }
+
+            init() {
+                this.setupTabs();
+                this.setupProgress();
+                this.setupSearch();
+                this.loadUserCertificates();
+                this.setupEventListeners();
+            }
+
+            setupTabs() {
+                const tabButtons = document.querySelectorAll('.tab-button');
+                const tabContents = document.querySelectorAll('.tab-content');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabId = button.dataset.tab;
+                        
+                        // Remove active class from all buttons and contents
+                        tabButtons.forEach(btn => {
+                            btn.classList.remove('active');
+                            btn.style.transform = 'translateY(0)';
+                        });
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        
+                        // Add active class to current button and content
+                        button.classList.add('active');
+                        button.style.transform = 'translateY(-2px)';
+                        document.getElementById(tabId).classList.add('active');
+
+                        // Add focus effect to search input when search tab is activated
+                        if (tabId === 'search') {
+                            setTimeout(() => {
+                                const searchInput = document.getElementById('certificate-search');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                }
+                            }, 300);
+                        }
+                    });
+                });
+            }
+
+            setupProgress() {
+                try {
+                    const savedProgress = localStorage.getItem(`progress-${this.courseId}`);
+                    
+                    if (savedProgress) {
+                        this.lessons = JSON.parse(savedProgress);
+                    } else {
+                        this.lessons = [
+                            { id: '1', completed: false },
+                            { id: '2', completed: false },
+                            { id: '3', completed: false },
+                            { id: '4', completed: false }
+                        ];
+                        this.saveProgress();
+                    }
+
+                    this.updateProgressUI();
+                    this.setupLessonUnlocking();
+                } catch (error) {
+                    console.error('Error setting up progress:', error);
+                    this.lessons = [
+                        { id: '1', completed: false },
+                        { id: '2', completed: false },
+                        { id: '3', completed: false },
+                        { id: '4', completed: false }
+                    ];
+                    this.saveProgress();
+                    this.updateProgressUI();
+                }
+            }
+
+            saveProgress() {
+                localStorage.setItem(`progress-${this.courseId}`, JSON.stringify(this.lessons));
+            }
+
+            updateProgressUI() {
+                try {
+                    const completed = this.lessons.filter(lesson => lesson.completed).length;
+                    const total = this.lessons.length;
+                    const progress = (completed / total) * 100;
+
+                    const progressBar = document.getElementById('overall-progress-bar');
+                    const progressPercent = document.getElementById('overall-progress-percent');
+                    
+                    if (progressBar && progressPercent) {
+                        // Animate progress bar
+                        progressBar.style.width = `${progress}%`;
+                        progressPercent.textContent = `${Math.round(progress)}%`;
+                        
+                        // Add completion celebration
+                        if (progress === 100) {
+                            progressBar.classList.add('glow-effect');
+                            progressPercent.classList.add('animate-pulse');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error updating progress UI:', error);
+                }
+            }
+
+            setupLessonUnlocking() {
+                try {
+                    const lessons = document.querySelectorAll('.lesson-item');
+                    lessons.forEach((lesson, index) => {
+                        const lessonId = lesson.dataset.lesson;
+                        const startButton = lesson.querySelector('button, a');
+                        
+                        if (index === 0 || this.lessons[index - 1]?.completed) {
+                            // First lesson or previous lesson completed
+                            lesson.classList.remove('lesson-locked');
+                            if (startButton) {
+                                startButton.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'shadow-inner');
+                                startButton.classList.add('bg-gradient-to-r', 'from-green-500', 'to-emerald-600', 'hover:from-green-600', 'hover:to-emerald-700', 'text-white', 'shadow-lg', 'hover:shadow-xl');
+                                if (startButton.textContent === 'Gifunze') {
+                                    startButton.textContent = 'Tangira';
+                                }
+                                if (startButton.tagName === 'BUTTON') {
+                                    const link = document.createElement('a');
+                                    link.href = `lessons/${lessonId}-${this.getLessonSlug(lessonId)}.html`;
+                                    link.className = startButton.className;
+                                    link.innerHTML = startButton.innerHTML;
+                                    startButton.parentNode.replaceChild(link, startButton);
+                                }
+                            }
+                        }
+
+                        // Mark completed lessons
+                        if (this.lessons[index]?.completed) {
+                            lesson.classList.add('lesson-completed');
+                            const button = lesson.querySelector('a');
+                            if (button) {
+                                button.textContent = 'Subira';
+                                button.classList.remove('from-green-500', 'to-emerald-600');
+                                button.classList.add('from-blue-500', 'to-purple-600', 'hover:from-blue-600', 'hover:to-purple-700');
+                            }
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error setting up lesson unlocking:', error);
+                }
+            }
+
+            getLessonSlug(lessonId) {
+                const slugs = {
+                    '1': 'basic-codes',
+                    '2': 'android-codes',
+                    '3': 'iphone-codes',
+                    '4': 'troubleshooting'
+                };
+                return slugs[lessonId] || 'lesson';
+            }
+
+            setupSearch() {
+                const searchInput = document.getElementById('certificate-search');
+                const searchResults = document.getElementById('search-results');
+
+                // Add input event listener with debouncing
+                let searchTimeout;
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        const query = e.target.value.trim().toLowerCase();
+                        this.handleSearch(query, searchResults);
+                    }, 500);
+                });
+
+                // Add enter key support
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = e.target.value.trim().toLowerCase();
+                        this.handleSearch(query, searchResults);
+                    }
+                });
+            }
+
+            async handleSearch(query, searchResults) {
+                if (query.length < 2) {
+                    searchResults.innerHTML = `
+                        <div class="text-center py-16 bg-white/50 rounded-3xl border-2 border-dashed border-gray-300">
+                            <div class="text-6xl mb-6 opacity-50">🔍</div>
+                            <h3 class="text-2xl font-semibold text-gray-500 mb-4">Shakisha Icyangombwa</h3>
+                            <p class="text-gray-400 text-lg">Andika izina cyangwa numero y'icyangombwa mu kibazo cyo shakisha kugirango ubone amakuru</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Show loading state
+                searchResults.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
+                        <p class="text-gray-600 text-lg">Birakenewe... ushaka "${query}"</p>
+                    </div>
+                `;
+
+                try {
+                    const results = await this.searchCertificates(query);
+                    this.displaySearchResults(results, searchResults, query);
+                } catch (error) {
+                    console.error('Error searching certificates:', error);
+                    this.displaySearchResults([], searchResults, query);
+                }
+            }
+
+            async searchCertificates(query) {
+                // Mock data - replace with actual Firebase query
+                const mockCertificates = [
+                    {
+                        id: 'SC-2024-001',
+                        name: 'JEAN PAUL',
+                        course: 'Code z\'Telefone',
+                        score: '92%',
+                        date: '2024-01-20',
+                        verified: true,
+                        completionDate: 'Jan 20, 2024'
+                    },
+                    {
+                        id: 'SC-2024-002',
+                        name: 'MARIE CLAIRE',
+                        course: 'Code z\'Telefone',
+                        score: '88%',
+                        date: '2024-01-21',
+                        verified: true,
+                        completionDate: 'Jan 21, 2024'
+                    },
+                    {
+                        id: 'SC-2024-003',
+                        name: 'ERIC MUGISHA',
+                        course: 'Code z\'Telefone',
+                        score: '95%',
+                        date: '2024-01-22',
+                        verified: true,
+                        completionDate: 'Jan 22, 2024'
+                    },
+                    {
+                        id: 'SC-2024-004',
+                        name: 'ANNETTE UWASE',
+                        course: 'Code z\'Telefone',
+                        score: '85%',
+                        date: '2024-01-23',
+                        verified: true,
+                        completionDate: 'Jan 23, 2024'
+                    }
+                ];
+
+                // Simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                return mockCertificates.filter(cert => 
+                    cert.name.toLowerCase().includes(query) || 
+                    cert.id.toLowerCase().includes(query)
+                );
+            }
+
+            displaySearchResults(results, container, query) {
+                if (results.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-16 bg-white/50 rounded-3xl border-2 border-dashed border-gray-300">
+                            <div class="text-6xl mb-6 opacity-50">😔</div>
+                            <h3 class="text-2xl font-semibold text-gray-500 mb-4">Nta cyangombwa cyabonetse</h3>
+                            <p class="text-gray-400 text-lg">Nta cyangombwa cyabonetse kuri "<span class="font-semibold">${query}</span>". Gerageza indi shakisha.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = results.map(cert => `
+                    <div class="certificate-card certificate-verified bg-white rounded-2xl shadow-lg p-8 transform transition-all duration-500 hover:scale-105">
+                        <div class="flex items-start justify-between mb-6">
+                            <div class="flex-1">
+                                <h3 class="text-2xl font-bold text-gray-900 mb-2">${cert.name}</h3>
+                                <p class="text-gray-600 text-lg mb-1">${cert.course}</p>
+                                <p class="text-gray-500 text-sm">Yarangije: ${cert.completionDate}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-gradient-to-r from-green-400 to-emerald-600 text-white text-sm font-bold px-3 py-1 rounded-full shadow-lg">
+                                    ${cert.score}
+                                </span>
+                                <p class="text-gray-500 text-sm mt-2">Byakiriwe</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center pt-6 border-t border-gray-100">
+                            <div>
+                                <span class="text-gray-500 text-sm font-mono bg-gray-100 px-3 py-1 rounded-lg">${cert.id}</span>
+                            </div>
+                            <button onclick="viewCertificate('${cert.id}')" 
+                                    class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                                <span>Reba Icyangombwa</span>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            loadUserCertificates() {
+                // Load user's certificates from localStorage or Firebase
+                const userCertificates = JSON.parse(localStorage.getItem('user-certificates-secret-codes') || '[]');
+                this.displayUserCertificates(userCertificates);
+            }
+
+            displayUserCertificates(certificates) {
+                const container = document.getElementById('user-certificates');
+                
+                if (certificates.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-16 bg-white/50 rounded-3xl border-2 border-dashed border-gray-300">
+                            <div class="text-7xl mb-6 opacity-50">📜</div>
+                            <h3 class="text-2xl font-semibold text-gray-500 mb-4">Nta cyangombwa cyabonetse</h3>
+                            <p class="text-gray-400 text-lg">Rangiza amasomo yose kugirango ubone icyangombwa</p>
+                            <button onclick="switchToLessonsTab()" class="mt-6 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                Tangira Kwiga
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = certificates.map(cert => `
+                    <div class="certificate-card certificate-verified bg-white rounded-2xl shadow-xl p-8 transform transition-all duration-500 hover:scale-105">
+                        <div class="text-center mb-6">
+                            <div class="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                <span class="text-3xl text-white">🏆</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">${cert.course}</h3>
+                            <p class="text-gray-600">Icyangombwa cy'urwego</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-4xl font-bold bg-gradient-to-r from-green-600 to-emerald-700 bg-clip-text text-transparent mb-3">${cert.score}</div>
+                            <p class="text-gray-500 text-lg mb-6">Yakiriye: ${cert.completionDate}</p>
+                            <a href="certificate.html?id=${cert.id}" 
+                               class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 inline-block">
+                               Reba Icyangombwa
+                            </a>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            setupEventListeners() {
+                // Add keyboard shortcut for search (Ctrl/Cmd + K)
+                document.addEventListener('keydown', (e) => {
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                        e.preventDefault();
+                        const searchTab = document.querySelector('[data-tab="search"]');
+                        if (searchTab) {
+                            searchTab.click();
+                        }
+                    }
+                });
+            }
+        }
+
+        // Global function to view certificate
+        function viewCertificate(certificateId) {
+            window.location.href = `certificate.html?id=${certificateId}`;
+        }
+
+        // Global function to switch to lessons tab
+        function switchToLessonsTab() {
+            const lessonsTab = document.querySelector('[data-tab="lessons"]');
+            if (lessonsTab) {
+                lessonsTab.click();
+            }
+        }
+
+        // Initialize the manager
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load components
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load header:', err));
+
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load footer:', err));
+
+            // Initialize Secret Codes Manager
+            window.secretCodesManager = new SecretCodesManager();
+        });
+    </script>
+</body>
+</html>

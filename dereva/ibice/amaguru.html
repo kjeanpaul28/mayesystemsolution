@@ -1,0 +1,820 @@
+<!-- ===== COMPACT DRIVING TEST FOOTER - BEAUTIFUL BACKGROUND ===== -->
+<footer id="drivingFooter" class="driving-footer-compact fade-in no-print" role="contentinfo" aria-label="Amakuru y'inyuma - Driving Test">
+    <style>
+        /* ===== COMPACT DRIVING TEST FOOTER - BEAUTIFUL STYLES ===== */
+        .driving-footer-compact {
+            /* Beautiful gradient background - from deep blue to vibrant red */
+            background: linear-gradient(145deg, 
+                #0a2351 0%,      /* Deep Navy Blue */
+                #1e3a8a 30%,     /* Police Blue */
+                #b22234 70%,     /* Fire Brick Red */
+                #8b0000 100%     /* Dark Red */
+            );
+            color: #fff;
+            padding: 2rem 1rem 1rem 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.01em;
+            user-select: none;
+            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.25);
+            border-top: 4px solid #fbbf24;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Animated overlay for extra beauty */
+        .driving-footer-compact::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
+            animation: softGlow 8s ease-in-out infinite;
+        }
+
+        /* Second overlay for depth */
+        .driving-footer-compact::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                transparent 0%,
+                rgba(255, 255, 255, 0.05) 50%,
+                transparent 100%
+            );
+            animation: shimmer 6s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        @keyframes softGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+            100% { transform: translateX(200%); }
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 0.5rem;
+            position: relative;
+            z-index: 2; /* Above overlays */
+        }
+
+        /* ===== 3 COLUMNS GRID - COMPACT ===== */
+        .footer-grid-compact {
+            display: grid;
+            grid-template-columns: 1.2fr 1.5fr 1.2fr;
+            gap: 25px;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-col {
+            padding: 0 8px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .footer-col:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .footer-col h4 {
+            color: #fbbf24;
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+            border-bottom: 2px solid rgba(251, 191, 36, 0.4);
+            padding-bottom: 5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .footer-col h4 i {
+            font-size: 0.8rem;
+            color: #fbbf24;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        /* ===== COMPACT INFO ROWS ===== */
+        .info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.95);
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .info-row i {
+            width: 18px;
+            margin-right: 8px;
+            text-align: center;
+            font-size: 0.7rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .info-row a, .info-row span {
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .info-row:hover {
+            background: rgba(251, 191, 36, 0.15);
+            transform: translateX(5px);
+            color: #fbbf24;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-row:hover i {
+            color: #fbbf24;
+        }
+
+        .info-row:hover a, .info-row:hover span {
+            color: #fbbf24;
+        }
+
+        /* ===== POLICE BADGES ===== */
+        .police-badge-mini {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 20px;
+            padding: 0.25rem 0.8rem;
+            font-size: 0.6rem;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #0a2351;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .police-badge-mini i {
+            color: #0a2351;
+            font-size: 0.6rem;
+        }
+
+        /* ===== GAZETTE MINI PREVIEW ===== */
+        .gazette-mini {
+            background: rgba(10, 35, 81, 0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin: 0.8rem 0;
+            border-left: 4px solid #fbbf24;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .gazette-item-mini {
+            display: flex;
+            align-items: center;
+            font-size: 0.65rem;
+            margin-bottom: 0.3rem;
+            color: rgba(255, 255, 255, 0.95);
+            padding: 2px 0;
+        }
+
+        .gazette-item-mini i {
+            color: #fbbf24;
+            margin-right: 6px;
+            font-size: 0.6rem;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .gazette-art {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0a2351;
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.5rem;
+            font-weight: bold;
+            margin-left: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ===== APK BUTTON - BEAUTIFUL ===== */
+        .apk-btn-compact {
+            background: linear-gradient(135deg, 
+                #fbbf24 0%,
+                #f59e0b 50%,
+                #d97706 100%
+            );
+            color: #0a2351;
+            padding: 0.7rem 1rem;
+            border-radius: 50px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.8rem;
+            margin: 0.8rem 0;
+            box-shadow: 0 8px 15px rgba(251, 191, 36, 0.3);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .apk-btn-compact:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(251, 191, 36, 0.4);
+            background: linear-gradient(135deg, 
+                #f59e0b 0%,
+                #fbbf24 50%,
+                #f59e0b 100%
+            );
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .apk-btn-compact:active {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 12px rgba(251, 191, 36, 0.3);
+        }
+
+        .apk-size-mini {
+            background: rgba(10, 35, 81, 0.2);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            margin-left: 5px;
+            white-space: nowrap;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* ===== DEVICE ICONS ROW ===== */
+        .device-row {
+            display: flex;
+            gap: 8px;
+            margin: 0.8rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .device-tag {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(4px);
+            padding: 4px 10px;
+            border-radius: 30px;
+            font-size: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .device-tag:hover {
+            background: rgba(251, 191, 36, 0.2);
+            transform: scale(1.05);
+            border-color: #fbbf24;
+        }
+
+        .device-tag i {
+            color: #fbbf24;
+        }
+
+        /* ===== QUICK LINKS GRID ===== */
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .quick-link-item {
+            font-size: 0.65rem;
+            color: rgba(255, 255, 255, 0.95);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 8px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .quick-link-item:hover {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+            transform: translateX(3px);
+        }
+
+        .quick-link-item i {
+            font-size: 0.6rem;
+            width: 14px;
+            color: #fbbf24;
+        }
+
+        /* ===== SOCIAL/CONTACT ROW ===== */
+        .contact-row {
+            display: flex;
+            gap: 12px;
+            margin: 0.8rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .contact-icon {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            text-decoration: none;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            backdrop-filter: blur(4px);
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-icon:hover {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0a2351;
+            transform: scale(1.15) rotate(5deg);
+            border-color: white;
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+        }
+
+        /* ===== BOTTOM BAR - ULTRA COMPACT ===== */
+        .footer-bottom-compact {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            margin-top: 0.5rem;
+            border-top: 2px solid rgba(251, 191, 36, 0.3);
+            font-size: 0.6rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.8rem 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+        }
+
+        .footer-copy-compact {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links-compact {
+            display: flex;
+            gap: 12px;
+        }
+
+        .footer-links-compact a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .footer-links-compact a:hover {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .version-mini {
+            background: rgba(251, 191, 36, 0.2);
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.55rem;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        /* ===== TOAST ===== */
+        .footer-toast-compact {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #0a2351, #1e3a8a);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            z-index: 10000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            border-left: 4px solid #fbbf24;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .footer-toast-compact.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .footer-grid-compact {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .footer-bottom-compact {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+                border-radius: 20px;
+            }
+            
+            .apk-btn-compact {
+                width: 100%;
+            }
+            
+            .footer-toast-compact {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+            
+            .footer-col:hover {
+                transform: translateY(-3px);
+            }
+        }
+
+        /* Decorative elements */
+        .footer-col::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+
+    <div class="footer-container">
+        
+        <!-- 3 COLUMNS - EVERYTHING COMPACT -->
+        <div class="footer-grid-compact">
+                
+            <!-- COLUMN 1: CONTACT + POLICE + QUICK LINKS -->
+            <div class="footer-col">
+                <h4><i class="fas fa-map-marker-alt"></i> MAYE SYSTEMS</h4>
+                
+                <!-- Contact Info - Compact -->
+                <div class="info-row" onclick="openDrivingLocation()">
+                    <i class="fas fa-map-marker-alt" style="color: #fbbf24;"></i>
+                    <span>KN 12 Av, Muhima, Kigali</span>
+                </div>
+                
+                <div class="info-row" onclick="makeDrivingPhoneCall()">
+                    <i class="fas fa-phone" style="color: #fbbf24;"></i>
+                    <span>+250 784 067 694</span>
+                </div>
+                
+                <div class="info-row" onclick="sendDrivingEmail()">
+                    <i class="fas fa-envelope" style="color: #fbbf24;"></i>
+                    <span>kjeanpaul28@gmail.com</span>
+                </div>
+
+                <!-- Police Badge -->
+                <div style="margin: 0.8rem 0;">
+                    <span class="police-badge-mini">
+                        <i class="fas fa-shield-alt"></i> Police Rwanda
+                    </span>
+                </div>
+
+                <!-- Quick Links - 2x2 Grid -->
+                <h4 style="margin-top: 1rem;"><i class="fas fa-link"></i> Quick Links</h4>
+                <div class="quick-links-grid">
+                    <a href="/driving-test.html" class="quick-link-item">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                    <a href="/driving-test.html#categories" class="quick-link-item">
+                        <i class="fas fa-folder"></i> Ibyiciro
+                    </a>
+                    <a href="/driving-test.html#study" class="quick-link-item">
+                        <i class="fas fa-graduation-cap"></i> Kwiga
+                    </a>
+                    <a href="/dereva/auth/auth.html" class="quick-link-item">
+                        <i class="fas fa-sign-in-alt"></i> Injira
+                    </a>
+                    <a href="/dereva/admin/results.html" target="_blank" class="quick-link-item">
+                        <i class="fas fa-chart-line"></i> Admin
+                    </a>
+                    <a href="/contact.html" class="quick-link-item">
+                        <i class="fas fa-headset"></i> Support
+                    </a>
+                </div>
+            </div>
+
+            <!-- COLUMN 2: GAZETTE + STUDY + DOWNLOADS -->
+            <div class="footer-col">
+                <h4><i class="fas fa-file-contract"></i> Gazette y'Amategeko</h4>
+                
+                <!-- Gazette Mini Preview -->
+                <div class="gazette-mini">
+                    <div class="gazette-item-mini">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Umuvuduko: 40km/h mu mujyi</span>
+                        <span class="gazette-art">Art 1</span>
+                    </div>
+                    <div class="gazette-item-mini">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Alcool: 0.8g/l</span>
+                        <span class="gazette-art">Art 45</span>
+                    </div>
+                    <div class="gazette-item-mini">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Permis: A, B, C, D, E</span>
+                        <span class="gazette-art">Art 12</span>
+                    </div>
+                    <div class="gazette-item-mini">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Ceinture: Itegeko</span>
+                        <span class="gazette-art">Art 23</span>
+                    </div>
+                    
+                    <!-- Download Full Gazette Link -->
+                    <a href="https://ik.imagekit.io/73qho7kh9/amategeko.pdf?updatedAt=1771155324708" 
+                       target="_blank"
+                       style="display: flex; align-items: center; gap: 5px; margin-top: 0.8rem; font-size: 0.7rem; color: #fbbf24; text-decoration: none;"
+                       onclick="trackGazetteDownload()">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Download Full Gazette PDF</span>
+                    </a>
+                </div>
+
+                <!-- APK Download - LOCAL PATH -->
+                <h4 style="margin-top: 1rem;"><i class="fas fa-download"></i> Download App</h4>
+                
+                <!-- LOCAL APK BUTTON - /downloads/amategeko.apk -->
+                <a href="/downloads/amategeko.apk" 
+                   class="apk-btn-compact"
+                   download="Amategeko-App.apk"
+                   onclick="trackLocalApkDownload()">
+                    <i class="fab fa-android"></i>
+                    <span>Download APK - Amategeko App</span>
+                    <span class="apk-size-mini">6.5 MB</span>
+                </a>
+
+                <!-- Device Compatibility - Icons Row -->
+                <div class="device-row">
+                    <span class="device-tag"><i class="fas fa-mobile-alt"></i> Android</span>
+                    <span class="device-tag"><i class="fab fa-apple"></i> iPhone*</span>
+                    <span class="device-tag"><i class="fas fa-tablet-alt"></i> Tablet</span>
+                    <span class="device-tag"><i class="fab fa-android"></i> iPad*</span>
+                </div>
+                <p style="font-size: 0.55rem; color: rgba(255,255,255,0.7); text-align: center; margin-top: 0;">
+                    *APK ikora kuri Android gusa. iOS ikoresha browser.
+                </p>
+
+                <!-- Study Tips -->
+                <div class="info-row" onclick="showDrivingTips()" style="margin-top: 0.5rem;">
+                    <i class="fas fa-lightbulb" style="color: #fbbf24;"></i>
+                    <span>Gutsinda Ikizamini - Tips</span>
+                </div>
+            </div>
+
+            <!-- COLUMN 3: TEST INFO + SUPPORT + SOCIAL -->
+            <div class="footer-col">
+                <h4><i class="fas fa-car"></i> Driving Test</h4>
+                
+                <!-- Test Stats -->
+                <div class="info-row">
+                    <i class="fas fa-question-circle" style="color: #fbbf24;"></i>
+                    <span>440+ Ibibazo bya Police</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-clock" style="color: #fbbf24;"></i>
+                    <span>Igihe: 30 min / 20 Q</span>
+                </div>
+                <div class="info-row">
+                    <i class="fas fa-trophy" style="color: #fbbf24;"></i>
+                    <span>Gutsinda: 75% byibuze</span>
+                </div>
+
+                <!-- Study Materials Links -->
+                <h4 style="margin-top: 1rem;"><i class="fas fa-book"></i> Kwiga</h4>
+                
+                <div class="info-row">
+                    <a href="/driving-test.html#study">
+                        <i class="fas fa-video"></i> Amasomo yose
+                    </a>
+                </div>
+                <div class="info-row">
+                    <a href="#" onclick="showDrivingTips()">
+                        <i class="fas fa-check-circle"></i> Inama zo gutsinda
+                    </a>
+                </div>
+
+                <!-- Contact Icons Row -->
+                <h4 style="margin-top: 1rem;"><i class="fas fa-comments"></i> Support</h4>
+                
+                <div class="contact-row">
+                    <div class="contact-icon" onclick="makeDrivingPhoneCall()" title="Telefona">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <div class="contact-icon" onclick="sendDrivingEmail()" title="Email">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-icon" onclick="openDrivingLocation()" title="Maps">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <a href="https://wa.me/250784067694?text=Nshaka%20ubufasha%20kuri%20Driving%20Test" 
+                       target="_blank"
+                       class="contact-icon" 
+                       title="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                </div>
+
+                <!-- Terms Links -->
+                <div style="display: flex; gap: 12px; margin-top: 0.8rem; flex-wrap: wrap; justify-content: center;">
+                    <a href="/dereva/auth/terms.html" style="color: rgba(255,255,255,0.8); font-size: 0.6rem; text-decoration: none; transition: color 0.2s;">Amategeko</a>
+                    <span style="color: rgba(251,191,36,0.5);">|</span>
+                    <a href="/privacy.html" style="color: rgba(255,255,255,0.8); font-size: 0.6rem; text-decoration: none; transition: color 0.2s;">Privacy</a>
+                    <span style="color: rgba(251,191,36,0.5);">|</span>
+                    <a href="/about.html" style="color: rgba(255,255,255,0.8); font-size: 0.6rem; text-decoration: none; transition: color 0.2s;">About</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM BAR - ULTRA COMPACT -->
+        <div class="footer-bottom-compact">
+            <div class="footer-copy-compact">
+                <span>© <span id="driving-compact-year">2026</span> MAYE SYSTEMS</span>
+                <span class="version-mini">v3.3.0</span>
+            </div>
+
+            <div class="footer-links-compact">
+                <a href="/dereva/auth/terms.html">Terms</a>
+                <a href="/contact.html">Contact</a>
+                <a href="#" onclick="showDrivingCredits()">Credits</a>
+            </div>
+
+            <div>
+                <span style="color: #fbbf24;">
+                    <i class="fas fa-shield-alt"></i> Police Rwanda
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Compact Toast -->
+    <div id="footerToastCompact" class="footer-toast-compact"></div>
+</footer>
+
+<script>
+    // ============================================
+    // LOCAL APK DOWNLOAD - /downloads/amategeko.apk
+    // ============================================
+    (function() {
+        // Local APK path
+        const LOCAL_APK_PATH = '/downloads/amategeko.apk';
+        
+        console.log('📲 Local APK Ready - Path:', LOCAL_APK_PATH);
+        
+        // ============================================
+        // TRACKING FUNCTIONS
+        // ============================================
+        window.trackLocalApkDownload = function() {
+            console.log('📊 [Analytics] APK Download: Amategeko App (Local)');
+            showFooterToast('📲 Gutangiza download ya Amategeko App...');
+            
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download_apk', {
+                    'event_category': 'app',
+                    'event_label': 'Amategeko App - Local'
+                });
+            }
+        };
+
+        window.trackGazetteDownload = function() {
+            console.log('📊 [Analytics] PDF Download: Gazette');
+            showFooterToast('📄 Gufungura Gazette PDF...');
+            
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'download_pdf', {
+                    'event_category': 'document',
+                    'event_label': 'Gazette'
+                });
+            }
+        };
+
+        // ============================================
+        // CONTACT FUNCTIONS
+        // ============================================
+        window.makeDrivingPhoneCall = function() {
+            window.location.href = 'tel:+250784067694';
+            showFooterToast('📞 Guhamagara...');
+        };
+
+        window.sendDrivingEmail = function() {
+            window.location.href = 'mailto:kjeanpaul28@gmail.com?subject=Driving%20Test%20Support';
+            showFooterToast('📧 Gufungura email...');
+        };
+
+        window.openDrivingLocation = function() {
+            window.open('https://www.google.com/maps/search/?api=1&query=KN+12+Avenue,+Rugenge,+Muhima,+Kigali', '_blank');
+            showFooterToast('🗺️ Gufungura Maps...');
+        };
+
+        window.showDrivingTips = function() {
+            alert('✅ Gutsinda Ikizamini:\n\n1. Soma buri kibazo neza\n2. Tekereza mbere yo gusubiza\n3. Reba ibimenyetso by\'umuhanda\n4. Witinya amakosa\n\nMurakoze!');
+        };
+
+        window.showDrivingCredits = function() {
+            alert('MAYE SYSTEMS - Driving Test\n\nVersion 3.3.0\n© 2026\n\nAmategeko App v1.0\n\n📁 Path: /downloads/amategeko.apk');
+        };
+
+        // ============================================
+        // TOAST SYSTEM
+        // ============================================
+        function showFooterToast(message) {
+            const toast = document.getElementById('footerToastCompact');
+            if (!toast) {
+                console.log('Toast:', message);
+                return;
+            }
+            
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function updateYear() {
+            const yearEl = document.getElementById('driving-compact-year');
+            if (yearEl) {
+                yearEl.textContent = new Date().getFullYear();
+            }
+        }
+
+        function loadFontAwesome() {
+            if (!document.querySelector('link[href*="font-awesome"]')) {
+                const faLink = document.createElement('link');
+                faLink.rel = 'stylesheet';
+                faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+                document.head.appendChild(faLink);
+            }
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            updateYear();
+            loadFontAwesome();
+            window.showFooterToast = showFooterToast;
+            
+            console.log('✅ Driving Test Footer initialized with BEAUTIFUL BACKGROUND');
+            console.log('📲 APK Path:', LOCAL_APK_PATH);
+        });
+    })();
+</script>

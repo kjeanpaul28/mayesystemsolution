@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Mobile Basics - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../css/tailwind.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .option-label:hover {
+            border-color: #3b82f6;
+            background-color: #f0f9ff;
+        }
+        .option-label.selected {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        .option-label.correct {
+            border-color: #10b981;
+            background-color: #dcfce7;
+        }
+        .option-label.incorrect {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            transition: width 0.5s ease;
+        }
+        .timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ef4444;
+        }
+        .result-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .certificate-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .certificate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(16, 185, 129, 0.3);
+        }
+        .question-number {
+            width: 35px;
+            height: 35px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .question-number.selected {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .question-number.answered {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="quiz-container px-4 sm:px-6 lg:px-8">
+            <!-- Quiz Header -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-900 mb-4">
+                    <span class="text-3xl">📱</span> Quiz - Mobile Basics
+                </h1>
+                <p class="text-xl text-gray-600">Gereranya ubumenyi bwawe mu bijyanye n'itelefone</p>
+            </div>
+
+            <!-- User Info Section -->
+            <div id="user-info" class="bg-white rounded-2xl shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">👤 Amakuru Yawe</h2>
+                <div class="grid md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Amazina</label>
+                        <input type="text" id="user-name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Andika amazina yawe" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="user-email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="email@example.com" required>
+                    </div>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <h3 class="font-semibold text-blue-800 mb-2">📋 Amabwiriza</h3>
+                    <ul class="text-blue-700 text-sm space-y-1">
+                        <li>• <strong>Hitamo ibibazo 20</strong> mu 40 ufite</li>
+                        <li>• Ufite <strong>minute 30</strong> zose zose</li>
+                        <li>• <strong>50%</strong> ni by'inshungu (10/20) kugirango winshe</li>
+                        <li>• Imyirondoro yawe izoherezwa muri system</li>
+                    </ul>
+                </div>
+                <button id="start-quiz" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    🚀 Tangira Quiz
+                </button>
+            </div>
+
+            <!-- Quiz Selection -->
+            <div id="quiz-selection" class="bg-white rounded-2xl shadow-lg p-6 mb-8 hidden">
+                <h3 class="text-xl font-semibold text-gray-900 mb-4">🎯 Hitamo Ibibazo 20</h3>
+                <div class="grid grid-cols-5 md:grid-cols-10 gap-2 mb-4" id="question-grid">
+                    <!-- Question numbers will be generated here -->
+                </div>
+                <div class="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div>
+                        <span id="selected-count" class="text-gray-600 font-semibold">0/20 ibibazo byahiswemo</span>
+                    </div>
+                    <button id="confirm-selection" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                        ✅ Emeza Ibisabwe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quiz Interface -->
+            <div id="quiz-interface" class="hidden">
+                <!-- Progress & Timer -->
+                <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div>
+                                <span class="text-sm text-gray-600">Ikibazo</span>
+                                <div class="text-xl font-bold text-gray-900">
+                                    <span id="current-question">1</span>/<span id="total-questions">20</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar flex-1 mx-4">
+                                <div id="progress-fill" class="progress-fill" style="width: 5%"></div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-sm text-gray-600">Igihe Gisigaye</span>
+                            <div id="timer" class="timer">30:00</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Question Navigation -->
+                    <div class="flex flex-wrap gap-1 justify-center mt-4" id="question-navigation">
+                        <!-- Question numbers will be generated here -->
+                    </div>
+                </div>
+
+                <!-- Question Display -->
+                <div id="question-display">
+                    <!-- Questions will be loaded here -->
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between mt-6">
+                    <button id="prev-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        ⬅️ Subira Inyuma
+                    </button>
+                    <button id="next-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                        Genda Imbere ➡️
+                    </button>
+                    <button id="submit-quiz" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors hidden">
+                        🏁 Tanga Quiz
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="hidden">
+                <div class="result-card">
+                    <div id="result-icon" class="text-6xl mb-4">🎉</div>
+                    <h2 id="result-title" class="text-3xl font-bold text-gray-900 mb-4">Watsinze Quiz!</h2>
+                    <div id="result-score" class="text-5xl font-bold text-green-600 mb-4">85%</div>
+                    
+                    <div class="grid md:grid-cols-3 gap-4 mb-6">
+                        <div class="text-center p-4 bg-green-50 rounded-lg">
+                            <div class="text-2xl font-bold text-green-600" id="correct-answers">17</div>
+                            <div class="text-sm text-green-700">Byakuwe neza</div>
+                        </div>
+                        <div class="text-center p-4 bg-red-50 rounded-lg">
+                            <div class="text-2xl font-bold text-red-600" id="wrong-answers">3</div>
+                            <div class="text-sm text-red-700">Ntibyakuwe neza</div>
+                        </div>
+                        <div class="text-center p-4 bg-blue-50 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-600" id="time-taken">25:30</div>
+                            <div class="text-sm text-blue-700">Igihe wakoresheje</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-6 p-4 bg-yellow-50 rounded-lg">
+                        <h3 class="font-semibold text-yellow-800 mb-2">📊 Ibisubizo:</h3>
+                        <div id="category-breakdown" class="text-sm text-yellow-700">
+                            <!-- Category breakdown will be shown here -->
+                        </div>
+                    </div>
+                    
+                    <button id="certificate-btn" class="certificate-btn mb-4">
+                        🏆 Kura Icyangombwa
+                    </button>
+                    <div class="text-sm text-gray-600">
+                        Imyirondoro yawe yoherejwe muri system. Ushobora gusubira quiz iyo ushaka.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Quiz Questions Database (40 questions - Updated for Mobile Basics)
+        const allQuestions = [
+            // Phone Types (10 questions)
+            {
+                id: 1,
+                question: "Ni ikihe telefoni ikoreshwa mu bice bidafite network ya Telecom?",
+                options: [
+                    "Smartphone",
+                    "Feature phone", 
+                    "Satellite phone",
+                    "IP phone"
+                ],
+                correct: 2,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 2,
+                question: "Ni iki kiranga smartphone kurusha feature phone?",
+                options: [
+                    "Keypad gusa",
+                    "Touchscreen na Operating System",
+                    "FM Radio gusa",
+                    "Nta internet igira"
+                ],
+                correct: 1,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 3,
+                question: "Ni iyihe telefoni ibika apps nyinshi?",
+                options: [
+                    "Feature phone",
+                    "Smartphone",
+                    "IP phone",
+                    "Satellite phone"
+                ],
+                correct: 1,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 4,
+                question: "2G bivuga iki muri telefone?",
+                options: [
+                    "Generation ya kabiri ya network",
+                    "Generation ya gatanu",
+                    "VoIP technology",
+                    "GPS system"
+                ],
+                correct: 0,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 5,
+                question: "Ukoresha VoIP phone akenera iki?",
+                options: [
+                    "Amashanyarazi menshi",
+                    "Sim card",
+                    "Internet (Wi-Fi/Ethernet)",
+                    "Flash Disk"
+                ],
+                correct: 2,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 6,
+                question: "Ni iyihe telefoni ifite battery iramba cyane?",
+                options: [
+                    "Smartphone",
+                    "Feature phone",
+                    "Tablet",
+                    "Gaming phone"
+                ],
+                correct: 1,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 7,
+                question: "Ni iyihe telefoni ikoresha satellite aho network ya Telecom?",
+                options: [
+                    "Smartphone",
+                    "Feature phone",
+                    "Satellite phone",
+                    "Basic phone"
+                ],
+                correct: 2,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 8,
+                question: "Touchscreen ni iki?",
+                options: [
+                    "Screen ukoraho kugira ngo ikore",
+                    "Buto za nimero",
+                    "Camera ya telefone",
+                    "Sistema yo guhamagara"
+                ],
+                correct: 0,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 9,
+                question: "Ni iyihe telefoni ikoreshwa mu biro by'itumanaho?",
+                options: [
+                    "Feature phone",
+                    "VoIP phone",
+                    "Satellite phone", 
+                    "Smartphone"
+                ],
+                correct: 1,
+                category: "Ubwoko bwa Telefone"
+            },
+            {
+                id: 10,
+                question: "Ubwoko bwa telefone ukoresha keypad ya nimero ni nde?",
+                options: [
+                    "Smartphone",
+                    "Feature phone",
+                    "Tablet",
+                    "iPhone"
+                ],
+                correct: 1,
+                category: "Ubwoko bwa Telefone"
+            },
+
+            // Smart Features (15 questions)
+            {
+                id: 11,
+                question: "Ni ikihe sensor gukoreshwa mu kuzima screen igihe uri kuramaguye?",
+                options: [
+                    "Light sensor",
+                    "Proximity sensor",
+                    "Accelerometer", 
+                    "Gyroscope"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 12,
+                question: "Adaptive battery ikora iki?",
+                options: [
+                    "Ihita yaka telefone",
+                    "Ishyira indirect apps mu sleep mode",
+                    "Ihita yerekana amashusho",
+                    "Ntacyo ikora"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 13,
+                question: "Ni iyihe murongo w'umutekano ukoresha ifoto ry'uruhanga?",
+                options: [
+                    "Fingerprint unlock",
+                    "Face unlock",
+                    "Trusted places",
+                    "Smart reply"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 14,
+                question: "Auto-brightness ikoresha ikihe sensor?",
+                options: [
+                    "Proximity sensor",
+                    "Light sensor",
+                    "Accelerometer",
+                    "Gyroscope"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 15,
+                question: "Ni iyihe murongo ukora imirongo ya telefone ihinduke landscape/portrait?",
+                options: [
+                    "Light sensor",
+                    "Proximity sensor", 
+                    "Accelerometer",
+                    "Fingerprint sensor"
+                ],
+                correct: 2,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 16,
+                question: "Smart Lock ikora iki?",
+                options: [
+                    "Ihita yaka telefone",
+                    "Yemera gufungura telefone aho uri murugo",
+                    "Ihita yohereza ubutumwa",
+                    "Ihita gukora amafoto"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 17,
+                question: "Ni ikihe kiranga voice assistant?",
+                options: [
+                    "Gukora amafoto gusa",
+                    "Kwumva amagambo n'ugutanga ibisubizo",
+                    "Gukoresha internet gusa",
+                    "Gukora imibare"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 18,
+                question: "Predictive text ikora iki?",
+                options: [
+                    "Ihita yohereza ubutumwa",
+                    "Iwereka amagambo ugiye gukoresha",
+                    "Ihita gukora amafoto",
+                    "Ihita gukora calls"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 19,
+                question: "Smart notifications zikora iki?",
+                options: [
+                    "Zihita zireka ubutumwa bwose",
+                    "Zerekanya ubutumwa bukwiye mbere",
+                    "Zihita zibika telefone",
+                    "Zigira amashusho yose"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 20,
+                question: "Wi-Fi Auto Connect ikora iki?",
+                options: [
+                    "Ihita yaka Wi-Fi",
+                    "Yongera guhura na Wi-Fi yamenyeshejwe",
+                    "Ihita yohereza amakuru",
+                    "Ihita gukora hotspot"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 21,
+                question: "Find My Device ikora iki?",
+                options: [
+                    "Ihita gusiba apps",
+                    "Ishakisha telefone yawe yabuze",
+                    "Ihita gukora updates",
+                    "Ihita gukora amafoto"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 22,
+                question: "Smart storage management ikora iki?",
+                options: [
+                    "Ihita gusiba amakuru yose",
+                    "Igabanyiriza amakuru adakenerwa",
+                    "Ihita gukoresha internet",
+                    "Ihita gukora calls"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 23,
+                question: "Biometric authentication irimo ibihe?",
+                options: [
+                    "Fingerprint na Face ID",
+                    "PIN na Password",
+                    "Pattern gusa",
+                    "Nta biometric"
+                ],
+                correct: 0,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 24,
+                question: "GPS ikoreshwa mu iki?",
+                options: [
+                    "Gushaka aho uri gusa",
+                    "Kumenya aho uri no kugana aho ushaka",
+                    "Gukora amafoto gusa",
+                    "Gukora calls"
+                ],
+                correct: 1,
+                category: "Imirongo ya Smartphone"
+            },
+            {
+                id: 25,
+                question: "Hotspot ikora iki?",
+                options: [
+                    "Gutanga internet kuri telefone undi",
+                    "Gukoresha internet ya WiFi",
+                    "Gukora amafoto",
+                    "Gukora video calls"
+                ],
+                correct: 0,
+                category: "Imirongo ya Smartphone"
+            },
+
+            // Keypad Usage (8 questions)
+            {
+                id: 26,
+                question: "Ni ikihe kimwe mu bikoresho by'ibanze bya feature phone?",
+                options: [
+                    "Touchscreen",
+                    "Keypad ya nimero",
+                    "Voice assistant",
+                    "Face ID"
+                ],
+                correct: 1,
+                category: "Gukoresha Keypad"
+            },
+            {
+                id: 27,
+                question: "Urugero rwa keypad usage ni iki?",
+                options: [
+                    "Gukanda screen",
+                    "Gutora amanota",
+                    "Gushyiraho PIN ukoresheje buto",
+                    "Gukoresha internet"
+                ],
+                correct: 2,
+                category: "Gukoresha Keypad"
+            },
+            {
+                id: 28,
+                question: "Ni iyihe buto yakoreshwa mu guhamagara emergency?",
+                options: [
+                    "Buto ya 1",
+                    "Buto ya 9",
+                    "Buto ya 0",
+                    "Buto ya *"
+                ],
+                correct: 1,
+                category: "Gukoresha Keypad"
+            },
+            {
+                id: 29,
+                question: "Ushaka gukora SMS, ni iyihe buto ukoresha?",
+                options: [
+                    "Buto ya Menu",
+                    "Buto ya Call",
+                    "Buto ya Messages",
+                    "Buto ya Camera"
+                ],
+                correct: 2,
+                category: "Gukoresha Keypad"
+            },
+            {
+                id: 30,
+                question: "Ni iyihe buto yakoreshwa mu gukora FM Radio?",
+                options: [
+                    "Buto ya Music",
+                    "Buto ya Radio",
+                    "Buto ya Media",
+                    "Buto ya Entertainment"
+                ],
+                correct: 1,
+                category: "Gukoresha Keypad"
+            },
+            {
+                id: 31,
+                question: "Ushaka gushyiraho alarm, ni iyihe buto ukoresha?",
+                options: [
+                    "Buto ya Clock",
+                    "Buto ya Time",
+                    "Buto ya Alarm",
+                    "Buto ya Reminder"
+                ],
+                correct: 2,
+                category: "Gukoresha Keypad"
+            },
+            {
+                id: 32,
+                question: "Ni iyihe buto yakoreshwa mu gukoresha flashlight?",
+                options: [
+                    "Buto ya Light",
+                    "Buto ya Flash",
+                    "Buto ya Torch", 
+                    "Buto ya Brightness"
+                ],
+                correct: 2,
+                category: "Gukoresha Keypad"
+            },
+            {
+                id: 33,
+                question: "Ushaka gushyiraho PIN, ni iyihe buto ukoresha?",
+                options: [
+                    "Buto ya Security",
+                    "Buto ya Settings",
+                    "Buto ya Lock",
+                    "Buto ya PIN"
+                ],
+                correct: 1,
+                category: "Gukoresha Keypad"
+            },
+
+            // Security (7 questions)
+            {
+                id: 34,
+                question: "Ni ikihe kibazo cy'umutekano gikunze kugaragara muri telefone?",
+                options: [
+                    "Malware n'ibyaha by'ikoranabuhanga",
+                    "Kugwa hasi kw'itelefone",
+                    "Guhabwa amezi make y'ubuzima", 
+                    "Kutabona amashusho"
+                ],
+                correct: 0,
+                category: "Umutekano"
+            },
+            {
+                id: 35,
+                question: "Encryption ni iki?",
+                options: [
+                    "Uburyo bwo gukora amafoto",
+                    "Uburyo bwo guhindura amakuru mu buryo butazasobanukirwa",
+                    "Uburyo bwo gushyiraho PIN",
+                    "Uburyo bwo gukora backup"
+                ],
+                correct: 1,
+                category: "Umutekano"
+            },
+            {
+                id: 36,
+                question: "Ni iyihe murongo wo kwirinda ukoresha uburyo butandukanye?",
+                options: [
+                    "Single protection",
+                    "Layers of protection", 
+                    "No protection",
+                    "Random protection"
+                ],
+                correct: 1,
+                category: "Umutekano"
+            },
+            {
+                id: 37,
+                question: "Screen lock ikora iki?",
+                options: [
+                    "Ihita yaka telefone",
+                    "Ituma utabasha gukoresha telefone",
+                    "Irina abatabikeneye kwinjira",
+                    "Ihita yohereza amakuru"
+                ],
+                correct: 2,
+                category: "Umutekano"
+            },
+            {
+                id: 38,
+                question: "Phishing ni iki?",
+                options: [
+                    "Uburyo bwo gufata amakuru n'abanyabinyoma",
+                    "Uburyo bwo gukora amafoto",
+                    "Uburyo bwo gukoresha internet",
+                    "Uburyo bwo guhamagara"
+                ],
+                correct: 0,
+                category: "Umutekano"
+            },
+            {
+                id: 39,
+                question: "Two-factor authentication ni iki?",
+                options: [
+                    "Gukoresha uburyo bumwe gusa",
+                    "Gukoresha uburyo bubiri bwo kwemeza",
+                    "Kutagira umutekano",
+                    "Gukoresha password gusa"
+                ],
+                correct: 1,
+                category: "Umutekano"
+            },
+            {
+                id: 40,
+                question: "App permissions zikwiye kugenerwa bite?",
+                options: [
+                    "Zose",
+                    "Iyo zikeneye gusa",
+                    "Ntizigenerwe",
+                    "Gusa location"
+                ],
+                correct: 1,
+                category: "Umutekano"
+            }
+        ];
+
+        class QuizManager {
+            constructor() {
+                this.selectedQuestions = [];
+                this.currentQuestionIndex = 0;
+                this.userAnswers = {};
+                this.quizStarted = false;
+                this.timeLeft = 30 * 60; // 30 minutes in seconds
+                this.timerInterval = null;
+                this.userData = {};
+                this.quizResults = {};
+                
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.loadUserFromStorage();
+            }
+
+            loadUserFromStorage() {
+                // Try to get user data from localStorage
+                const savedUser = localStorage.getItem('mayeUserProfile');
+                if (savedUser) {
+                    this.userData = JSON.parse(savedUser);
+                    document.getElementById('user-name').value = this.userData.name || '';
+                    document.getElementById('user-email').value = this.userData.email || '';
+                }
+            }
+
+            startQuiz() {
+                const name = document.getElementById('user-name').value.trim();
+                const email = document.getElementById('user-email').value.trim();
+                
+                if (!name || !email) {
+                    alert('Andika amazina na email yawe mbere yo gutangira quiz.');
+                    return;
+                }
+
+                this.userData = { 
+                    name, 
+                    email, 
+                    timestamp: new Date().toISOString(),
+                    course: 'Mobile Basics'
+                };
+                
+                // Save user data to localStorage
+                localStorage.setItem('mayeUserProfile', JSON.stringify(this.userData));
+                
+                // Show question selection
+                document.getElementById('user-info').classList.add('hidden');
+                document.getElementById('quiz-selection').classList.remove('hidden');
+                
+                // Generate question grid
+                this.generateQuestionGrid();
+            }
+
+            generateQuestionGrid() {
+                const grid = document.getElementById('question-grid');
+                grid.innerHTML = '';
+                
+                for (let i = 1; i <= 40; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'question-number';
+                    div.textContent = i;
+                    div.dataset.questionId = i;
+                    
+                    div.addEventListener('click', () => this.toggleQuestionSelection(i));
+                    
+                    grid.appendChild(div);
+                }
+                this.updateSelectionCount();
+            }
+
+            toggleQuestionSelection(questionId) {
+                const index = this.selectedQuestions.indexOf(questionId);
+                const element = document.querySelector(`[data-question-id="${questionId}"]`);
+                
+                if (index === -1) {
+                    if (this.selectedQuestions.length < 20) {
+                        this.selectedQuestions.push(questionId);
+                        element.classList.add('selected');
+                    }
+                } else {
+                    this.selectedQuestions.splice(index, 1);
+                    element.classList.remove('selected');
+                }
+                
+                this.updateSelectionCount();
+            }
+
+            updateSelectionCount() {
+                const count = this.selectedQuestions.length;
+                document.getElementById('selected-count').textContent = `${count}/20 ibibazo byahiswemo`;
+                
+                const confirmBtn = document.getElementById('confirm-selection');
+                confirmBtn.disabled = count !== 20;
+            }
+
+            confirmSelection() {
+                if (this.selectedQuestions.length !== 20) {
+                    alert('Hitamo ibibazo 20 mbere yo gukomeza.');
+                    return;
+                }
+
+                // Shuffle selected questions
+                this.selectedQuestions = this.selectedQuestions.sort(() => Math.random() - 0.5);
+                this.quizStarted = true;
+                
+                // Show quiz interface
+                document.getElementById('quiz-selection').classList.add('hidden');
+                document.getElementById('quiz-interface').classList.remove('hidden');
+                
+                // Start timer
+                this.startTimer();
+                
+                // Generate question navigation
+                this.generateQuestionNavigation();
+                
+                // Load first question
+                this.loadQuestion(0);
+            }
+
+            generateQuestionNavigation() {
+                const nav = document.getElementById('question-navigation');
+                nav.innerHTML = '';
+                
+                this.selectedQuestions.forEach((questionId, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'question-number';
+                    div.textContent = index + 1;
+                    div.dataset.navIndex = index;
+                    
+                    div.addEventListener('click', () => this.loadQuestion(index));
+                    
+                    nav.appendChild(div);
+                });
+            }
+
+            startTimer() {
+                this.timerInterval = setInterval(() => {
+                    this.timeLeft--;
+                    
+                    const minutes = Math.floor(this.timeLeft / 60);
+                    const seconds = this.timeLeft % 60;
+                    document.getElementById('timer').textContent = 
+                        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    
+                    if (this.timeLeft <= 0) {
+                        this.submitQuiz();
+                    }
+                }, 1000);
+            }
+
+            loadQuestion(index) {
+                this.currentQuestionIndex = index;
+                const questionId = this.selectedQuestions[index];
+                const question = allQuestions.find(q => q.id === questionId);
+                
+                document.getElementById('current-question').textContent = index + 1;
+                document.getElementById('total-questions').textContent = this.selectedQuestions.length;
+                
+                // Update progress
+                const progress = ((index + 1) / this.selectedQuestions.length) * 100;
+                document.getElementById('progress-fill').style.width = `${progress}%`;
+                
+                // Update navigation
+                this.updateNavigation();
+                
+                // Show/hide navigation buttons
+                document.getElementById('prev-btn').style.display = index === 0 ? 'none' : 'block';
+                document.getElementById('next-btn').style.display = index === this.selectedQuestions.length - 1 ? 'none' : 'block';
+                document.getElementById('submit-quiz').style.display = index === this.selectedQuestions.length - 1 ? 'block' : 'none';
+                
+                // Display question
+                this.displayQuestion(question);
+            }
+
+            updateNavigation() {
+                document.querySelectorAll('#question-navigation .question-number').forEach((nav, index) => {
+                    nav.classList.remove('selected', 'answered');
+                    
+                    if (index === this.currentQuestionIndex) {
+                        nav.classList.add('selected');
+                    }
+                    
+                    const questionId = this.selectedQuestions[index];
+                    if (this.userAnswers[questionId] !== undefined) {
+                        nav.classList.add('answered');
+                    }
+                });
+            }
+
+            displayQuestion(question) {
+                const container = document.getElementById('question-display');
+                container.innerHTML = `
+                    <div class="question-card">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
+                                ${question.category}
+                            </span>
+                            <span class="text-sm text-gray-500">Ikibazo #${question.id}</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">${question.question}</h3>
+                        <div class="space-y-3">
+                            ${question.options.map((option, index) => `
+                                <label class="option-label ${this.userAnswers[question.id] === index ? 'selected' : ''}">
+                                    <input type="radio" name="question-${question.id}" value="${index}" 
+                                           ${this.userAnswers[question.id] === index ? 'checked' : ''}
+                                           class="mr-3">
+                                    <span class="flex-1">${String.fromCharCode(65 + index)}. ${option}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                
+                // Add event listeners to options
+                container.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        this.userAnswers[question.id] = parseInt(e.target.value);
+                        this.updateNavigation();
+                    });
+                });
+            }
+
+            nextQuestion() {
+                if (this.currentQuestionIndex < this.selectedQuestions.length - 1) {
+                    this.loadQuestion(this.currentQuestionIndex + 1);
+                }
+            }
+
+            prevQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.loadQuestion(this.currentQuestionIndex - 1);
+                }
+            }
+
+            async submitQuiz() {
+                clearInterval(this.timerInterval);
+                
+                // Calculate score and category breakdown
+                let correct = 0;
+                const categoryStats = {};
+                
+                this.selectedQuestions.forEach(questionId => {
+                    const question = allQuestions.find(q => q.id === questionId);
+                    const category = question.category;
+                    
+                    if (!categoryStats[category]) {
+                        categoryStats[category] = { total: 0, correct: 0 };
+                    }
+                    
+                    categoryStats[category].total++;
+                    
+                    if (this.userAnswers[questionId] === question.correct) {
+                        correct++;
+                        categoryStats[category].correct++;
+                    }
+                });
+                
+                const score = Math.round((correct / this.selectedQuestions.length) * 100);
+                const timeUsed = 30 * 60 - this.timeLeft;
+                const minutes = Math.floor(timeUsed / 60);
+                const seconds = timeUsed % 60;
+                
+                // Prepare quiz results
+                this.quizResults = {
+                    score: score,
+                    correctAnswers: correct,
+                    totalQuestions: this.selectedQuestions.length,
+                    timeUsed: timeUsed,
+                    timeUsedFormatted: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+                    categoryStats: categoryStats,
+                    userAnswers: this.userAnswers,
+                    selectedQuestions: this.selectedQuestions,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Save results locally
+                localStorage.setItem('current-quiz-result', JSON.stringify(this.quizResults));
+                
+                // Save to Firebase if passed
+                if (score >= 50) {
+                    await this.saveResultsToFirebase();
+                }
+                
+                // Show results
+                this.showResults();
+            }
+
+            async saveResultsToFirebase() {
+                try {
+                    const quizData = {
+                        userName: this.userData.name,
+                        userEmail: this.userData.email,
+                        course: 'Mobile Basics',
+                        score: this.quizResults.score,
+                        correctAnswers: this.quizResults.correctAnswers,
+                        totalQuestions: this.quizResults.totalQuestions,
+                        timeUsed: this.quizResults.timeUsed,
+                        categoryStats: this.quizResults.categoryStats,
+                        selectedQuestions: this.quizResults.selectedQuestions,
+                        userAnswers: this.quizResults.userAnswers,
+                        completedAt: new Date().toISOString(),
+                        passed: this.quizResults.score >= 50
+                    };
+                    
+                    await db.collection('quizResults').add(quizData);
+                    console.log('✅ Quiz results saved to Firebase');
+                } catch (error) {
+                    console.error('❌ Error saving to Firebase:', error);
+                }
+            }
+
+            showResults() {
+                document.getElementById('quiz-interface').classList.add('hidden');
+                document.getElementById('results-section').classList.remove('hidden');
+                
+                const resultIcon = document.getElementById('result-icon');
+                const resultTitle = document.getElementById('result-title');
+                
+                if (this.quizResults.score >= 50) {
+                    resultIcon.textContent = '🎉';
+                    resultTitle.textContent = 'Watsinze Quiz!';
+                    resultTitle.className = 'text-3xl font-bold text-green-600 mb-4';
+                    document.getElementById('certificate-btn').style.display = 'block';
+                } else {
+                    resultIcon.textContent = '😔';
+                    resultTitle.textContent = 'Ntuwatsinze Quiz';
+                    resultTitle.className = 'text-3xl font-bold text-red-600 mb-4';
+                    document.getElementById('certificate-btn').style.display = 'none';
+                }
+                
+                document.getElementById('result-score').textContent = `${this.quizResults.score}%`;
+                document.getElementById('correct-answers').textContent = this.quizResults.correctAnswers;
+                document.getElementById('wrong-answers').textContent = this.quizResults.totalQuestions - this.quizResults.correctAnswers;
+                document.getElementById('time-taken').textContent = this.quizResults.timeUsedFormatted;
+                
+                // Show category breakdown
+                this.showCategoryBreakdown();
+            }
+
+            showCategoryBreakdown() {
+                const container = document.getElementById('category-breakdown');
+                let html = '';
+                
+                for (const [category, stats] of Object.entries(this.quizResults.categoryStats)) {
+                    const percentage = Math.round((stats.correct / stats.total) * 100);
+                    html += `
+                        <div class="flex justify-between items-center mb-1">
+                            <span>${category}:</span>
+                            <span class="font-semibold">${stats.correct}/${stats.total} (${percentage}%)</span>
+                        </div>
+                    `;
+                }
+                
+                container.innerHTML = html;
+            }
+
+            setupEventListeners() {
+                document.getElementById('start-quiz').addEventListener('click', () => this.startQuiz());
+                document.getElementById('confirm-selection').addEventListener('click', () => this.confirmSelection());
+                document.getElementById('next-btn').addEventListener('click', () => this.nextQuestion());
+                document.getElementById('prev-btn').addEventListener('click', () => this.prevQuestion());
+                document.getElementById('submit-quiz').addEventListener('click', () => this.submitQuiz());
+                
+                document.getElementById('certificate-btn').addEventListener('click', () => {
+                    if (this.quizResults.score >= 50) {
+                        const params = new URLSearchParams({
+                            name: this.userData.name,
+                            score: this.quizResults.score,
+                            time: this.quizResults.timeUsedFormatted
+                        });
+                        window.location.href = `certificate.html?${params}`;
+                    }
+                });
+            }
+        }
+
+        // Load components and initialize quiz
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load header and footer
+            fetch('../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load header:', err));
+
+            fetch('../../components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load footer:', err));
+
+            // Initialize quiz manager
+            window.quizManager = new QuizManager();
+        });
+    </script>
+</body>
+</html>

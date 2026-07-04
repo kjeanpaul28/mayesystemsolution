@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAYE System - Amategeko & Ubuzima Bwite</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  
+  <!-- Firebase SDK Modules (Using CDN v9) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // =======================================================
+    // IYI NIYO UGWOMBA KUZUZA (FIREBASE CONFIGURATION)
+    // =======================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+      authDomain: "life-service-4cd35.firebaseapp.com",
+      projectId: "life-service-4cd35",
+      storageBucket: "life-service-4cd35.firebasestorage.app",
+      messagingSenderId: "182030784033",
+      appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+    };
+
+    // Initialize Firebase and Services
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // =======================================================
+    // FUNCTION YO KWEMEZA AMATEGEKO NO KWOOHEREZA (REDIRECT)
+    // =======================================================
+    window.redirectToAuth = async function() {
+      const user = auth.currentUser; 
+      
+      if (!user) {
+        alert("Banza Winjire (Log In) kugira ngo wemeze amategeko.");
+        window.location.replace('auth.html'); 
+        return;
+      }
+
+      const actionButtons = document.querySelectorAll('.terms-actions button');
+      actionButtons.forEach(btn => { 
+        btn.disabled = true; 
+        btn.textContent = 'Birimo gukorwa...'; 
+      });
+
+      try {
+        const userRef = doc(db, "users", user.uid);
+        
+        await updateDoc(userRef, {
+          termsAccepted: true,
+          termsDate: new Date().toISOString(),
+          lastLogin: new Date().toISOString()
+        });
+
+        console.log(`Amategeko yemejwe na User: ${user.uid}. Redirecting...`);
+        window.location.replace('auth.html'); 
+        
+      } catch (error) {
+        console.error("Redirect / Terms Update Failed:", error);
+        alert("Habaye ikibazo mu kubika amakuru yawe. Gerageza nanone.");
+        actionButtons.forEach(btn => { 
+          btn.disabled = false; 
+          btn.textContent = btn.getAttribute('data-original-text'); 
+        });
+      }
+    }
+
+    // =======================================================
+    // FUNCTION YO GUSOHOZA AMATEGEKO (EXPORT PDF)
+    // =======================================================
+    window.exportTermsPDF = function() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF();
+      
+      // PDF Header
+      pdf.setFillColor(41, 128, 185);
+      pdf.rect(0, 0, pdf.internal.pageSize.width, 40, 'F');
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(20);
+      pdf.text('MAYE SYSTEM - AMATEGEKO & UBUZIMA BWITE', 105, 25, { align: 'center' });
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(12);
+      let yPosition = 60;
+
+      // Content Sections
+      const sections = [
+        {
+          title: "AMATEGEKO YO GUKORESHA",
+          content: [
+            "• Konti yawe: Ujya wemera gutanga amakuru y'ukuri mu kwiyandikisha",
+            "• Ibikorwa byemewe: Ntushobora gukoresha sisitemu mu bikorwa bitemewe",
+            "• Kurinda Amakuru: Tuzagirana ubuzima bw'amakuru yawe",
+            "• Ihinduka: Amategeko aya ashobora guhinduka"
+          ]
+        },
+        {
+          title: "POLITIKI Y'UBUZIMA BWITE",
+          content: [
+            "• Amakuru tukusanya: Izina, imeli, amakuru y'imari",
+            "• Gukoresha amakuru: Gucunga konti, gutanga serivisi",
+            "• Kurinda amakuru: Encryption n'ubwishingizi",
+            "• Gusangira: Nta makuru tuzasangira n'abandi"
+          ]
+        },
+        {
+          title: "INAMA Z'UMUTEKANO",
+          content: [
+            "• Koresha ijambobanga rikomeye",
+            "• Siba Konti igihe urangije",
+            "• Menya ibikorwa bya konti yawe",
+            "• Hindura ijambobanga kenshi"
+          ]
+        },
+        {
+          title: "UBURENGANZIRA BW'UMUKORESHA",
+          content: [
+            "• Kureba amakuru yawe",
+            "• Guhindura amakuru atari yo",
+            "• Gusiba amakuru yawe",
+            "• Guhakanira ukoresha amakuru"
+          ]
+        }
+      ];
+
+      sections.forEach(section => {
+        // Section Title
+        pdf.setFontSize(14);
+        pdf.setTextColor(41, 128, 185);
+        pdf.text(section.title, 20, yPosition);
+        yPosition += 10;
+
+        // Section Content
+        pdf.setFontSize(10);
+        pdf.setTextColor(0, 0, 0);
+        
+        section.content.forEach(line => {
+          if (yPosition > 270) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+          pdf.text(line, 25, yPosition);
+          yPosition += 8;
+        });
+        
+        yPosition += 10;
+      });
+
+      // Footer
+      const pageCount = pdf.internal.getNumberOfPages();
+      for (let i = 1; i <= pageCount; i++) {
+        pdf.setPage(i);
+        pdf.setFontSize(8);
+        pdf.setTextColor(100, 100, 100);
+        pdf.text('© 2025 MAYE System - Incungamutungo ry\'Urugo', 105, pdf.internal.pageSize.height - 10, { align: 'center' });
+      }
+
+      pdf.save('MAYE_System_Amategeko_Ubuzima_Bwite.pdf');
+    }
+
+    // =======================================================
+    // DATE TIME FUNCTION
+    // =======================================================
+    function updateDateTime() {
+      const dateTimeElement = document.getElementById('current-date-time');
+      if (dateTimeElement) {
+        const now = new Date();
+        const dateString = now.toLocaleDateString('rw-RW', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        const timeString = now.toLocaleTimeString('rw-RW', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        });
+        
+        dateTimeElement.textContent = `${dateString} - ${timeString}`;
+      }
+    }
+    
+    // =======================================================
+    // INITIALIZATION
+    // =======================================================
+    document.addEventListener('DOMContentLoaded', function() {
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
+      
+      document.querySelectorAll('.terms-actions button').forEach(btn => {
+        btn.setAttribute('data-original-text', btn.textContent.trim());
+      });
+
+      // Check if user is already logged in
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          console.log("User is signed in:", user.email);
+          document.getElementById('user-status').textContent = `Uwinjije: ${user.email}`;
+        } else {
+          console.log("No user signed in");
+          document.getElementById('user-status').textContent = "Nta mukoresha winjiye";
+        }
+      });
+    });
+  </script>
+  
+  <style>
+    :root {
+      --primary-color: #007bff;
+      --secondary-color: #28a745;
+      --background-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-color: #343a40;
+      --light-text: #6c757d;
+      --border-color: #e9ecef;
+      --radius-sm: 4px;
+      --radius-lg: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --warning-bg: #fff3cd;
+      --warning-border: #ffc300;
+      --warning-text: #664d03;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    
+    a:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+    
+    h1, h2, h3, h4 {
+      color: var(--text-color);
+    }
+
+    /* Header Styles */
+    .main-header {
+      background: linear-gradient(135deg, var(--primary-color), #0056b3);
+      color: white;
+      padding: 2rem 0;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    
+    .main-header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      color: white;
+    }
+    
+    .main-header p {
+      margin: 0.5rem 0 0;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+    
+    .current-date-time {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .user-status {
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      margin-top: 1rem;
+      display: inline-block;
+    }
+
+    /* Main Content */
+    .terms-content {
+      padding: 2rem 0;
+    }
+    
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    
+    .card-header {
+      padding: 2rem;
+      background-color: var(--background-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .card-title {
+      margin-top: 0;
+      font-size: 1.8rem;
+    }
+    
+    .card-body {
+      padding: 2rem;
+    }
+
+    /* Section Styles */
+    .terms-section {
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .terms-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 3px solid var(--primary-color);
+      display: inline-block;
+    }
+
+    /* Grid Layouts */
+    .terms-grid, .privacy-grid, .security-tips, .rights-grid, .contact-info {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .terms-grid, .security-tips {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+    
+    .privacy-grid, .rights-grid, .contact-info {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    /* Grid Items */
+    .terms-item, .tip-item, .right-item, .contact-item {
+      display: flex;
+      align-items: flex-start;
+      padding: 1.2rem;
+      border-radius: var(--radius-sm);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: var(--background-color);
+      border: 1px solid var(--border-color);
+    }
+    
+    .terms-item { border-left: 5px solid var(--primary-color); }
+    .right-item { border-left: 5px solid var(--secondary-color); }
+    
+    .terms-item:hover, .tip-item:hover, .right-item:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .terms-icon, .tip-icon, .right-icon, .contact-icon {
+      font-size: 1.8rem;
+      margin-right: 1rem;
+      flex-shrink: 0;
+      color: var(--primary-color);
+    }
+    
+    .right-icon { color: var(--secondary-color); }
+    .tip-icon { color: orange; }
+    
+    .terms-content h3, .tip-content h4, .right-item h4, .contact-item h4 {
+      margin: 0 0 0.5rem;
+      font-size: 1.05rem;
+      font-weight: bold;
+    }
+
+    /* Privacy Card */
+    .privacy-card {
+      padding: 1.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+    }
+    
+    .privacy-card ul {
+      list-style-type: none;
+      padding-left: 0;
+    }
+    
+    .privacy-card li {
+      padding-left: 1.5em;
+      text-indent: -1em;
+      margin-bottom: 0.5em;
+    }
+    
+    .privacy-card li:before {
+      content: "• ";
+      color: var(--secondary-color);
+      font-weight: bold;
+    }
+
+    /* Notice Box */
+    .notice-box {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: var(--warning-bg);
+      border: 1px solid var(--warning-border);
+      border-radius: var(--radius-sm);
+      color: var(--warning-text);
+    }
+    
+    .notice-box h4 {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--warning-text);
+    }
+
+    /* Action Buttons */
+    .terms-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 2px solid var(--light-text);
+      color: var(--light-text);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-secondary:hover {
+      background-color: #218838;
+    }
+
+    .btn-outline:hover {
+      background-color: var(--light-text);
+      color: white;
+    }
+
+    /* Footer */
+    #footer-container {
+      padding: 2rem 0;
+      text-align: center;
+      border-top: 1px solid var(--border-color);
+      background-color: var(--card-bg);
+      margin-top: 2rem;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-header h1 { font-size: 1.8rem; }
+      .card-body { padding: 1rem; }
+      
+      .terms-grid, .privacy-grid, .security-tips, .rights-grid, .contact-info {
+        grid-template-columns: 1fr;
+      }
+      
+      .terms-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .btn {
+        justify-content: center;
+      }
+    }
+    
+    /* Print Styles */
+    @media print {
+      body { background-color: white; }
+      .main-header, .terms-actions, #footer-container { display: none; }
+      .card { box-shadow: none; border: none; }
+      .terms-content { padding: 0; }
+      .card-body { padding: 0; }
+      .terms-section { border-bottom: 1px dotted #ccc; }
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="header-container">
+    <div class="main-header">
+      <div class="container">
+        <h1>🏡 MAYE System - Incungamutungo ry'Urugo</h1>
+        <p>Amategeko & Politiki y'Ubuzima Bwite</p>
+        <div class="current-date-time">
+          <span id="current-date-time"></span>
+        </div>
+        <div class="user-status">
+          <span id="user-status">Kuzuza...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="container" role="main">
+    <div class="terms-content">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="card-title">Amategeko & Ubuzima Bwite</h1>
+          <p class="text-gray-600" style="color: var(--light-text);">Amategeko agenga imikoreshereze ya MAYE System</p>
+        </div>
+        
+        <div class="card-body">
+          <!-- AMATEGEKO YO GUKORESHA -->
+          <section class="terms-section" id="amategeko">
+            <h2 class="section-title">Amategeko yo gukoresha</h2>
+            <p>Iyi ni amategeko agenga imikoreshereze ya MAYE System, sisitemu yo gucunga umutungo wo mu rugo. Mu kuyikoresha, <strong>wiyemeje kubahiriza</strong> ibi bikurikira:</p>
+            
+            <div class="terms-grid">
+              <div class="terms-item">
+                <span class="terms-icon">👤</span>
+                <div>
+                  <h3>Konti yawe (Account)</h3>
+                  <p>Ujya wemera gutanga amakuru y'ukuri mu kwiyandikisha, kandi uzaba wenyine ushinzwe ibikorwa byose bikoreshwa kuri konti yawe.</p>
+                </div>
+              </div>
+              
+              <div class="terms-item">
+                <span class="terms-icon">⚖️</span>
+                <div>
+                  <h3>Ibikorwa byemewe</h3>
+                  <p>Ntushobora gukoresha sisitemu mu bikorwa bitari byemewe n'amategeko, cyangwa ngo ukoreshe nabi amakuru y'abandi.</p>
+                </div>
+              </div>
+              
+              <div class="terms-item">
+                <span class="terms-icon">🔒</span>
+                <div>
+                  <h3>Kurinda Amakuru (Privacy)</h3>
+                  <p>Tuzagirana ubuzima bw'amakuru yawe, kandi ntituzayohereza abandi utabifitiye uburenganzira. Wemeje Politiki y'Ubuzima Bwite iri hepfo.</p>
+                </div>
+              </div>
+              
+              <div class="terms-item">
+                <span class="terms-icon">🔄</span>
+                <div>
+                  <h3>Ihinduka ry'Amategeko</h3>
+                  <p>Amategeko aya ashobora guhinduka, kandi tuzakumenyesha niba hari ibyongereye cyangwa ibyagabanyutse mbere y'uko bitangira gukoreshwa.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- POLITIKI Y'UBUZIMA BWITE -->
+          <section class="terms-section" id="politiki">
+            <h2 class="section-title">Politiki y'Ubuzima Bwite</h2>
+            <p>Mu gukoresha MAYE System, dukusanya amakuru yawe kugirango dukugirire neza. Aya makuru akoreshwa <strong>gusa</strong> mu gutanga serivisi yacu:</p>
+            
+            <div class="privacy-grid">
+              <div class="privacy-card">
+                <h4>📊 Amakuru tukusanya</h4>
+                <ul>
+                  <li>Izina ry'ukoresha/ Imeli</li>
+                  <li>Numero ya telefone (niba uyitanze)</li>
+                  <li>Amakuru y'ikoreshwa ry'umutungo</li>
+                  <li>ibigizwe by'imari n'Ingano</li>
+                </ul>
+              </div>
+              
+              <div class="privacy-card">
+                <h4>🎯 Gukoresha amakuru</h4>
+                <ul>
+                  <li>Gucunga no kwemeza konti yawe</li>
+                  <li>Gutanga serivisi zose za sisitemu</li>
+                  <li>Gutanga raporo z'imari n'Analitike</li>
+                  <li>Gukomeza ubuzima n'umutekano bya sisitemu</li>
+                </ul>
+              </div>
+              
+              <div class="privacy-card">
+                <h4>🛡️ Kurinda amakuru</h4>
+                <ul>
+                  <li>Gukoresha <strong>Encryption</strong> ku makuru y'ingenzi</li>
+                  <li>Gukoresha serivisi za Hosting zikomeye (e.g., Firebase)</li>
+                  <li>Kugirana amakuru mu buryo bwihariye (Strict Access Control)</li>
+                </ul>
+              </div>
+              
+              <div class="privacy-card">
+                <h4>🔗 Gusangira (Sharing)</h4>
+                <ul>
+                  <li>Nta makuru tuzasangira n'abandi bantu/kampani.</li>
+                  <li>Amakuru atangwa gusa igihe amategeko yabitegetse (byihutirwa).</li>
+                  <li>Uburenganzira bwawe bwubahirijwe.</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- INAMA Z'UMUTEKANO -->
+          <section class="terms-section" id="umutekano">
+            <h2 class="section-title">Inama z'Umutekano</h2>
+            <p>Tugushishikariza cyane kugira umutekano w'ijambobanga ryawe n'amakuru muri rusange:</p>
+            
+            <div class="security-tips">
+              <div class="tip-item">
+                <span class="tip-icon">🔐</span>
+                <div>
+                  <h4>Koresha ijambobanga rikomeye</h4>
+                  <p>Rikomeze rikoresha inyuguti zikomeye (Upper/Lower case), imibare, n'ibimenyetso byihariye.</p>
+                </div>
+              </div>
+              
+              <div class="tip-item">
+                <span class="tip-icon">🚪</span>
+                <div>
+                  <h4>Siba Konti (Log Out)</h4>
+                  <p>Siba konti yawe igihe cyose urangije gukoresha mudasobwa y'abandi cyangwa ya rusange.</p>
+                </div>
+              </div>
+              
+              <div class="tip-item">
+                <span class="tip-icon">📱</span>
+                <div>
+                  <h4>Menya ibikorwa (Monitor)</h4>
+                  <p>Reba ibikorwa bya konti yawe buri gihe, kandi utumenyeshe vuba niba uhangayikishijwe n'umutekano.</p>
+                </div>
+              </div>
+              
+              <div class="tip-item">
+                <span class="tip-icon">🔄</span>
+                <div>
+                  <h4>Hindura ijambobanga kenshi</h4>
+                  <p>Hindura ijambobanga ryawe buri gihembwe, cyangwa niba hari igihe ushidikanyije ko ryaba ryarahishuwe.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- UBURENGANZIRA BW'UMUKORESHA -->
+          <section class="terms-section" id="uburenganzira">
+            <h2 class="section-title">Uburenganzira bw'Umukoresha</h2>
+            <p>Ufite uburenganzira bwo gusaba ibi bikurikira ku makuru yawe:</p>
+            
+            <div class="rights-grid">
+              <div class="right-item">
+                <span class="right-icon">👁️</span>
+                <div>
+                  <h4>Kureba amakuru (Access)</h4>
+                  <p>Urashobora gusaba kureba amakuru yawe yose twakusanyije mu gihe cy'iminsi 7 y'akazi.</p>
+                </div>
+              </div>
+              
+              <div class="right-item">
+                <span class="right-icon">✏️</span>
+                <div>
+                  <h4>Guhindura amakuru (Rectification)</h4>
+                  <p>Urashobora gusaba guhindura amakuru yawe yaba atari yo cyangwa adakwiriye.</p>
+                </div>
+              </div>
+              
+              <div class="right-item">
+                <span class="right-icon">🗑️</span>
+                <div>
+                  <h4>Gusiba amakuru (Erasure/Delete)</h4>
+                  <p>Urashobora gusaba gusiba amakuru yawe, uretse ayo dukeneye kugirana ku buryo bw'amategeko.</p>
+                </div>
+              </div>
+              
+              <div class="right-item">
+                <span class="right-icon">🚫</span>
+                <div>
+                  <h4>Guhakanira (Object)</h4>
+                  <p>Urashobora guhakanira ko dukoresha amakuru yawe mu buryo butandukanye n'ibivugwa muri iyi Politiki.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- CONTACT INFORMATION -->
+          <section class="terms-section" id="contact">
+            <h2 class="section-title">Kuduhamagara no Kutwandikira</h2>
+            <div class="contact-info">
+              <div class="contact-item">
+                <span class="contact-icon">📧</span>
+                <div>
+                  <h4>Imeli (Email)</h4>
+                  <p>Twandikire ubutumwa byihuse:</p>
+                  <p><a href="mailto:kjeanpaul28@gmail.com?subject=Ubufasha%20kuri%20MAYE%20System%20Amategeko" target="_blank">kjeanpaul28@gmail.com</a></p>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <span class="contact-icon">📞</span>
+                <div>
+                  <h4>Telefone (Call)</h4>
+                  <p>Twuhamagare ku nomero yacu:</p>
+                  <p><a href="tel:+250784067694">+250 784 067 694</a></p>
+                </div>
+              </div>
+              
+              <div class="contact-item">
+                <span class="contact-icon">🕒</span>
+                <div>
+                  <h4>Igihe cyo Gusubiza</h4>
+                  <p>Dusubiza ibibazo by'imeli mu minsi <strong>2-3 y'akazi</strong>. (Saa 8:00 - 17:00).</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="notice-box">
+              <h4>🔔 Icyitonderwa cy'Ingenzi</h4>
+              <p>Niba ukeneye ubufasha, gusaba amakuru yawe (Kureba/Gusiba), cyangwa ushaka gusiba konti yawe, <strong>twandikire kuri imeli</strong> hamwe n'icyifuzo cyawe gisobanutse. Turabasubiza vuba bishoboka.</p>
+            </div>
+          </section>
+
+          <!-- ACTION BUTTONS -->
+          <div class="terms-actions">
+            <button class="btn btn-primary" onclick="redirectToAuth()">
+              <span class="btn-icon">✅</span>
+              Nemeza Amategeko & Komeza
+            </button>
+            
+            <button class="btn btn-secondary" onclick="exportTermsPDF()">
+              <span class="btn-icon">📄</span>
+              Sohora PDF
+            </button>
+            
+            <button class="btn btn-outline" onclick="window.print()">
+              <span class="btn-icon">🖨️</span>
+              Sohora (Print)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer-container">
+    <div class="container">
+      <p class="text-gray-600" style="color: var(--light-text); margin-bottom: 0.5rem;">© 2025 MAYE System - Incungamutungo ry'Urugo</p>
+      <p class="text-sm text-gray-500" style="font-size: 0.9rem; color: #adb5bd;">Amategeko & Politiki y'Ubuzima Bwite - Version 2.0</p>
+    </div>
+  </div>
+
+</body>
+</html>

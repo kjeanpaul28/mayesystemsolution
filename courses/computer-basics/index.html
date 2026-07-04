@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Basics - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../css/tailwind.css">
+    <style>
+        .course-progress {
+            transition: width 0.5s ease-in-out;
+        }
+        .lesson-locked {
+            opacity: 0.6;
+            background-color: #f3f4f6;
+        }
+        .lesson-completed {
+            border-left-color: #10b981 !important;
+            background: linear-gradient(135deg, #f0fdf4, #ffffff);
+        }
+        .lesson-in-progress {
+            border-left-color: #3b82f6 !important;
+            background: linear-gradient(135deg, #eff6ff, #ffffff);
+        }
+        .course-stats {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .floating-action {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 50;
+        }
+        .achievement-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+                <a href="../index.html" class="hover:text-green-600 transition-colors flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    📚 Amasomo
+                </a>
+                <span class="text-gray-400">›</span>
+                <span class="text-green-600 font-medium">💻 Computer Basics</span>
+            </nav>
+
+            <!-- Course Header -->
+            <div class="text-center mb-12">
+                <div class="flex justify-center mb-4">
+                    <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                        <span class="text-4xl">💻</span>
+                    </div>
+                </div>
+                <h1 class="text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                    Computer Basics
+                </h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    🚀 Menya uko ukoresha mudasobwa mu buryo bwihuse kandi witonze. Somo rikubiyemo iby'ingenzi bya computer 
+                    bikurikira amategeko yo kwiga no gukora neza.
+                </p>
+                
+                <!-- Progress Section -->
+                <div class="mt-8 max-w-2xl mx-auto bg-white rounded-2xl shadow-lg p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-semibold text-gray-700">Imikurire Yawe</span>
+                        <span id="progress-percent" class="text-2xl font-bold text-green-600">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+                        <div id="course-progress-bar" class="course-progress bg-gradient-to-r from-green-500 to-blue-500 h-4 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-sm text-gray-500">
+                        <span>0/4 Amasomo</span>
+                        <span id="completed-lessons">0 Yarangiye</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Statistics -->
+            <div class="course-stats grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="stat-card">
+                    <div class="text-2xl font-bold mb-1" id="total-lessons">4</div>
+                    <div class="text-sm opacity-90">Amasomo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-2xl font-bold mb-1" id="total-duration">2h</div>
+                    <div class="text-sm opacity-90">Igihe Cyose</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-2xl font-bold mb-1" id="total-quizzes">23</div>
+                    <div class="text-sm opacity-90">Ibibazo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-2xl font-bold mb-1" id="achievement-count">0</div>
+                    <div class="text-sm opacity-90">Ibihembo</div>
+                </div>
+            </div>
+
+            <!-- Lessons Grid -->
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 border border-gray-100">
+                <div class="bg-gradient-to-r from-green-500 to-blue-600 px-6 py-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-white">🔢 Ibigize Somo</h2>
+                            <p class="text-green-100 mt-1">Kurikira ibigize somo ukurikize urutonde - Tangira hejuru ujye hasi</p>
+                        </div>
+                        <div class="achievement-badge">
+                            🏆 4 Ibigize
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="divide-y divide-gray-100">
+                    <!-- Lesson 1 - Introduction -->
+                    <div class="lesson-item p-6 hover:bg-gray-50 transition-all duration-300 border-l-4 border-yellow-400 lesson-in-progress" data-lesson="1">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <span class="text-yellow-600 font-bold text-lg">1</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <h3 class="text-xl font-bold text-gray-900">Intangiriro: Icyo Computer Ari Cyo</h3>
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-semibold">
+                                            Yatangiye
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        Menya ibyo computer ari cyo, amateka yayo, uko yavukiye, n'akaranga kayo mu buzima bw'umunsi. 
+                                        Wize itandukaniro rikomeye riri hagati ya Hardware na Software.
+                                    </p>
+                                    <div class="flex items-center space-x-6 mt-4 text-sm text-gray-500">
+                                        <span class="flex items-center bg-blue-50 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            30 min
+                                        </span>
+                                        <span class="flex items-center bg-green-50 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            5 Ibibazo
+                                        </span>
+                                        <span class="flex items-center bg-purple-50 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                                            </svg>
+                                            4 Practice
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="lessons/1-introduction.html" class="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <span>Tangira</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 2 - Hardware -->
+                    <div class="lesson-item p-6 hover:bg-gray-50 transition-all duration-300 border-l-4 border-blue-400 lesson-locked" data-lesson="2">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <span class="text-blue-600 font-bold text-lg">2</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <h3 class="text-xl font-bold text-gray-600">Hardware: Ibikoresho bya Computer</h3>
+                                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-semibold">
+                                            Gifunze
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-500 leading-relaxed">
+                                        Menya ibikoresho bya computer n'akamaro kabyo: Motherboard, CPU, RAM, Storage, GPU, n'ibindi. 
+                                        Sobanura uko hardware ikorana na software mu gukora imirimo.
+                                    </p>
+                                    <div class="flex items-center space-x-6 mt-4 text-sm text-gray-400">
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            40 min
+                                        </span>
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            8 Ibibazo
+                                        </span>
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                                            </svg>
+                                            6 Practice
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="bg-gray-300 text-gray-500 px-6 py-3 rounded-lg font-semibold cursor-not-allowed flex items-center space-x-2 shadow" disabled>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>Gifunze</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 3 - Software -->
+                    <div class="lesson-item p-6 hover:bg-gray-50 transition-all duration-300 border-l-4 border-purple-400 lesson-locked" data-lesson="3">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <span class="text-purple-600 font-bold text-lg">3</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <h3 class="text-xl font-bold text-gray-600">Software: Porogaramu za Computer</h3>
+                                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-semibold">
+                                            Gifunze
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-500 leading-relaxed">
+                                        Menya porogaramu za computer n'uko uzikoresha: System Software, Application Software, Programming Software. 
+                                        Wize uko software ishyirwaho no gukoresha software nziza.
+                                    </p>
+                                    <div class="flex items-center space-x-6 mt-4 text-sm text-gray-400">
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            45 min
+                                        </span>
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            15 Ibibazo
+                                        </span>
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                                            </svg>
+                                            8 Practice
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="bg-gray-300 text-gray-500 px-6 py-3 rounded-lg font-semibold cursor-not-allowed flex items-center space-x-2 shadow" disabled>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>Gifunze</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Lesson 4 - Internet -->
+                    <div class="lesson-item p-6 hover:bg-gray-50 transition-all duration-300 border-l-4 border-green-400 lesson-locked" data-lesson="4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start space-x-4 flex-1">
+                                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0 shadow-md">
+                                    <span class="text-green-600 font-bold text-lg">4</span>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <h3 class="text-xl font-bold text-gray-600">Interineti n'Umuyoboro</h3>
+                                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-semibold">
+                                            Gifunze
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-500 leading-relaxed">
+                                        Menya uko ukoresha interineti, uko ushaka amakuru, no gukoresha email mu buzima busanzwe. 
+                        Wize uko wirinda ibyago by'interineti no gukoresha mudasobwa mu buryo bwizewe.
+                                    </p>
+                                    <div class="flex items-center space-x-6 mt-4 text-sm text-gray-400">
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            35 min
+                                        </span>
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            10 Ibibazo
+                                        </span>
+                                        <span class="flex items-center bg-gray-100 px-3 py-1 rounded-full">
+                                            <svg class="w-4 h-4 mr-1 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                                            </svg>
+                                            5 Practice
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="bg-gray-300 text-gray-500 px-6 py-3 rounded-lg font-semibold cursor-not-allowed flex items-center space-x-2 shadow" disabled>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>Gifunze</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course Actions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <a href="quiz.html" class="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-gray-900 px-8 py-4 rounded-xl font-bold text-center transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-3">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-lg">Gereranya Ubumenyi Bwawe</span>
+                </a>
+                <a href="certificate.html" class="bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white px-8 py-4 rounded-xl font-bold text-center transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center space-x-3">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-lg">Reba Icyangombwa</span>
+                </a>
+            </div>
+
+            <!-- Course Completion Reward -->
+            <div class="bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl p-6 text-center text-white mb-8">
+                <h3 class="text-2xl font-bold mb-2">🎓 Irushanwa: Gusoza Amasomo Yose!</h3>
+                <p class="text-purple-100 mb-4">Soza amasomo 4 kugirango ubone icyangombwa cya Computer Basics</p>
+                <div class="flex justify-center space-x-4">
+                    <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+                        <div class="text-sm">Amasomo Yarangiye</div>
+                        <div class="text-xl font-bold" id="completed-count">0/4</div>
+                    </div>
+                    <div class="bg-white bg-opacity-20 px-4 py-2 rounded-lg">
+                        <div class="text-sm">Ibipimo</div>
+                        <div class="text-xl font-bold" id="average-score">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <div class="floating-action">
+        <button onclick="scrollToTop()" class="bg-gradient-to-r from-green-500 to-blue-500 text-white p-4 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:scale-110">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        // Load components
+        fetch('../../components/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load header:', err));
+
+        fetch('../../components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load footer:', err));
+
+        // Course Progress Management
+        class CourseProgress {
+            constructor() {
+                this.courseId = 'computer-basics';
+                this.lessons = [
+                    { id: '1', completed: false, duration: 30, quizzes: 5, practices: 4 },
+                    { id: '2', completed: false, duration: 40, quizzes: 8, practices: 6 },
+                    { id: '3', completed: false, duration: 45, quizzes: 15, practices: 8 },
+                    { id: '4', completed: false, duration: 35, quizzes: 10, practices: 5 }
+                ];
+                this.loadProgress();
+                this.updateUI();
+                this.updateStatistics();
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem(`progress-${this.courseId}`);
+                if (saved) {
+                    this.lessons = JSON.parse(saved);
+                }
+            }
+
+            saveProgress() {
+                localStorage.setItem(`progress-${this.courseId}`, JSON.stringify(this.lessons));
+            }
+
+            completeLesson(lessonId) {
+                const lesson = this.lessons.find(l => l.id === lessonId);
+                if (lesson && !lesson.completed) {
+                    lesson.completed = true;
+                    this.saveProgress();
+                    this.updateUI();
+                    this.updateStatistics();
+                }
+            }
+
+            getProgress() {
+                const completed = this.lessons.filter(l => l.completed).length;
+                return (completed / this.lessons.length) * 100;
+            }
+
+            updateUI() {
+                const progress = this.getProgress();
+                const progressBar = document.getElementById('course-progress-bar');
+                const progressPercent = document.getElementById('progress-percent');
+                const completedLessons = document.getElementById('completed-lessons');
+                
+                if (progressBar && progressPercent) {
+                    progressBar.style.width = `${progress}%`;
+                    progressPercent.textContent = `${Math.round(progress)}%`;
+                }
+
+                if (completedLessons) {
+                    const completedCount = this.lessons.filter(l => l.completed).length;
+                    completedLessons.textContent = `${completedCount} Yarangiye`;
+                }
+
+                // Update lesson states
+                this.lessons.forEach(lesson => {
+                    const lessonElement = document.querySelector(`[data-lesson="${lesson.id}"]`);
+                    if (lessonElement) {
+                        if (lesson.completed) {
+                            lessonElement.classList.add('lesson-completed');
+                            lessonElement.classList.remove('lesson-locked', 'lesson-in-progress');
+                            const button = lessonElement.querySelector('button, a');
+                            if (button) {
+                                button.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed');
+                                button.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
+                                button.innerHTML = `
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    <span>Subira</span>
+                                `;
+                                if (button.tagName === 'BUTTON') {
+                                    const link = document.createElement('a');
+                                    link.href = `lessons/${lesson.id}-${this.getLessonSlug(lesson.id)}.html`;
+                                    link.className = button.className;
+                                    link.innerHTML = button.innerHTML;
+                                    button.parentNode.replaceChild(link, button);
+                                }
+                            }
+                        } else if (lesson.id === '1') {
+                            // First lesson is always in progress
+                            lessonElement.classList.add('lesson-in-progress');
+                            lessonElement.classList.remove('lesson-locked');
+                        }
+                    }
+                });
+            }
+
+            updateStatistics() {
+                const completedCount = this.lessons.filter(l => l.completed).length;
+                const totalDuration = this.lessons.reduce((sum, lesson) => sum + lesson.duration, 0);
+                const totalQuizzes = this.lessons.reduce((sum, lesson) => sum + lesson.quizzes, 0);
+                const totalPractices = this.lessons.reduce((sum, lesson) => sum + lesson.practices, 0);
+                
+                document.getElementById('completed-count').textContent = `${completedCount}/4`;
+                document.getElementById('total-duration').textContent = `${Math.round(totalDuration/60)}h`;
+                document.getElementById('total-quizzes').textContent = totalQuizzes;
+                
+                // Calculate average score if available
+                const quizResults = JSON.parse(localStorage.getItem('quiz-results') || '{}');
+                const scores = Object.values(quizResults);
+                const averageScore = scores.length > 0 ? 
+                    Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+                
+                document.getElementById('average-score').textContent = `${averageScore}%`;
+            }
+
+            getLessonSlug(lessonId) {
+                const slugs = {
+                    '1': 'introduction',
+                    '2': 'hardware',
+                    '3': 'software',
+                    '4': 'internet'
+                };
+                return slugs[lessonId] || 'lesson';
+            }
+        }
+
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Initialize course progress
+        document.addEventListener('DOMContentLoaded', () => {
+            window.courseProgress = new CourseProgress();
+            
+            // Add scroll event for floating button
+            window.addEventListener('scroll', function() {
+                const floatingBtn = document.querySelector('.floating-action');
+                if (window.scrollY > 300) {
+                    floatingBtn.style.opacity = '1';
+                    floatingBtn.style.transform = 'translateY(0)';
+                } else {
+                    floatingBtn.style.opacity = '0';
+                    floatingBtn.style.transform = 'translateY(100px)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

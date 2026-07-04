@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software: Porogaramu za Computer - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../../css/tailwind.css">
+    <style>
+        /* === MODERN STYLING === */
+        .lesson-content img {
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        .lesson-content img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        /* === TABS STYLING === */
+        .tabs-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .tabs-header {
+            display: flex;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            overflow-x: auto;
+        }
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-btn.active {
+            background: rgba(255,255,255,0.1);
+            border-bottom-color: #10b981;
+        }
+        .tab-content {
+            display: none;
+            padding: 2rem;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === QUIZ STYLING === */
+        .quiz-container {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .quiz-question {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .quiz-question.correct {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .quiz-question.incorrect {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .quiz-option:hover {
+            background: #f8fafc;
+        }
+        .quiz-option.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+        .quiz-option.correct-answer {
+            border-color: #10b981;
+            background: #dcfce7;
+        }
+        .quiz-option.wrong-answer {
+            border-color: #ef4444;
+            background: #fee2e2;
+        }
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+            display: none;
+        }
+        .explanation.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 200px; }
+        }
+
+        /* === ACCORDION STYLES === */
+        .accordion {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .accordion-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        .accordion-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .accordion-content.active {
+            padding: 1.5rem;
+            max-height: 1000px;
+        }
+
+        /* === NOTE STYLES === */
+        .note-box {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .tip-box {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .warning-box {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        /* === PRACTICE EXERCISE STYLES === */
+        .practice-exercise {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        .exercise-step {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 4px solid #0ea5e9;
+        }
+        .step-indicator {
+            width: 35px;
+            height: 35px;
+            background: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* === PROGRESS BAR === */
+        .progress-container {
+            background: #e5e7eb;
+            border-radius: 10px;
+            height: 8px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-6">
+                <a href="../../index.html" class="hover:text-green-600 transition-colors">📚 Amasomo</a>
+                <span class="text-gray-400">›</span>
+                <a href="../index.html" class="hover:text-green-600 transition-colors">💻 Computer Basics</a>
+                <span class="text-gray-400">›</span>
+                <span class="text-green-600 font-medium">Software</span>
+            </nav>
+
+            <!-- Lesson Header -->
+            <div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+                <div class="flex items-start justify-between mb-6">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-xl">💾</span>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-900">Software: Porogaramu za Computer</h1>
+                                <p class="text-gray-600 mt-1">Menya ubwoko bw'Software, uko bikorana na Hardware, n'uko uzikoresha mu buzima bw'umunsi</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-6 text-sm text-gray-500">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                60 min
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                </svg>
+                                30 Ibibazo
+                            </span>
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l1.5-1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+                                </svg>
+                                Intermediate
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Completion Check -->
+                    <button id="complete-lesson" class="completion-check flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-2 mb-4">
+                    <div id="lesson-progress" class="bg-green-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Tabs Navigation -->
+            <div class="tabs-container mb-8">
+                <div class="tabs-header">
+                    <button class="tab-btn active" onclick="switchTab('introduction')">
+                        📚 Intangiriro
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('types')">
+                        🗂️ Ubwoko bw'Software
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('practice')">
+                        🛠️ Practice
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('quiz')">
+                        🧠 Ibibazo 30
+                    </button>
+                    <button class="tab-btn" onclick="switchTab('summary')">
+                        📋 Ibyishingirije
+                    </button>
+                </div>
+
+                <!-- Tab 1: Introduction -->
+                <div id="introduction" class="tab-content active">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Icyo Software Ari Cyo</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8 mb-6">
+                        <div>
+                            <p class="text-gray-700 text-lg leading-relaxed mb-4">
+                                <strong class="text-blue-600">Software</strong> ni <strong>porogaramu</strong> 
+                                cyangwa <strong>amabwiriza</strong> computer akoresha kugirango akore imirimo itandukanye. 
+                            </p>
+                            
+                            <div class="tip-box">
+                                <h4 class="font-semibold text-green-800 mb-2">💡 Akarango k'Ingenzi:</h4>
+                                <p class="text-green-700">
+                                    <strong>Hardware</strong> = Igikoresho (Ushobora kugifata) <br>
+                                    <strong>Software</strong> = Porogaramu (Ntibigaragara)
+                                </p>
+                            </div>
+
+                            <div class="note-box">
+                                <h4 class="font-semibold text-yellow-800 mb-2">📝 Icyitegererezo:</h4>
+                                <p class="text-yellow-700">
+                                    Hardware ni umubiri, Software ni ubwonko. Nta computer ishobora gukora nta software!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center justify-center space-y-4">
+                            <img 
+                                src="https://ik.imagekit.io/73qho7kh9/1763752534716.jpg?updatedAt=1763758620007" 
+                                alt="Software Development Concept"
+                                class="w-full h-64 object-cover rounded-lg"
+                            >
+                            <p class="text-gray-600 text-sm text-center">
+                                Software Development Life Cycle - Uko software ikorwa
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Software Types -->
+                <div id="types" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Ubwoko bw'Software</h2>
+                    
+                    <!-- Accordion for Software Types -->
+                    <div class="space-y-4">
+                        <div class="accordion">
+                            <div class="accordion-header" onclick="toggleAccordion('system-software')">
+                                <span>🖥️ System Software</span>
+                                <span class="accordion-arrow">▼</span>
+                            </div>
+                            <div id="system-software" class="accordion-content">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <p class="text-gray-700 mb-4">
+                                            Software ishinzwe gukoresha computer yose. Ni yo itanga serivisi ku software yose.
+                                        </p>
+                                        <ul class="space-y-2 text-gray-600">
+                                            <li>• <strong>Operating Systems:</strong> Windows, Linux, macOS</li>
+                                            <li>• <strong>Device Drivers:</strong> Ibinyabiziga bya hardware</li>
+                                            <li>• <strong>Utilities:</strong> Antivirus, Cleanup tools</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <img 
+                                            src="https://ik.imagekit.io/73qho7kh9/Random-Access-Memory.jpg?updatedAt=1763841030620" 
+                                            alt="System Software"
+                                            class="w-full h-48 object-cover rounded-lg"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion">
+                            <div class="accordion-header" onclick="toggleAccordion('application-software')">
+                                <span>📱 Application Software</span>
+                                <span class="accordion-arrow">▼</span>
+                            </div>
+                            <div id="application-software" class="accordion-content">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <p class="text-gray-700 mb-4">
+                                            Software ukoresha gukora imirimo itandukanye. Ni yo ukunda gukoresha buri munsi.
+                                        </p>
+                                        <ul class="space-y-2 text-gray-600">
+                                            <li>• <strong>Office Suite:</strong> Word, Excel, PowerPoint</li>
+                                            <li>• <strong>Web Browsers:</strong> Chrome, Firefox, Safari</li>
+                                            <li>• <strong>Media Players:</strong> VLC, Windows Media Player</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <img 
+                                            src="https://ik.imagekit.io/73qho7kh9/unnamed.webp?updatedAt=1763848910350" 
+                                            alt="Application Software"
+                                            class="w-full h-48 object-cover rounded-lg"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion">
+                            <div class="accordion-header" onclick="toggleAccordion('programming-software')">
+                                <span>👨‍💻 Programming Software</span>
+                                <span class="accordion-arrow">▼</span>
+                            </div>
+                            <div id="programming-software" class="accordion-content">
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div>
+                                        <p class="text-gray-700 mb-4">
+                                            Software abahanga bakoresha gukora software nshya. Ni ibikoresho by'abprogrammer.
+                                        </p>
+                                        <ul class="space-y-2 text-gray-600">
+                                            <li>• <strong>Code Editors:</strong> VS Code, Sublime Text</li>
+                                            <li>• <strong>Compilers:</strong> GCC, Java Compiler</li>
+                                            <li>• <strong>Debuggers:</strong> GDB, Chrome DevTools</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <img 
+                                            src="https://ik.imagekit.io/73qho7kh9/download.jpeg?updatedAt=1763848909778" 
+                                            alt="Programming Software"
+                                            class="w-full h-48 object-cover rounded-lg"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Practice -->
+                <div id="practice" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Practice - Gukoresha Software</h2>
+                    
+                    <div class="practice-exercise">
+                        <h4 class="font-bold text-blue-800 mb-3">🛠️ Practice: Menya Software za Computer Yawe</h4>
+                        
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">1</div>
+                                <div>
+                                    <strong>Fungura Start Menu</strong>
+                                    <p class="text-sm text-gray-600">Kanda buto ya Windows kuri keyboard</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">2</div>
+                                <div>
+                                    <strong>Reba Software Zose</strong>
+                                    <p class="text-sm text-gray-600">Shakisha software ziri muri "All Apps"</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">3</div>
+                                <div>
+                                    <strong>Shyira mu Byiciro</strong>
+                                    <p class="text-sm text-gray-600">Shyira software muri 3 byiciro: System, Application, Programming</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="exercise-step">
+                            <div class="flex items-start">
+                                <div class="step-indicator">4</div>
+                                <div>
+                                    <strong>Gukora List</strong>
+                                    <p class="text-sm text-gray-600">Andika software 5 ukunda gukoresha n'ubwoko bwazo</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tip-box">
+                        <h4 class="font-semibold text-green-800 mb-2">💡 Inama:</h4>
+                        <p class="text-green-700">
+                            Buri gihe usuzume software mbere ko uyishyiramo. Menya aho wayikuye kandi wizere.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tab 4: Quiz -->
+                <div id="quiz" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Ibibazo 30 - Gereranya Ubumenyi</h2>
+                    
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <span class="text-sm text-gray-600">Ibibazo byakozwe: </span>
+                            <span id="answered-count" class="font-bold">0</span>
+                            <span class="text-sm text-gray-600">/30</span>
+                        </div>
+                        <button onclick="checkAllAnswers()" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                            🔍 Reba Impinduro Zose
+                        </button>
+                    </div>
+
+                    <div class="progress-container">
+                        <div id="quiz-progress" class="progress-bar" style="width: 0%"></div>
+                    </div>
+
+                    <div class="quiz-container">
+                        <!-- Questions will be inserted here by JavaScript -->
+                        <div id="questions-container"></div>
+                        
+                        <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+                            <h4 class="font-semibold text-blue-800 mb-2">📊 Igisubizo Cyawe:</h4>
+                            <div id="quiz-summary" class="text-blue-700">
+                                Ntacyakozwe - Tangira gukora ibibazo!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 5: Summary -->
+                <div id="summary" class="tab-content">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Ibyishingirije - Software</h2>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-3">✅ Ibyo Wize:</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• Software ni porogaramu za computer</li>
+                                <li>• Hari ubwoko 3: System, Application, Programming</li>
+                                <li>• Operating System ni software nyamukuru</li>
+                                <li>• Software nziza ifite uruhushya</li>
+                                <li>• Buri software ikora umurimo utandukanye</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-3">🎯 Ibyo Ukwiye Gusobanukirwa:</h4>
+                            <ul class="space-y-2 text-gray-600">
+                                <li>• Gutandukanya Software na Hardware</li>
+                                <li>• Gusobanukirwa imirimo ya Operating System</li>
+                                <li>• Gusobanukirwa uko software ishyirwaho</li>
+                                <li>• Gusobanukirwa akamaro k'ubwoko butandukanye</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="tip-box mt-6">
+                        <h4 class="font-semibold text-green-800 mb-2">🚀 Icyo Gikurikira:</h4>
+                        <p class="text-green-700">
+                            Mu gice gikurikira, tuzakomeza kuri <strong>Internet & Networking</strong> - 
+                            uko computer zihuza, uko ukoresha interineti, n'uburyo wikoresha mu buzima.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-12 pt-8 border-t border-gray-200">
+                <a href="2-hardware.html" class="flex items-center space-x-2 text-gray-600 hover:text-green-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Subira ku Hardware</span>
+                </a>
+                
+                <a href="4-internet.html" class="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                    <span>Genda ku Gice Gikurikira: Internet</span>
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script>
+        // Load components
+        fetch('../../../components/header.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('header').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load header:', err));
+
+        fetch('../../../components/footer.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('footer').innerHTML = html;
+            })
+            .catch(err => console.error('Failed to load footer:', err));
+
+        // Tab functionality
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Accordion functionality
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const arrow = content.previousElementSibling.querySelector('.accordion-arrow');
+            
+            content.classList.toggle('active');
+            arrow.textContent = content.classList.contains('active') ? '▲' : '▼';
+        }
+
+// Quiz Data - 30 Questions with explanations (Complete Set)
+const quizData = [
+    {
+        question: "1. Software ni iki?",
+        options: [
+            "A. Ibikoresho bya mudasobwa",
+            "B. Amabwiriza atuma mudasobwa ikora",
+            "C. Imizi ya system",
+            "D. Amashanyarazi"
+        ],
+        correct: 1,
+        explanation: "Software ni amabwiriza (instructions) atuma computer ikora imirimo. Ni porogaramu, ntibigaragara."
+    },
+    {
+        question: "2. Muri software, Operating System ikora iki?",
+        options: [
+            "A. Gukora design",
+            "B. Gucunga hardware na software zose",
+            "C. Gucunga camera",
+            "D. Gucunga internet gusa"
+        ],
+        correct: 1,
+        explanation: "Operating System ni software nyamukuru ishinzwe gukoresha computer yose - hardware na software."
+    },
+    {
+        question: "3. Ni uruhe rubuga rubamo Windows, macOS, Linux?",
+        options: [
+            "A. Application Software",
+            "B. System Software",
+            "C. Utility Software",
+            "D. Browser Software"
+        ],
+        correct: 1,
+        explanation: "Windows, macOS, Linux ni Operating Systems - System Software ishinzwe gukoresha computer."
+    },
+    {
+        question: "4. Application Software ikora iki?",
+        options: [
+            "A. Gufasha user gukora imirimo idasanzwe nko kwandika, kureba video, gukora design",
+            "B. Gucunga hardware",
+            "C. Gucunga BIOS",
+            "D. Gukora reboot"
+        ],
+        correct: 0,
+        explanation: "Application Software ni yo ukoresha gukora imirimo itandukanye nko kwandika, kureba video, gukora design."
+    },
+    {
+        question: "5. Utility Software ikora iki?",
+        options: [
+            "A. Icorera OS",
+            "B. Ifasha maintenance (cleaning, security, file management)",
+            "C. Ifungura internet",
+            "D. Irinda printer"
+        ],
+        correct: 1,
+        explanation: "Utility Software ifasha mu maintenance ya computer: gusukura, kurinda, no gucunga amadosiye."
+    },
+    {
+        question: "6. Example ya Programming Software ni iyihe?",
+        options: [
+            "A. Python, C++, Java",
+            "B. Adobe Premiere",
+            "C. Excel",
+            "D. VLC"
+        ],
+        correct: 0,
+        explanation: "Programming Software ni nk'ibikoresho by'abprogrammer: Python, C++, Java, VS Code, etc."
+    },
+    {
+        question: "7. Ni iyihe software ibarirwa muri System Software?",
+        options: [
+            "A. Notepad",
+            "B. Windows OS",
+            "C. Google Chrome",
+            "D. Photoshop"
+        ],
+        correct: 1,
+        explanation: "Windows OS ni System Software. Ni Operating System ishinzwe gukoresha computer yose."
+    },
+    {
+        question: "8. Antivirus ikora iki?",
+        options: [
+            "A. Gushyushya computer",
+            "B. Kurinda malware na virus",
+            "C. Gucunga videos",
+            "D. Gufata amafoto"
+        ],
+        correct: 1,
+        explanation: "Antivirus ni Utility Software ishinzwe kurinda computer ku virusi na malware."
+    },
+    {
+        question: "9. Ni iyihe software ibika no gucunga amakuru menshi (databases)?",
+        options: [
+            "A. MS Paint",
+            "B. MySQL / PostgreSQL / Oracle",
+            "C. VLC",
+            "D. WinRAR"
+        ],
+        correct: 1,
+        explanation: "Database Software nka MySQL, PostgreSQL, Oracle zikoreshwa kubika no gucunga amakuru menshi."
+    },
+    {
+        question: "10. Browser software ni ukuhe?",
+        options: [
+            "A. Photoshop",
+            "B. Google Chrome / Firefox / Edge",
+            "C. Oracle",
+            "D. CMD"
+        ],
+        correct: 1,
+        explanation: "Browser Software ni nka Google Chrome, Firefox, Edge - zikoreshwa gushakisha kuri internet."
+    },
+    {
+        question: "11. Ni iki gituma application iba 'Open Source'?",
+        options: [
+            "A. Idakora",
+            "B. Source code iboneka kandi ishobora guhindurwa",
+            "C. Ijya mu bubiko bwa cloud",
+            "D. Ikoreshwa na Windows gusa"
+        ],
+        correct: 1,
+        explanation: "Open Source Software ifite source code iboneka kandi ushobora kuyihindura, gukusanya, no kuyisangiza."
+    },
+    {
+        question: "12. Compression Software ikora iki?",
+        options: [
+            "A. Gukomeza RAM",
+            "B. Kugabanya ubunini bwa files",
+            "C. Gukora antivirus",
+            "D. Gukora internet"
+        ],
+        correct: 1,
+        explanation: "Compression Software nka WinRAR, 7-Zip zikoreshwa kugabanya ubunini bwa files."
+    },
+    {
+        question: "13. Backup Software ikora iki?",
+        options: [
+            "A. Gufata copies z'amafayile kugirango zitazacika",
+            "B. Gukora format",
+            "C. Guhindura keyboard",
+            "D. Gukora antivirus"
+        ],
+        correct: 0,
+        explanation: "Backup Software ikora copies z'amadosiye mu mutekano kugirango zitapfakwe n'ibyago."
+    },
+    {
+        question: "14. Example ya Multimedia Software ni iyihe?",
+        options: [
+            "A. MS Word",
+            "B. VLC, Windows Media Player",
+            "C. CMD",
+            "D. BIOS"
+        ],
+        correct: 1,
+        explanation: "Multimedia Software nka VLC, Windows Media Player zikoreshwa kureba video, kurira indirimbo."
+    },
+    {
+        question: "15. Ni iki software yitwa 'Firmware'?",
+        options: [
+            "A. Software iri muri hardware imbere (ROM/Chip)",
+            "B. Browser",
+            "C. Antivirus",
+            "D. Video Editor"
+        ],
+        correct: 0,
+        explanation: "Firmware ni software yubatswe muri hardware, ikoreshwa nka BIOS kugirango itange serivisi z'ibanze."
+    },
+    {
+        question: "16. Ni iyihe software ifasha computer gutangira (boot process)?",
+        options: [
+            "A. Antivirus",
+            "B. BIOS / UEFI",
+            "C. Excel",
+            "D. Chrome"
+        ],
+        correct: 1,
+        explanation: "BIOS/UEFI ni firmware ishinzwe gutangira computer (boot process) mbere y'Operating System."
+    },
+    {
+        question: "17. Uruhe rwego rugenzura CPU, RAM, processes?",
+        options: [
+            "A. Application Layer",
+            "B. Operating System",
+            "C. Multimedia Software",
+            "D. Browser"
+        ],
+        correct: 1,
+        explanation: "Operating System ni yo igenzura ibikoresho byose bya computer: CPU, RAM, processes, etc."
+    },
+    {
+        question: "18. Utility Software ikora iki?",
+        options: [
+            "A. Gutoza robot",
+            "B. Maintenance ya computer",
+            "C. Gucunga internet",
+            "D. Gukora coding"
+        ],
+        correct: 1,
+        explanation: "Utility Software ifasha mu maintenance: gusukura system, kurinda, gucunga files, etc."
+    },
+    {
+        question: "19. Software yo gutunganya amashusho ni iyihe?",
+        options: [
+            "A. VLC",
+            "B. WinRAR",
+            "C. Photoshop / GIMP",
+            "D. Chrome"
+        ],
+        correct: 2,
+        explanation: "Image Editing Software nka Photoshop, GIMP zikoreshwa gukora no guhindura amashusho."
+    },
+    {
+        question: "20. Ni iyihe software ifasha hardware gukora (printers, keyboard…)?",
+        options: [
+            "A. Registry",
+            "B. Drivers",
+            "C. Antivirus",
+            "D. PowerPoint"
+        ],
+        correct: 1,
+        explanation: "Device Drivers ni software ishinzwe guhuza Operating System na hardware (printer, keyboard, etc.)."
+    },
+    {
+        question: "21. Firewall ikora iki?",
+        options: [
+            "A. Gukora photos",
+            "B. Kurinda network na system (security)",
+            "C. Gufungura music",
+            "D. Gukora formatting"
+        ],
+        correct: 1,
+        explanation: "Firewall ni security software ishinzwe kurinda computer ku mpanzi kuri network."
+    },
+    {
+        question: "22. Proprietary Software bivuga iki?",
+        options: [
+            "A. Free",
+            "B. Idafite license",
+            "C. Itemewe guhindurwa, uyikoresha akurikiza amabwiriza",
+            "D. Ikoreshwa kuri Linux gusa"
+        ],
+        correct: 2,
+        explanation: "Proprietary Software ni iyo ifite uruhushya rituma utabasha kuyihindura cyangwa kuyisangiza."
+    },
+    {
+        question: "23. Web Application ni iyihe?",
+        options: [
+            "A. Notepad",
+            "B. Google Docs",
+            "C. Photoshop Offline",
+            "D. CMD"
+        ],
+        correct: 1,
+        explanation: "Web Application ni software ukoresha kuri browser, nka Google Docs, Gmail, Facebook."
+    },
+    {
+        question: "24. Programming Software ni iyihe?",
+        options: [
+            "A. IDE (VS Code, PyCharm)",
+            "B. Winamp",
+            "C. TeamViewer",
+            "D. VLC"
+        ],
+        correct: 0,
+        explanation: "Programming Software ni Integrated Development Environments (IDEs) nka VS Code, PyCharm."
+    },
+    {
+        question: "25. Patch Update ikora iki?",
+        options: [
+            "A. Gukora screenshot",
+            "B. Gukosora bugs na security issues",
+            "C. Guhindura RAM",
+            "D. Gufata amafoto"
+        ],
+        correct: 1,
+        explanation: "Patch Update ni software update ishinzwe gukosora ibyago (bugs) n'ibibazo by'umutekano."
+    },
+    {
+        question: "26. Software yo kureba CPU/RAM usage ni iyihe?",
+        options: [
+            "A. Calculator",
+            "B. Task Manager / Activity Monitor",
+            "C. Excel",
+            "D. Notepad"
+        ],
+        correct: 1,
+        explanation: "Task Manager (Windows) cyangwa Activity Monitor (macOS) zerekana uko CPU, RAM, processes bikora."
+    },
+    {
+        question: "27. Software Crash bivuga iki?",
+        options: [
+            "A. Computer irazimye neza",
+            "B. Software ihagarara ikifunga cyangwa igakorana error",
+            "C. RAM ishizemo",
+            "D. Antivirus yarangije scan"
+        ],
+        correct: 1,
+        explanation: "Software Crash bivuga ko software yahagaritse bikabujije gukomeza gukora, iteranye n'error."
+    },
+    {
+        question: "28. Backup Software ikora iki?",
+        options: [
+            "A. Gukora amafoto mashya",
+            "B. Gukora copies z'amafayile mu mutekano",
+            "C. Kurinda ubushyuhe",
+            "D. Gukora internet"
+        ],
+        correct: 1,
+        explanation: "Backup Software ikora duplicates z'amadosiye kugirango zitapfakwe n'ibyago cyangwa gupfakwa."
+    },
+    {
+        question: "29. System Software muri izi ni iyihe?",
+        options: [
+            "A. VLC",
+            "B. Android OS",
+            "C. Chrome",
+            "D. WordPad"
+        ],
+        correct: 1,
+        explanation: "Android OS ni System Software (Operating System) ishinzwe gukoresha telephone ya smartphone."
+    },
+    {
+        question: "30. Middleware ni software ikora iki?",
+        options: [
+            "A. Ihuza Application Software na System Software",
+            "B. Ikoreshwa mu kwishyura",
+            "C. Antivirus",
+            "D. Camera Software"
+        ],
+        correct: 0,
+        explanation: "Middleware ni software ihuriramo application software na system software, ituma bikorana neza."
+    }
+];
+        // Initialize Quiz
+        function initializeQuiz() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            quizData.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-question';
+                questionDiv.id = `question-${index}`;
+                
+                let optionsHtml = '';
+                q.options.forEach((option, optIndex) => {
+                    optionsHtml += `
+                        <div class="quiz-option" onclick="selectOption(${index}, ${optIndex})">
+                            <input type="radio" name="q${index}" id="q${index}o${optIndex}" style="display: none;">
+                            <span class="option-text">${option}</span>
+                        </div>
+                    `;
+                });
+                
+                questionDiv.innerHTML = `
+                    <h4 class="font-semibold text-gray-800 mb-3">${q.question}</h4>
+                    ${optionsHtml}
+                    <div class="explanation" id="explanation-${index}">
+                        <strong>Ibisobanuro:</strong> ${q.explanation}
+                    </div>
+                `;
+                
+                container.appendChild(questionDiv);
+            });
+            
+            updateProgress();
+        }
+
+        // Select option
+        function selectOption(questionIndex, optionIndex) {
+            const questionDiv = document.getElementById(`question-${questionIndex}`);
+            const options = questionDiv.querySelectorAll('.quiz-option');
+            
+            // Remove previous selections
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'correct-answer', 'wrong-answer');
+            });
+            
+            // Select current option
+            options[optionIndex].classList.add('selected');
+            
+            updateProgress();
+        }
+
+        // Check all answers
+        function checkAllAnswers() {
+            let correctCount = 0;
+            let answeredCount = 0;
+            
+            quizData.forEach((q, index) => {
+                const questionDiv = document.getElementById(`question-${index}`);
+                const options = questionDiv.querySelectorAll('.quiz-option');
+                const explanation = document.getElementById(`explanation-${index}`);
+                
+                let selectedOption = -1;
+                options.forEach((opt, optIndex) => {
+                    if (opt.classList.contains('selected')) {
+                        selectedOption = optIndex;
+                        answeredCount++;
+                    }
+                });
+                
+                if (selectedOption !== -1) {
+                    if (selectedOption === q.correct) {
+                        questionDiv.classList.add('correct');
+                        questionDiv.classList.remove('incorrect');
+                        options[selectedOption].classList.add('correct-answer');
+                        correctCount++;
+                    } else {
+                        questionDiv.classList.add('incorrect');
+                        questionDiv.classList.remove('correct');
+                        options[selectedOption].classList.add('wrong-answer');
+                        options[q.correct].classList.add('correct-answer');
+                    }
+                    
+                    explanation.classList.add('show');
+                }
+            });
+            
+            // Update summary
+            const percentage = Math.round((correctCount / quizData.length) * 100);
+            const summary = document.getElementById('quiz-summary');
+            summary.innerHTML = `
+                <strong>${correctCount} ku ${quizData.length} byakuwe neza! (${percentage}%)</strong><br>
+                ${percentage >= 80 ? 
+                    '🎉 Wakoze neza cyane! Urasobanukirwa neza Software.' : 
+                    percentage >= 60 ?
+                    '👍 Wakoze! Hari gato usabwa kwiga nanone.' :
+                    '💪 Subira usome ibice utarasobanukirwa neza.'}
+            `;
+            
+            // Mark quiz as completed for progress tracking
+            if (answeredCount > 0) {
+                window.lessonProgress.markSectionComplete('quiz');
+            }
+        }
+
+        // Update progress
+        function updateProgress() {
+            let answeredCount = 0;
+            quizData.forEach((q, index) => {
+                const questionDiv = document.getElementById(`question-${index}`);
+                const options = questionDiv.querySelectorAll('.quiz-option');
+                
+                options.forEach(opt => {
+                    if (opt.classList.contains('selected')) {
+                        answeredCount++;
+                    }
+                });
+            });
+            
+            document.getElementById('answered-count').textContent = answeredCount;
+            const progress = (answeredCount / quizData.length) * 100;
+            document.getElementById('quiz-progress').style.width = `${progress}%`;
+        }
+
+        // Lesson Progress Tracking
+        class LessonProgress {
+            constructor() {
+                this.lessonId = '3-software';
+                this.sections = ['introduction', 'types', 'practice', 'quiz', 'summary'];
+                this.completedSections = new Set();
+                this.loadProgress();
+                this.setupEventListeners();
+                this.updateProgressBar();
+            }
+
+            loadProgress() {
+                const saved = localStorage.getItem(`lesson-${this.lessonId}`);
+                if (saved) {
+                    this.completedSections = new Set(JSON.parse(saved));
+                }
+            }
+
+            saveProgress() {
+                localStorage.setItem(`lesson-${this.lessonId}`, JSON.stringify([...this.completedSections]));
+            }
+
+            markSectionComplete(section) {
+                this.completedSections.add(section);
+                this.saveProgress();
+                this.updateProgressBar();
+                
+                if (this.completedSections.size === this.sections.length) {
+                    this.enableLessonCompletion();
+                }
+            }
+
+            updateProgressBar() {
+                const progress = (this.completedSections.size / this.sections.length) * 100;
+                const progressBar = document.getElementById('lesson-progress');
+                if (progressBar) {
+                    progressBar.style.width = `${progress}%`;
+                }
+            }
+
+            enableLessonCompletion() {
+                const completeButton = document.getElementById('complete-lesson');
+                if (completeButton) {
+                    completeButton.classList.remove('bg-gray-200', 'text-gray-700');
+                    completeButton.classList.add('bg-green-600', 'hover:bg-green-700', 'text-white');
+                    completeButton.innerHTML = `
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    `;
+                }
+            }
+
+            setupEventListeners() {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const section = entry.target.id;
+                            if (section && this.sections.includes(section)) {
+                                this.markSectionComplete(section);
+                            }
+                        }
+                    });
+                }, { threshold: 0.6 });
+
+                this.sections.forEach(section => {
+                    const element = document.getElementById(section);
+                    if (element) {
+                        observer.observe(element);
+                    }
+                });
+
+                // Lesson completion
+                document.getElementById('complete-lesson')?.addEventListener('click', () => {
+                    this.completeLesson();
+                });
+            }
+
+            completeLesson() {
+                if (this.completedSections.size === this.sections.length) {
+                    const courseProgress = JSON.parse(localStorage.getItem('progress-computer-basics') || '[]');
+                    const lessonIndex = courseProgress.findIndex(l => l.id === '3');
+                    if (lessonIndex !== -1 && !courseProgress[lessonIndex].completed) {
+                        courseProgress[lessonIndex].completed = true;
+                        localStorage.setItem('progress-computer-basics', JSON.stringify(courseProgress));
+                    }
+
+                    const completeButton = document.getElementById('complete-lesson');
+                    if (completeButton) {
+                        completeButton.classList.add('bg-green-700');
+                        completeButton.innerHTML = `
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span>Warangije! 🎉</span>
+                        `;
+                        completeButton.disabled = true;
+                    }
+
+                    alert('🎉 Warangije neza iki gice cya Software! Urashobora gukomeza ku gice gikurikira.');
+                } else {
+                    alert('⚠️ Ntugomba kurangiza ibice byose (5) mbere yo kwemeza kurangiza.');
+                }
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.lessonProgress = new LessonProgress();
+            initializeQuiz();
+        });
+    </script>
+</body>
+</html>

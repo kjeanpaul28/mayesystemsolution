@@ -1,0 +1,122 @@
+<div id="headerSection" class="fade-in no-print" role="banner" aria-label="Umunyabanga w'urubuga rwa Public">  
+  <style>  
+    #headerSection {  
+      background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);  
+      color: white;  
+      position: sticky;  
+      top: 0;  
+      z-index: 1000;  
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);  
+      font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+      backdrop-filter: blur(10px);  
+    }  
+      
+    #headerSection .container {  
+      display: flex;  
+      align-items: center;  
+      justify-content: space-between;   
+      padding: 1rem 2rem;  
+      max-width: 1400px;  
+      margin: 0 auto;  
+      flex-wrap: wrap;  
+    }  
+      
+    .logo-section {  
+      display: flex;  
+      align-items: center;  
+      gap: 1rem;  
+      cursor: pointer;  
+    }  
+      
+    #headerSection .logo-img {  
+      width: 50px;  
+      height: 50px;  
+      border-radius: 8px;  
+      transition: all 0.3s ease;  
+      border: 2px solid rgba(255, 255, 255, 0.2);  
+      object-fit: cover;  
+    }  
+      
+    .logo-text h1 {  
+      font-size: 1.5rem;  
+      font-weight: 700;  
+      margin: 0;  
+      background: linear-gradient(45deg, #FFFFFF, #E8F5E8);  
+      -webkit-background-clip: text;  
+      -webkit-text-fill-color: transparent;  
+      background-clip: text;  
+    }  
+      
+    .logo-text p {  
+      font-size: 0.8rem;  
+      color: #C8E6C9;  
+      margin: 0.2rem 0 0;  
+    }  
+
+    .main-nav {  
+      display: flex;  
+      gap: 20px;  
+      flex-wrap: wrap;  
+    }  
+
+    .main-nav a {  
+      color: #E8F5E8;  
+      text-decoration: none;  
+      font-weight: 600;  
+      padding: 5px 0;  
+      transition: color 0.3s, border-bottom 0.3s;  
+      border-bottom: 2px solid transparent;  
+    }  
+
+    .main-nav a:hover, .main-nav a.active {  
+      color: #FFF;  
+      border-bottom: 2px solid #FFD54F;  
+    }  
+
+    .login-cta {  
+      background-color: #FFD54F;  
+      color: #1B5E20;  
+      padding: 8px 15px;  
+      border-radius: 6px;  
+      font-weight: 700;  
+      text-decoration: none;  
+      transition: background-color 0.3s;  
+    }  
+
+    .login-cta:hover {  
+      background-color: #FFC107;  
+    }  
+      
+    @media (max-width: 1024px) {  
+      .main-nav {  
+        display: none;  
+      }  
+      .container {  
+        justify-content: space-between;  
+      }  
+    }  
+  </style>  
+    
+  <div class="container">  
+    <a href="/" class="logo-section" id="logoLink">  
+      <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png"  
+           alt="Logo ya MAYE-SYSTEM" class="logo-img" />  
+      <div class="logo-text">  
+        <h1>🌿 MAYE-SYSTEM</h1>  
+        <p>FINANCE, IT & E-LEARNING | KN 12 Ave, Muhima</p>  
+      </div>  
+    </a>  
+      
+    <nav class="main-nav" role="navigation">  
+        <a href="/" class="active">Home</a>  
+        <a href="/services.html">Serivisi</a>  
+        <a href="/pricing.html">Ibiciro</a>  
+        <a href="/elearning.html">E-Learning</a>  
+        <a href="/driving-test.html">Amategeko</a>  
+        <a href="/about.html">About Us</a>  
+        <a href="/contact.html">Contact</a>  
+    </nav>  
+      
+    <a href="/system/auth/auth.html" class="login-cta">Kwinjira</a>  
+  </div>  
+</div>

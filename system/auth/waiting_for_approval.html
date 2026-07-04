@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turimo Tugenzura Konti Yanyu</title>
+    <style>
+        /* CSS ni nziza */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+        }
+        h1 {
+            color: #ff9800; /* Orange color */
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        p {
+            color: #555;
+            line-height: 1.6;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #ff9800;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="loader"></div>
+        <h1>Murategereje Kwemererwa</h1>
+        <p>Murakoze cyane kwiyandikisha.</p>
+        <p>Ubusabe bwanyu burimo kugenzurwa na **Admin**. Ni ngombwa ko **mutakinga (don't close) iyi page** kuko izahita yiyohereza (redirect) kuri Dashboard yanyu ako kanya iyo byemewe.</p>
+        <p>Murakoze kwihangana.</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        // Firebase Config (Koresha Iyi yanjye YUZUYE neza)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+
+        let db;
+        let auth;
+        try {
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+            console.log('✅ Firebase initialized successfully on waiting page');
+        } catch (error) {
+            console.error('❌ Firebase initialization failed:', error);
+            alert('Ibirimo kurangara mu kubana na seriveri. Gerageza nyuma.');
+            window.location.replace('./auth/auth.html');
+            // 🛑 GUKOSORA: Twakuyemo 'return;' kugira ngo twirinde 'Illegal return statement'
+            throw new Error("Initialization failed, redirecting to login.");
+        }
+
+        /**
+         * 🔑 Logic yo Gutegereza Kwemererwa (Approval Listener)
+         */
+        if (typeof onAuthStateChanged === 'function' && auth) {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log('👤 User is signed in:', user.uid);
+                    
+                    // 🔄 Gufungura Real-time Listener kuri document ya user muri Firestore
+                    const userRef = doc(db, 'users', user.uid);
+                    
+                    onSnapshot(userRef, (docSnapshot) => {
+                        if (!docSnapshot.exists()) {
+                            // Niba document yakuweho, user asohoke
+                            console.error('❌ User document was deleted. Signing out.');
+                            signOut(auth);
+                            // ⚠️ Hano Path ihindutse: Iyi page iri mu root, auth iri mu /auth/
+                            window.location.replace('./auth/auth.html');
+                            return; 
+                        }
+                        
+                        const userData = docSnapshot.data();
+                        
+                        if (userData && userData.isApproved === true) {
+                            console.log("✅ Kwemererwa kwanjijwe! Redirecting to index.html...");
+                            // Niba byemewe, mwohereze kuri Dashboard. Iyi path yagombye kuba ./index.html
+                            // niba index.html iri mu root.
+                            window.location.replace('./index.html');
+                        } else {
+                            // Komeza utegereze hano
+                            console.log("⚠️ Kwemererwa ntikuraboneka. Gutegereza...");
+                        }
+                        
+                    }, (error) => {
+                        console.error("❌ Error muri listener:", error);
+                        // Mu gihe habaye ikibazo, kumuhohereza kuri login
+                        signOut(auth);
+                        window.location.replace('./auth/auth.html');
+                    });
+                } else {
+                    console.log('🚫 No user signed in. Redirecting to login page...');
+                    // Niba user yasohotse, mwohereze kuri login page
+                    window.location.replace('./auth/auth.html');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

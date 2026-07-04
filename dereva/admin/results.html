@@ -1,0 +1,3532 @@
+<!DOCTYPE html>
+<html lang="rw" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYE SYSTEM - Ibisubizo by'Abanyeshuri</title>
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- XLSX Library -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        /* ===== POLICE COLORS & THEME ===== */
+        :root {
+            --police-blue: #1e3a8a;
+            --police-red: #dc2626;
+            --police-gold: #fbbf24;
+            --police-dark: #0f172a;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+        
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #475569;
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+        
+        /* ===== MAIN LAYOUT ===== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--police-blue) 0%, var(--police-dark) 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-85%);
+        }
+        
+        .sidebar.collapsed .nav-text,
+        .sidebar.collapsed .logo-text,
+        .sidebar.collapsed .user-details,
+        .sidebar.collapsed .nav-title {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            position: absolute;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 0.75rem;
+        }
+        
+        .sidebar.collapsed .nav-icon {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid white;
+        }
+        
+        .logo-icon-fallback {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .logo-icon-fallback i {
+            color: var(--police-blue);
+            font-size: 1.3rem;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.1rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .logo-text span {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(180deg);
+        }
+        
+        .user-profile {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--police-gold), #f59e0b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .user-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .nav-section {
+            padding: 1rem 0;
+        }
+        
+        .nav-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            white-space: nowrap;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0 0.5rem 0.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(251, 191, 36, 0.2);
+            color: white;
+            border-left: 3px solid var(--police-gold);
+        }
+        
+        .nav-icon {
+            width: 24px;
+            margin-right: 0.75rem;
+            text-align: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .nav-text {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .nav-badge {
+            background: var(--police-red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+        
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        .top-bar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: var(--header-height);
+        }
+        
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0 1rem;
+            }
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb-item {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-item.active {
+            color: var(--police-blue);
+            font-weight: 600;
+        }
+        
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .theme-checkbox {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .theme-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        .theme-checkbox:checked + .theme-slider {
+            background-color: var(--police-blue);
+        }
+        
+        .theme-checkbox:checked + .theme-slider:before {
+            transform: translateX(30px);
+        }
+        
+        .notification-btn {
+            position: relative;
+            background: var(--bg-tertiary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-btn:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: var(--police-red);
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-menu:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .user-avatar-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--police-blue), #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .dashboard-content {
+            padding: 2rem;
+            min-height: calc(100vh - var(--header-height));
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 1rem;
+            }
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--police-blue), var(--police-red));
+            color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--police-blue), var(--police-red));
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+        }
+        
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .stat-trend.positive {
+            color: #10b981;
+        }
+        
+        .stat-trend.negative {
+            color: #ef4444;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .search-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .search-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .search-input, .search-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus, .search-select:focus {
+            outline: none;
+            border-color: var(--police-blue);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .search-with-icon {
+            position: relative;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .search-with-icon input {
+            padding-left: 3rem;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .export-pdf {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .export-excel {
+            background: #10b981;
+            color: white;
+        }
+        
+        .export-csv {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .export-print {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .export-delete {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .export-danger {
+            background: var(--police-red);
+            color: white;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .table-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .entries-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .entries-selector select {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        tr:hover {
+            background: var(--bg-tertiary);
+            cursor: pointer;
+        }
+        
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+        
+        .result-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--police-blue);
+        }
+        
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .badge-pass {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .badge-fail {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        .pagination {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .pagination-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover {
+            background: var(--police-blue);
+            color: white;
+            border-color: var(--police-blue);
+        }
+        
+        .page-btn.active {
+            background: var(--police-blue);
+            color: white;
+            border-color: var(--police-blue);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .bulk-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-left: 1rem;
+            align-items: center;
+        }
+        
+        .bulk-action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .select-all-btn {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .delete-selected-btn {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .delete-selected-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+        
+        .modal-content.wide {
+            width: 900px;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .modal-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        .detail-view {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .result-item {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .result-label {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .access-denied {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .access-icon {
+            font-size: 5rem;
+            color: var(--police-red);
+            margin-bottom: 1.5rem;
+        }
+        
+        .access-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .access-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+        
+        .access-btn {
+            background: var(--police-blue);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .access-btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.3);
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+        
+        .toast {
+            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0%); opacity: 1; }
+        }
+        
+        .toast-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+            color: white;
+        }
+        
+        .toast-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+            color: white;
+        }
+        
+        .toast-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(29, 78, 216, 0.95));
+            color: white;
+        }
+        
+        .toast-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+            color: white;
+        }
+        
+        .loading-shimmer {
+            background: linear-gradient(90deg, var(--bg-secondary) 0%, rgba(255,255,255,0.1) 50%, var(--bg-secondary) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--police-blue), var(--police-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .role-student { background: #3b82f6; color: white; }
+        .role-admin { background: #10b981; color: white; }
+        .role-super_admin { background: #8b5cf6; color: white; }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+        
+        /* Print Styles */
+        @media print {
+            .sidebar, .top-bar, .export-buttons, .table-controls, .pagination, 
+            .search-section, .welcome-logo, .modal-close, .modal-footer button:not(.export-pdf) {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+            }
+            
+            .dashboard-content {
+                padding: 0;
+            }
+            
+            .table-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+            
+            th {
+                background: #f1f5f9 !important;
+                color: black !important;
+            }
+            
+            .badge-pass, .badge-fail {
+                background: none;
+                border: 1px solid currentColor;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-police-blue flex flex-col items-center justify-center z-50">
+        <div class="relative">
+            <div class="w-24 h-24 border-4 border-white border-t-transparent rounded-full animate-spin mb-6"></div>
+            <div class="absolute inset-0 flex-center">
+                <i class="fas fa-shield-alt text-white text-2xl"></i>
+            </div>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">MAYE SYSTEM</h2>
+        <p id="loadingMessage" class="text-white/80 mb-8">Ibisubizo by'Abanyeshuri birakururwa...</p>
+        <div class="w-64 bg-white/20 rounded-full h-2 overflow-hidden">
+            <div id="loadingProgress" class="h-full bg-white rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="appContainer" class="app-container hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img id="sidebarLogo" src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                         alt="MAYE Logo" class="logo-img" 
+                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo-icon-fallback" style="display: none;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>MAYE SYSTEM</h1>
+                        <span>Admin Dashboard</span>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="sidebar-toggle" data-tooltip="Guhindura sidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name" id="sidebarUserName">Umuyobozi</div>
+                        <div class="user-role">
+                            <span id="sidebarUserRole" class="role-badge role-admin">Umunyamabanga</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-section">
+                <div class="nav-title">Umunyamabanga</div>
+                
+                <!-- Dashboard Link - Changed to /dereva.html as requested -->
+                <a href="/dereva.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-home"></i></div>
+                    <div class="nav-text">Dashboard</div>
+                </a>
+                
+                <a href="/dereva/admin/category-control.html" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-folder"></i></div>
+                    <div class="nav-text">Ibyiciro</div>
+                </a>
+                <a href="/dereva/admin/results.html" class="nav-item active">
+                    <div class="nav-icon"><i class="fas fa-list-check"></i></div>
+                    <div class="nav-text">Ibisubizo</div>
+                    <div class="nav-badge" id="resultsBadge">0</div>
+                </a>
+                
+                <!-- Quick link to driving test -->
+                <a href="/driving-test.html" class="nav-item" target="_blank">
+                    <div class="nav-icon"><i class="fas fa-car"></i></div>
+                    <div class="nav-text">Ikizamini</div>
+                </a>
+                
+                <!-- Ibi ni iby'umuyobozi (super-admin) gusa -->
+                <div class="nav-title">Umuyobozi</div>
+                <a href="/dereva/super-admin/manage-admins.html" class="nav-item super-admin-only hidden">
+                    <div class="nav-icon"><i class="fas fa-users-cog"></i></div>
+                    <div class="nav-text">Abakozi</div>
+                    <div class="nav-badge" id="adminsBadge">0</div>
+                </a>
+                
+                <div class="nav-title">Sisitemu</div>
+                <a href="#" class="nav-item" data-section="help">
+                    <div class="nav-icon"><i class="fas fa-question-circle"></i></div>
+                    <div class="nav-text">Ubufasha</div>
+                </a>
+                <a href="#" id="logoutBtn" class="nav-item">
+                    <div class="nav-icon"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="nav-text">Ohereza</div>
+                </a>
+            </nav>
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="opacity-80">Sisitemu:</span>
+                    <span class="flex items-center text-green-300">
+                        <i class="fas fa-circle text-xs mr-2"></i>
+                        <span id="systemStatus">Iteguye</span>
+                    </span>
+                </div>
+                <div class="mt-2 text-xs opacity-60 text-center">
+                    © 2024 MAYE • Police Rwanda
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main id="mainContent" class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="breadcrumb">
+                    <button id="mobileMenuToggle" class="md:hidden mr-3 text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="breadcrumb-item">
+                        <i class="fas fa-home"></i>
+                        <a href="/dereva.html" class="hover:underline">Umunyamabanga</a>
+                    </div>
+                    <div class="breadcrumb-item active">
+                        <span>Ibisubizo by'Abanyeshuri</span>
+                    </div>
+                </div>
+
+                <div class="top-actions">
+                    <div class="theme-toggle-container">
+                        <i class="fas fa-sun text-yellow-500"></i>
+                        <label class="theme-toggle">
+                            <input type="checkbox" id="themeCheckbox" class="theme-checkbox">
+                            <span class="theme-slider"></span>
+                        </label>
+                        <i class="fas fa-moon text-blue-400"></i>
+                    </div>
+
+                    <button id="notificationBtn" class="notification-btn" data-tooltip="Amatangazo">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+
+                    <div class="user-menu">
+                        <div class="hidden md:block text-right">
+                            <div class="font-semibold text-sm" id="topBarUserName">Umuyobozi</div>
+                            <div class="text-xs text-gray-500" id="topBarUserRole">Admin</div>
+                        </div>
+                        <div class="user-avatar-small" id="topBarUserAvatar">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <div id="contentArea" class="dashboard-content">
+                <!-- Access Denied -->
+                <div id="accessDenied" class="access-denied hidden">
+                    <div class="access-icon">
+                        <i class="fas fa-shield-haltered"></i>
+                    </div>
+                    <h1 class="access-title">Ntibyemewe</h1>
+                    <p class="access-message">
+                        Uru rupapuro ruri kuri <strong>Umunyamabanga na Super Admin</strong> gusa.<br>
+                        Ubusanzwe uzasubizwa kuri Dashboard.
+                    </p>
+                    <a href="/dereva.html" class="access-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Subira kuri Dashboard
+                    </a>
+                </div>
+
+                <!-- Results Dashboard -->
+                <div id="resultsDashboard" class="hidden">
+                    <!-- Welcome Banner -->
+                    <div class="welcome-banner">
+                        <div class="welcome-content">
+                            <h1 class="text-3xl font-bold mb-2">
+                                <span id="welcomeMessage">Ibisubizo by'Abanyeshuri</span>
+                            </h1>
+                            <p class="opacity-90 mb-4">
+                                Reba, shyiraho amashyiraho, kuramo amakuru y'ibisubizo by'ikizamini cya Police
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="bg-white/20 px-4 py-2 rounded-lg flex items-center gap-3">
+                                    <i class="fas fa-database"></i>
+                                    <span id="totalResultsCount">0</span> ibisubizo byose
+                                </div>
+                                <div class="bg-white/20 px-4 py-2 rounded-lg flex items-center gap-3">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span id="totalPassedCount">0</span> byatsinze
+                                </div>
+                                <div class="bg-white/20 px-4 py-2 rounded-lg flex items-center gap-3">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span id="totalFailedCount">0</span> byatsinzwe
+                                </div>
+                            </div>
+                        </div>
+                        <img id="welcomeLogo" src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                             alt="MAYE Logo" class="welcome-logo hidden md:block"
+                             onerror="this.onerror=null; this.style.display='none';">
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-trend positive" id="studentsTrend">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>0%</span>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="totalStudents">0</div>
+                            <div class="stat-label">Abanyeshuri</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                    <i class="fas fa-clipboard-check"></i>
+                                </div>
+                                <div class="stat-trend positive" id="testsTrend">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>0%</span>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="totalTests">0</div>
+                            <div class="stat-label">Ibizamini</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="passRate">0%</div>
+                            <div class="stat-label">Impuzantego yo Gutsinda</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                    <i class="fas fa-percentage"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="averageScore">0%</div>
+                            <div class="stat-label">Impuzantego</div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Export Section -->
+                    <div class="search-section">
+                        <div class="search-header">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <i class="fas fa-filter"></i>
+                                Shakisha na Gupima
+                            </h3>
+                            <div class="export-buttons">
+                                <button id="exportPDF" class="export-btn export-pdf">
+                                    <i class="fas fa-file-pdf"></i>
+                                    PDF
+                                </button>
+                                <button id="exportExcel" class="export-btn export-excel">
+                                    <i class="fas fa-file-excel"></i>
+                                    Excel
+                                </button>
+                                <button id="exportCSV" class="export-btn export-csv">
+                                    <i class="fas fa-file-csv"></i>
+                                    CSV
+                                </button>
+                                <button id="exportPrint" class="export-btn export-print">
+                                    <i class="fas fa-print"></i>
+                                    Print
+                                </button>
+                                <button id="exportDelete" class="export-btn export-danger">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Bulk Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div class="search-grid">
+                            <div class="search-group">
+                                <label class="search-label">Shakisha</label>
+                                <div class="search-with-icon">
+                                    <i class="fas fa-search search-icon"></i>
+                                    <input type="text" id="searchInput" class="search-input w-full" 
+                                           placeholder="Amazina, imeyili, icyiciro...">
+                                </div>
+                            </div>
+                            <div class="search-group">
+                                <label class="search-label">Umwanya w'Itariki</label>
+                                <div class="flex gap-2">
+                                    <input type="date" id="dateFrom" class="search-input flex-1">
+                                    <input type="date" id="dateTo" class="search-input flex-1">
+                                </div>
+                            </div>
+                            <div class="search-group">
+                                <label class="search-label">Icyiciro</label>
+                                <select id="categoryFilter" class="search-select">
+                                    <option value="all">Ibyiciro Byose</option>
+                                </select>
+                            </div>
+                            <div class="search-group">
+                                <label class="search-label">Ibisubizo</label>
+                                <select id="statusFilter" class="search-select">
+                                    <option value="all">Byose</option>
+                                    <option value="passed">Byatsinze</option>
+                                    <option value="failed">Byatsinzwe</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex justify-between mt-4">
+                            <div class="bulk-actions">
+                                <button id="selectAllBtn" class="bulk-action-btn select-all-btn">
+                                    <i class="fas fa-check-square"></i>
+                                    Hitamo Byose
+                                </button>
+                                <button id="deselectAllBtn" class="bulk-action-btn select-all-btn hidden">
+                                    <i class="fas fa-square"></i>
+                                    Kuraho Byose
+                                </button>
+                                <button id="deleteSelectedBtn" class="bulk-action-btn delete-selected-btn" disabled>
+                                    <i class="fas fa-trash"></i>
+                                    Siba ibyatoranyijwe (0)
+                                </button>
+                            </div>
+                            <button id="clearFilters" class="text-sm text-police-blue hover:underline flex items-center gap-2 px-4 py-2">
+                                <i class="fas fa-times"></i>
+                                Siba amashyiraho
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results Table -->
+                    <div class="table-container">
+                        <div class="table-header">
+                            <div class="table-title">
+                                <i class="fas fa-list-ul"></i>
+                                Ibisubizo by'Ikizamini
+                                <span id="tableSubtitle" class="text-sm font-normal text-gray-500 ml-2"></span>
+                            </div>
+                            <div class="table-controls">
+                                <div class="entries-selector">
+                                    <span>Erekana</span>
+                                    <select id="entriesPerPage">
+                                        <option value="10">10</option>
+                                        <option value="25" selected>25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="all">Byose</option>
+                                    </select>
+                                    <span>ibisubizo</span>
+                                </div>
+                                <button id="refreshTableBtn" class="export-btn" style="background: var(--bg-tertiary); color: var(--text-primary);">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="resultsTable">
+                                <thead>
+                                    <tr>
+                                        <th class="checkbox-cell">
+                                            <input type="checkbox" id="selectAllCheckbox" class="result-checkbox">
+                                        </th>
+                                        <th>#</th>
+                                        <th>Izina</th>
+                                        <th>Imyeli</th>
+                                        <th>ID y'Umwigishwa</th>
+                                        <th>Icyiciro</th>
+                                        <th>Amanota</th>
+                                        <th>%</th>
+                                        <th>Ibisubizo</th>
+                                        <th>Igihe</th>
+                                        <th>Itariki</th>
+                                        <th>Ibikorwa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr>
+                                        <td colspan="12" class="text-center py-8">
+                                            <div class="flex flex-col items-center">
+                                                <i class="fas fa-spinner fa-spin text-2xl text-blue-500 mb-2"></i>
+                                                <span class="text-gray-500">Ibisubizo biri kuramo...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="pagination" class="pagination">
+                            <div class="pagination-info" id="paginationInfo"></div>
+                            <div class="pagination-controls" id="paginationControls"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Result Details Modal -->
+    <div id="resultDetailsModal" class="modal-overlay hidden">
+        <div class="modal-content wide">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <img id="modalLogo" src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                         alt="MAYE" class="modal-logo"
+                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo-icon-fallback" style="display: none; width: 32px; height: 32px;">
+                        <i class="fas fa-shield-alt" style="color: var(--police-blue);"></i>
+                    </div>
+                    Ibisubizo by'Ikizamini
+                </h3>
+                <button onclick="hideResultDetails()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="resultDetailsContent"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="exportSinglePDF" class="export-btn export-pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    Kuramo PDF
+                </button>
+                <button onclick="hideResultDetails()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    Gira ubwo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-exclamation-triangle text-red-500"></i>
+                    Kwemeza Gusiba
+                </h3>
+                <button onclick="hideDeleteConfirm()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center py-4">
+                    <div class="text-5xl text-red-500 mb-4">
+                        <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-2">Uraje gusiba ibisubizo</h4>
+                    <p class="text-gray-600 mb-4">
+                        Uraje gusiba <span id="deleteCountText" class="font-bold text-red-600">0</span> ibisubizo.
+                        Iyi gikorwa ntiyoreka. Wibyemeza?
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelDeleteBtn" onclick="hideDeleteConfirm()" class="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    <i class="fas fa-times mr-2"></i>Gusiba
+                </button>
+                <button id="confirmDeleteBtn" onclick="executeBulkDelete()" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    <i class="fas fa-trash mr-2"></i>Emeza Gusiba
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-bell"></i>
+                    Amatangazo
+                </h3>
+                <button onclick="hideNotifications()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="notificationsList" class="space-y-4"></div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="markAllAsRead()" class="w-full py-2 text-sm text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Ibanga byose nk'ibyasomewe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - UPDATED FOR SYNC WITH DRIVING-TEST.HTML
+        // ============================================
+        const CONFIG = {
+            FIREBASE_CONFIG: {
+                apiKey: "AIzaSyD4VnHyXpCm_1PiKHSjr0JL4XEBade1OwY",
+                authDomain: "driving-e8a66.firebaseapp.com",
+                databaseURL: "https://driving-e8a66-default-rtdb.firebaseio.com",
+                projectId: "driving-e8a66",
+                storageBucket: "driving-e8a66.appspot.com",
+                messagingSenderId: "629983254477",
+                appId: "1:629983254477:web:efe9505af7212013e51684"
+            },
+            ROLES: {
+                STUDENT: 'student',
+                ADMIN: 'admin',
+                SUPER_ADMIN: 'super-admin'
+            },
+            ALLOWED_ROLES: ['admin', 'super-admin'],
+            LOGO_URL: 'https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png',
+            
+            // Paths matching driving-test.html
+            PATHS: {
+                DRIVING_TEST: '/driving-test.html',
+                DASHBOARD: '/dereva.html',
+                RESULTS: 'driving_results',
+                QUESTIONS: 'questions',
+                CATEGORIES: 'categories',
+                USERS: 'users',
+                TEST_CONTROL: 'test_control'
+            },
+            
+            // Test config matching driving-test.html
+            TEST_CONFIG: {
+                PASSING_SCORE: 75,
+                QUESTIONS_PER_TEST: 20
+            }
+        };
+
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        let currentUser = {
+            uid: null,
+            name: 'Umuyobozi',
+            email: '',
+            role: null
+        };
+        let firebaseApp = null;
+        let firebaseDatabase = null;
+        let firebaseAuth = null;
+        let allResults = [];
+        let filteredResults = [];
+        let paginatedResults = [];
+        let currentPage = 1;
+        let entriesPerPage = 25;
+        let totalPages = 1;
+        let selectedResults = new Set(); // For bulk delete
+        let searchFilters = {
+            search: '',
+            dateFrom: '',
+            dateTo: '',
+            category: 'all',
+            status: 'all'
+        };
+        let realtimeListeners = []; // Track listeners for cleanup
+
+        // ============================================
+        // INITIALIZATION - UPDATED FOR RELIABLE SYNC
+        // ============================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                updateLoadingMessage('Gutangiza sisitemu...');
+                updateLoadingProgress(10);
+                
+                await initializeFirebase();
+                updateLoadingProgress(30);
+                
+                await checkAuthAndRedirect();
+                updateLoadingProgress(50);
+                
+                if (CONFIG.ALLOWED_ROLES.includes(currentUser.role)) {
+                    updateLoadingProgress(70);
+                    await initializeUI();
+                    updateLoadingProgress(90);
+                    await loadResults();
+                    
+                    // Setup realtime sync with driving-test.html
+                    setupRealtimeSync();
+                    
+                    updateLoadingProgress(100);
+                    
+                    setTimeout(() => {
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                        document.getElementById('appContainer').classList.remove('hidden');
+                        showToast('Ibisubizo byakuwe! Murakaza neza ' + currentUser.name, 'success');
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Initialization failed:', error);
+                handleInitializationError(error);
+            }
+        });
+
+        function updateLoadingMessage(message) {
+            const el = document.getElementById('loadingMessage');
+            if (el) el.textContent = message;
+        }
+
+        function updateLoadingProgress(percentage) {
+            const el = document.getElementById('loadingProgress');
+            if (el) el.style.width = percentage + '%';
+        }
+
+        async function initializeFirebase() {
+            if (typeof firebase === 'undefined') {
+                throw new Error('Firebase SDK not loaded');
+            }
+            if (firebase.apps.length === 0) {
+                firebaseApp = firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
+                firebaseAuth = firebase.auth();
+                firebaseDatabase = firebase.database();
+                console.log('✅ Firebase initialized');
+            } else {
+                firebaseApp = firebase.apps[0];
+                firebaseAuth = firebase.auth();
+                firebaseDatabase = firebase.database();
+            }
+            
+            // Enable persistence for offline support
+            try {
+                await firebaseDatabase.ref('.info/connected').once('value');
+                console.log('✅ Firebase connected');
+            } catch (e) {
+                console.warn('Firebase connection issue:', e);
+            }
+        }
+
+        async function checkAuthAndRedirect() {
+            return new Promise((resolve, reject) => {
+                const unsubscribe = firebaseAuth.onAuthStateChanged(async (user) => {
+                    unsubscribe();
+                    if (user) {
+                        currentUser.uid = user.uid;
+                        currentUser.name = user.displayName || user.email?.split('@')[0] || 'Umuyobozi';
+                        currentUser.email = user.email || '';
+                        await getUserRole();
+                        if (!CONFIG.ALLOWED_ROLES.includes(currentUser.role)) {
+                            showAccessDenied();
+                            resolve(false);
+                        } else {
+                            updateUserInterface();
+                            resolve(true);
+                        }
+                    } else {
+                        // Try to get from localStorage (for development)
+                        const savedUser = localStorage.getItem('currentUser');
+                        if (savedUser) {
+                            try {
+                                const parsed = JSON.parse(savedUser);
+                                if (CONFIG.ALLOWED_ROLES.includes(parsed.role)) {
+                                    currentUser = parsed;
+                                    updateUserInterface();
+                                    resolve(true);
+                                    return;
+                                }
+                            } catch (e) {}
+                        }
+                        window.location.href = '/dereva/auth/auth.html';
+                        reject(new Error('No user authenticated'));
+                    }
+                }, reject);
+            });
+        }
+
+        async function getUserRole() {
+            try {
+                const userRef = firebaseDatabase.ref(CONFIG.PATHS.USERS + '/' + currentUser.uid);
+                const snapshot = await userRef.once('value');
+                if (snapshot.exists()) {
+                    currentUser.role = snapshot.val().role || CONFIG.ROLES.STUDENT;
+                } else {
+                    currentUser.role = CONFIG.ROLES.STUDENT;
+                }
+                console.log('✅ User role:', currentUser.role);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            } catch (error) {
+                console.error('Error getting user role:', error);
+                currentUser.role = CONFIG.ROLES.STUDENT;
+            }
+        }
+
+        function showAccessDenied() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('appContainer').classList.remove('hidden');
+            document.getElementById('accessDenied').classList.remove('hidden');
+            document.getElementById('resultsDashboard').classList.add('hidden');
+            setTimeout(() => {
+                window.location.href = CONFIG.PATHS.DASHBOARD;
+            }, 3000);
+        }
+
+        function updateUserInterface() {
+            const elements = ['sidebarUserName', 'welcomeMessage', 'topBarUserName'];
+            elements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    if (id === 'welcomeMessage') {
+                        el.textContent = 'Ibisubizo by\'Abanyeshuri, ' + currentUser.name;
+                    } else {
+                        el.textContent = currentUser.name;
+                    }
+                }
+            });
+            const avatarEl = document.getElementById('topBarUserAvatar');
+            if (avatarEl) avatarEl.textContent = currentUser.name.charAt(0).toUpperCase();
+            const roleElements = ['sidebarUserRole', 'topBarUserRole'];
+            const roleText = currentUser.role === 'super-admin' ? 'Umuyobozi' : 'Umunyamabanga';
+            const roleClass = currentUser.role === 'super-admin' ? 'role-super_admin' : 'role-admin';
+            roleElements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = roleText;
+                    el.className = `role-badge ${roleClass}`;
+                }
+            });
+        }
+
+        async function initializeUI() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeCheckbox').checked = savedTheme === 'dark';
+            
+            setupEventListeners();
+            updateSystemStatus();
+            
+            document.getElementById('accessDenied').classList.add('hidden');
+            document.getElementById('resultsDashboard').classList.remove('hidden');
+            
+            const collapsed = localStorage.getItem('sidebar_collapsed') === 'true';
+            if (collapsed) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('mainContent').classList.add('expanded');
+                const icon = document.querySelector('#sidebarToggle i');
+                if (icon) icon.className = 'fas fa-chevron-right';
+            }
+        }
+
+        // ============================================
+        // RESULTS LOADING WITH SYNC TO DRIVING-TEST.HTML
+        // ============================================
+        // ============================================
+// RESULTS LOADING - KOSORA IBI
+// ============================================
+async function loadResults() {
+    try {
+        showToast('Ibisubizo biri kuramo...', 'info');
+        const resultsRef = firebaseDatabase.ref('driving_results');
+        
+        // ✅ KOSORA: Reba niba ufite uburenganzira bwo gusoma
+        const testRead = await resultsRef.once('value').catch(err => {
+            console.error('Permission denied:', err);
+            showToast('Ntabwo ufite uburenganzira bwo gusoma ibisubizo', 'error');
+            return null;
+        });
+        
+        if (!testRead) return;
+        
+        const snapshot = testRead;
+        allResults = [];
+        
+        if (snapshot.exists()) {
+            console.log('✅ Found results:', snapshot.numChildren());
+            
+            snapshot.forEach(child => {
+                const result = child.val();
+                console.log('Result data:', result);
+                
+                // ✅ KOSORA: Guhitamo amakuru neza
+                allResults.push({
+                    id: child.key,
+                    student_name: result.student_name || 'Umwigishwa',
+                    student_email: result.student_email || '-',
+                    student_id: result.student_id || '-',
+                    student_phone: result.student_phone || '-',
+                    test_category: result.test_category || 'Ikizamini',
+                    final_score: result.final_score || 0,
+                    percentage: result.percentage || 0,
+                    status: result.status || (result.percentage >= 75 ? 'PASSED' : 'FAILED'),
+                    time_spent: result.time_spent || 0,
+                    timestamp: result.created_at || Date.now() // ✅ Ibi ni ingenzi
+                });
+            });
+            
+            // Sort by timestamp descending
+            allResults.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            
+            console.log(`✅ Loaded ${allResults.length} results`);
+            document.getElementById('resultsBadge').textContent = allResults.length;
+            
+            updateStatistics();
+            applyFilters();
+            
+        } else {
+            console.log('No results found in driving_results');
+            showToast('Nta bisubizo bihari', 'info');
+            
+            // Show empty state
+            document.getElementById('tableBody').innerHTML = `
+                <tr>
+                    <td colspan="12" class="text-center py-8">
+                        <div class="flex flex-col items-center">
+                            <i class="fas fa-inbox text-4xl text-gray-400 mb-2"></i>
+                            <span class="text-gray-500">Nta bisubizo bihari</span>
+                            <p class="text-sm text-gray-400 mt-2">Kora test muri driving-test.html hanyuma ugaruke hano</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+        
+    } catch (error) {
+        console.error('Error loading results:', error);
+        showToast('❌ Ikosa: ' + error.message, 'error');
+    }
+}
+        // ============================================
+        // REALTIME SYNC WITH DRIVING-TEST.HTML
+        // ============================================
+        function setupRealtimeSync() {
+            // Clean up old listeners
+            realtimeListeners.forEach(off => off && off());
+            realtimeListeners = [];
+            
+            const resultsRef = firebaseDatabase.ref(CONFIG.PATHS.RESULTS);
+            
+            // Listen for new results (matches driving-test.html submission)
+            const onChildAdded = resultsRef.limitToLast(1).on('child_added', (snapshot) => {
+                if (snapshot.key && !allResults.some(r => r.id === snapshot.key)) {
+                    const result = snapshot.val();
+                    const newResult = {
+                        id: snapshot.key,
+                        student_name: result.student_name || result.name || 'Umwigishwa',
+                        student_email: result.student_email || result.email || '-',
+                        student_id: result.student_id || result.id || '-',
+                        student_phone: result.student_phone || result.phone || '-',
+                        test_category: result.test_category || result.category || 'Ikizamini',
+                        final_score: result.final_score || result.score || 0,
+                        percentage: result.percentage || 
+                                   (result.score ? Math.round((result.score / 20) * 100) : 0),
+                        status: result.status || (result.percentage >= 75 ? 'PASSED' : 'FAILED'),
+                        time_spent: result.time_spent || result.time || 0,
+                        timestamp: result.created_at || result.timestamp || Date.now(),
+                        questions: result.questions || [],
+                        answers: result.answers || []
+                    };
+                    
+                    allResults.unshift(newResult);
+                    
+                    // Show notification for new result
+                    showToast(`✅ Ibisubizo bishya: ${newResult.student_name} - ${newResult.percentage}%`, 'success');
+                    
+                    // Play notification sound if available
+                    try {
+                        const audio = new Audio('data:audio/wav;base64,UklGRlwAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YVQAAACAgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f3+AgICAf39/f39/f38=');
+                        audio.play().catch(() => {});
+                    } catch (e) {}
+                    
+                    updateStatistics();
+                    applyFilters();
+                    document.getElementById('resultsBadge').textContent = allResults.length;
+                }
+            });
+            
+            // Listen for updates to existing results
+            const onChildChanged = resultsRef.on('child_changed', (snapshot) => {
+                const index = allResults.findIndex(r => r.id === snapshot.key);
+                if (index !== -1) {
+                    const result = snapshot.val();
+                    allResults[index] = {
+                        ...allResults[index],
+                        ...result,
+                        id: snapshot.key,
+                        percentage: result.percentage || allResults[index].percentage,
+                        status: result.status || allResults[index].status
+                    };
+                    
+                    showToast(`🔄 Ibisubizo byahinduwe: ${allResults[index].student_name}`, 'info');
+                    updateStatistics();
+                    applyFilters();
+                }
+            });
+            
+            // Listen for deletions
+            const onChildRemoved = resultsRef.on('child_removed', (snapshot) => {
+                const index = allResults.findIndex(r => r.id === snapshot.key);
+                if (index !== -1) {
+                    const removed = allResults[index];
+                    allResults.splice(index, 1);
+                    showToast(`🗑️ Ibisubizo byasibwe: ${removed.student_name}`, 'warning');
+                    updateStatistics();
+                    applyFilters();
+                    document.getElementById('resultsBadge').textContent = allResults.length;
+                }
+            });
+            
+            // Store cleanup functions
+            realtimeListeners.push(() => resultsRef.off('child_added', onChildAdded));
+            realtimeListeners.push(() => resultsRef.off('child_changed', onChildChanged));
+            realtimeListeners.push(() => resultsRef.off('child_removed', onChildRemoved));
+            
+            // Also listen for test control changes (lock/unlock from driving-test.html)
+            const testControlRef = firebaseDatabase.ref(CONFIG.PATHS.TEST_CONTROL);
+            const onTestControl = testControlRef.on('value', (snapshot) => {
+                const control = snapshot.val();
+                if (control) {
+                    if (control.isLocked) {
+                        showToast(`🔒 Test ifunze: ${control.message || 'Maintenance'}`, 'warning');
+                    } else {
+                        showToast('🔓 Test ifunguye', 'success');
+                    }
+                }
+            });
+            realtimeListeners.push(() => testControlRef.off('value', onTestControl));
+        }
+
+        async function loadCategories() {
+            const select = document.getElementById('categoryFilter');
+            select.innerHTML = '<option value="all">Ibyiciro Byose</option>';
+            
+            // Get unique categories from results
+            const uniqueCategories = [...new Set(allResults.map(r => r.test_category).filter(Boolean))];
+            uniqueCategories.sort().forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
+            });
+            
+            // Also try to load from categories node (matches driving-test.html)
+            try {
+                const categoriesRef = firebaseDatabase.ref(CONFIG.PATHS.CATEGORIES);
+                const snapshot = await categoriesRef.once('value');
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const cat = child.val();
+                        if (cat.name && !uniqueCategories.includes(cat.name)) {
+                            const option = document.createElement('option');
+                            option.value = cat.name;
+                            option.textContent = cat.name;
+                            select.appendChild(option);
+                        }
+                    });
+                }
+            } catch (e) {
+                console.warn('Could not load categories from Firebase:', e);
+            }
+        }
+
+        // ============================================
+        // STATISTICS - MATCHING DRIVING-TEST.HTML LOGIC
+        // ============================================
+        function updateStatistics() {
+            const total = allResults.length;
+            const passed = allResults.filter(r => {
+                const percentage = Number(r.percentage) || 0;
+                return percentage >= CONFIG.TEST_CONFIG.PASSING_SCORE || r.status === 'PASSED';
+            }).length;
+            const failed = total - passed;
+            
+            const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+            
+            let totalPercentage = 0;
+            let validResults = 0;
+            allResults.forEach(r => {
+                const percentage = Number(r.percentage);
+                if (!isNaN(percentage) && percentage > 0) {
+                    totalPercentage += percentage;
+                    validResults++;
+                }
+            });
+            const averageScore = validResults > 0 ? Math.round(totalPercentage / validResults) : 0;
+            
+            const uniqueStudents = new Set(allResults.map(r => r.student_email).filter(Boolean)).size;
+            
+            document.getElementById('totalResultsCount').textContent = total;
+            document.getElementById('totalPassedCount').textContent = passed;
+            document.getElementById('totalFailedCount').textContent = failed;
+            document.getElementById('totalStudents').textContent = uniqueStudents || 1;
+            document.getElementById('totalTests').textContent = total;
+            document.getElementById('passRate').textContent = passRate + '%';
+            document.getElementById('averageScore').textContent = averageScore + '%';
+            
+            // Simulate trends
+            const studentsTrend = document.getElementById('studentsTrend').querySelector('span');
+            const testsTrend = document.getElementById('testsTrend').querySelector('span');
+            if (studentsTrend) studentsTrend.textContent = Math.floor(Math.random() * 15 + 5) + '%';
+            if (testsTrend) testsTrend.textContent = Math.floor(Math.random() * 20 + 10) + '%';
+        }
+
+        // ============================================
+        // FILTERS & PAGINATION
+        // ============================================
+        function applyFilters() {
+            const searchTerm = searchFilters.search.toLowerCase();
+            const dateFrom = searchFilters.dateFrom ? new Date(searchFilters.dateFrom) : null;
+            const dateTo = searchFilters.dateTo ? new Date(searchFilters.dateTo + 'T23:59:59') : null;
+            const category = searchFilters.category;
+            const status = searchFilters.status;
+            
+            filteredResults = allResults.filter(result => {
+                // Search filter
+                if (searchTerm) {
+                    const name = (result.student_name || '').toLowerCase();
+                    const email = (result.student_email || '').toLowerCase();
+                    const cat = (result.test_category || '').toLowerCase();
+                    const studentId = (result.student_id || '').toLowerCase();
+                    if (!name.includes(searchTerm) && !email.includes(searchTerm) && 
+                        !cat.includes(searchTerm) && !studentId.includes(searchTerm)) {
+                        return false;
+                    }
+                }
+                
+                // Date filter
+                if (dateFrom || dateTo) {
+                    const resultDate = new Date(result.timestamp || 0);
+                    if (dateFrom && resultDate < dateFrom) return false;
+                    if (dateTo && resultDate > dateTo) return false;
+                }
+                
+                // Category filter
+                if (category !== 'all' && result.test_category !== category) return false;
+                
+                // Status filter (matches driving-test.html)
+                if (status !== 'all') {
+                    const passed = (Number(result.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE || 
+                                  result.status === 'PASSED';
+                    if (status === 'passed' && !passed) return false;
+                    if (status === 'failed' && passed) return false;
+                }
+                
+                return true;
+            });
+            
+            document.getElementById('tableSubtitle').textContent = `(${filteredResults.length} yagaragaye)`;
+            currentPage = 1;
+            selectedResults.clear();
+            updateBulkDeleteButton();
+            updateSelectAllCheckbox();
+            updatePagination();
+            renderTable();
+        }
+
+        function updatePagination() {
+            const entriesSelect = document.getElementById('entriesPerPage');
+            entriesPerPage = entriesSelect.value === 'all' ? filteredResults.length : parseInt(entriesSelect.value);
+            totalPages = Math.ceil(filteredResults.length / entriesPerPage);
+            if (totalPages < 1) totalPages = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            const start = (currentPage - 1) * entriesPerPage;
+            const end = Math.min(start + entriesPerPage, filteredResults.length);
+            paginatedResults = filteredResults.slice(start, end);
+            
+            document.getElementById('paginationInfo').textContent = 
+                `Erekana ${filteredResults.length > 0 ? start + 1 : 0} - ${end} bya ${filteredResults.length} ibisubizo`;
+            
+            renderPaginationControls();
+        }
+
+        function renderPaginationControls() {
+            const container = document.getElementById('paginationControls');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            let html = '';
+            html += `<button class="page-btn" onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-angle-double-left"></i></button>`;
+            html += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-angle-left"></i></button>`;
+            
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            html += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-angle-right"></i></button>`;
+            html += `<button class="page-btn" onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-angle-double-right"></i></button>`;
+            container.innerHTML = html;
+        }
+
+        function changePage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updatePagination();
+                renderTable();
+            }
+        }
+
+        // ============================================
+        // TABLE RENDERING WITH CHECKBOXES
+        // ============================================
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            if (paginatedResults.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="12" class="text-center py-8">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-inbox text-4xl text-gray-400 mb-2"></i>
+                                <span class="text-gray-500">Nta bisubizo bihuye n'ibyo ushaka</span>
+                                <button onclick="clearFilters()" class="mt-4 text-sm text-blue-500 hover:underline">Siba amashyiraho</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            paginatedResults.forEach((result, index) => {
+                const serial = (currentPage - 1) * entriesPerPage + index + 1;
+                const passed = (Number(result.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE || 
+                              result.status === 'PASSED';
+                const score = result.final_score || 0;
+                const percentage = Number(result.percentage) || 0;
+                const timeSpent = result.time_spent || 0;
+                const minutes = Math.floor(timeSpent / 60);
+                const seconds = timeSpent % 60;
+                const timeFormatted = timeSpent ? `${minutes}:${seconds.toString().padStart(2, '0')}` : '-';
+                const date = result.timestamp ? new Date(result.timestamp).toLocaleDateString() : 'N/A';
+                const studentId = result.student_id || '-';
+                const isChecked = selectedResults.has(result.id) ? 'checked' : '';
+                
+                html += `
+                    <tr>
+                        <td class="checkbox-cell">
+                            <input type="checkbox" class="result-checkbox row-checkbox" data-id="${result.id}" ${isChecked} onclick="event.stopPropagation(); toggleSelectResult('${result.id}')">
+                        </td>
+                        <td><span class="font-mono">${serial}</span></td>
+                        <td><strong>${result.student_name || 'Umwigishwa'}</strong></td>
+                        <td>${result.student_email || '-'}</td>
+                        <td><span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">${studentId}</span></td>
+                        <td>${result.test_category || 'Ikizamini'}</td>
+                        <td>${score}/20</td>
+                        <td><span class="font-bold ${passed ? 'text-green-600' : 'text-red-600'}">${percentage}%</span></td>
+                        <td><span class="badge ${passed ? 'badge-pass' : 'badge-fail'}">${passed ? 'Watsinze' : 'Ntiwatsinze'}</span></td>
+                        <td>${timeFormatted}</td>
+                        <td>${date}</td>
+                        <td>
+                            <button onclick="event.stopPropagation(); showResultDetails('${result.id}')" class="text-blue-500 hover:text-blue-700 mr-2" title="Reba">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); confirmSingleDelete('${result.id}')" class="text-red-500 hover:text-red-700" title="Siba">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+            updateSelectAllCheckbox();
+        }
+
+        // ============================================
+        // BULK DELETE FUNCTIONALITY
+        // ============================================
+        function toggleSelectResult(resultId) {
+            if (selectedResults.has(resultId)) {
+                selectedResults.delete(resultId);
+            } else {
+                selectedResults.add(resultId);
+            }
+            updateBulkDeleteButton();
+            updateSelectAllCheckbox();
+            
+            // Update checkbox state
+            const checkbox = document.querySelector(`.row-checkbox[data-id="${resultId}"]`);
+            if (checkbox) {
+                checkbox.checked = selectedResults.has(resultId);
+            }
+        }
+
+        function selectAllResults() {
+            paginatedResults.forEach(result => {
+                selectedResults.add(result.id);
+            });
+            updateBulkDeleteButton();
+            updateSelectAllCheckbox();
+            renderTable(); // Re-render to update checkboxes
+            showToast(`Byatoranyijwe: ${selectedResults.size} ibisubizo`, 'info');
+        }
+
+        function deselectAllResults() {
+            selectedResults.clear();
+            updateBulkDeleteButton();
+            updateSelectAllCheckbox();
+            renderTable(); // Re-render to update checkboxes
+            showToast('Ibyatoranyijwe byakuweho', 'info');
+        }
+
+        function updateBulkDeleteButton() {
+            const deleteBtn = document.getElementById('deleteSelectedBtn');
+            const count = selectedResults.size;
+            deleteBtn.innerHTML = `<i class="fas fa-trash"></i> Siba ibyatoranyijwe (${count})`;
+            deleteBtn.disabled = count === 0;
+            
+            const selectAllBtn = document.getElementById('selectAllBtn');
+            const deselectAllBtn = document.getElementById('deselectAllBtn');
+            
+            if (selectedResults.size === paginatedResults.length && paginatedResults.length > 0) {
+                selectAllBtn.classList.add('hidden');
+                deselectAllBtn.classList.remove('hidden');
+            } else {
+                selectAllBtn.classList.remove('hidden');
+                deselectAllBtn.classList.add('hidden');
+            }
+        }
+
+        function updateSelectAllCheckbox() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            if (!selectAllCheckbox) return;
+            
+            if (paginatedResults.length === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+                return;
+            }
+            
+            const selectedCount = paginatedResults.filter(r => selectedResults.has(r.id)).length;
+            
+            if (selectedCount === 0) {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = false;
+            } else if (selectedCount === paginatedResults.length) {
+                selectAllCheckbox.checked = true;
+                selectAllCheckbox.indeterminate = false;
+            } else {
+                selectAllCheckbox.checked = false;
+                selectAllCheckbox.indeterminate = true;
+            }
+        }
+
+        function handleSelectAllChange() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            if (selectAllCheckbox.checked) {
+                selectAllResults();
+            } else {
+                deselectAllResults();
+            }
+        }
+
+        function confirmBulkDelete() {
+            if (selectedResults.size === 0) {
+                showToast('Nta bisubizo byatoranyijwe', 'warning');
+                return;
+            }
+            
+            document.getElementById('deleteCountText').textContent = selectedResults.size;
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+        }
+
+        function confirmSingleDelete(resultId) {
+            selectedResults.clear();
+            selectedResults.add(resultId);
+            document.getElementById('deleteCountText').textContent = 1;
+            document.getElementById('deleteConfirmModal').classList.remove('hidden');
+        }
+
+        function hideDeleteConfirm() {
+            document.getElementById('deleteConfirmModal').classList.add('hidden');
+        }
+
+        async function executeBulkDelete() {
+            const deleteBtn = document.getElementById('confirmDeleteBtn');
+            deleteBtn.disabled = true;
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Isiba...';
+            
+            try {
+                const deletePromises = [];
+                selectedResults.forEach(resultId => {
+                    deletePromises.push(firebaseDatabase.ref(`${CONFIG.PATHS.RESULTS}/${resultId}`).remove());
+                });
+                
+                await Promise.all(deletePromises);
+                
+                // Remove from local arrays
+                allResults = allResults.filter(r => !selectedResults.has(r.id));
+                selectedResults.clear();
+                
+                showToast(`✅ Byasibwe: ${deletePromises.length} ibisubizo`, 'success');
+                
+                // Refresh UI
+                await loadCategories();
+                updateStatistics();
+                applyFilters();
+                
+            } catch (error) {
+                console.error('Delete error:', error);
+                showToast('❌ Ikosa: ' + error.message, 'error');
+            } finally {
+                deleteBtn.disabled = false;
+                deleteBtn.innerHTML = '<i class="fas fa-trash mr-2"></i>Emeza Gusiba';
+                hideDeleteConfirm();
+                updateBulkDeleteButton();
+            }
+        }
+
+        // ============================================
+        // RESULT DETAILS - MATCHING DRIVING-TEST.HTML
+        // ============================================
+        function showResultDetails(resultId) {
+            const result = allResults.find(r => r.id === resultId);
+            if (!result) return;
+            
+            const modal = document.getElementById('resultDetailsModal');
+            const content = document.getElementById('resultDetailsContent');
+            
+            const passed = (Number(result.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE || 
+                          result.status === 'PASSED';
+            const score = result.final_score || 0;
+            const percentage = Number(result.percentage) || 0;
+            const timeSpent = result.time_spent || 0;
+            const minutes = Math.floor(timeSpent / 60);
+            const seconds = timeSpent % 60;
+            const timeFormatted = timeSpent ? `${minutes}:${seconds.toString().padStart(2, '0')}` : '-';
+            const date = result.timestamp ? new Date(result.timestamp).toLocaleString() : 'N/A';
+            const studentId = result.student_id || '-';
+            
+            // Generate questions preview if available (matches driving-test.html format)
+            let questionsHtml = '';
+            if (result.questions && Array.isArray(result.questions)) {
+                const questionsToShow = result.questions.slice(0, 5);
+                questionsToShow.forEach((q, i) => {
+                    const userAnswer = result.answers && result.answers[i];
+                    const isCorrect = userAnswer !== null && userAnswer !== undefined && 
+                                     (typeof q.correctAnswer === 'number' ? userAnswer === q.correctAnswer :
+                                      userAnswer === (q.correctAnswer?.charCodeAt(0) - 65));
+                    
+                    questionsHtml += `
+                        <div class="p-3 ${isCorrect ? 'bg-green-50' : 'bg-red-50'} rounded-lg mb-2">
+                            <div class="flex justify-between">
+                                <span class="font-medium">Ikibazo ${i + 1}</span>
+                                <span class="${isCorrect ? 'text-green-600' : 'text-red-600'}">${isCorrect ? '✓ Wabikoze' : '✗ Yacyishe'}</span>
+                            </div>
+                            <div class="text-sm text-gray-600 mt-1 truncate">${q.question || 'Ikibazo'}</div>
+                        </div>
+                    `;
+                });
+                if (result.questions.length > 5) {
+                    questionsHtml += `<p class="text-sm text-gray-500 mt-2">... n'ibindi ${result.questions.length - 5}</p>`;
+                }
+            }
+            
+            content.innerHTML = `
+                <div class="detail-view">
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <div class="result-value ${passed ? 'text-green-600' : 'text-red-600'}">${percentage}%</div>
+                            <div class="result-label">Impuzantego</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value">${score}/20</div>
+                            <div class="result-label">Amanota</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value">${timeFormatted}</div>
+                            <div class="result-label">Igihe</div>
+                        </div>
+                        <div class="result-item">
+                            <div class="result-value ${passed ? 'text-green-600' : 'text-red-600'}">${passed ? '✅' : '❌'}</div>
+                            <div class="result-label">Ibisubizo</div>
+                        </div>
+                    </div>
+                    <div class="mt-6 space-y-3">
+                        <div class="detail-row">
+                            <span class="detail-label">Umwigishwa:</span>
+                            <span class="detail-value">${result.student_name || 'Umwigishwa'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">ID y'Umwigishwa:</span>
+                            <span class="detail-value font-mono">${studentId}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Imyeli:</span>
+                            <span class="detail-value">${result.student_email || '-'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Telefone:</span>
+                            <span class="detail-value">${result.student_phone || '-'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Icyiciro:</span>
+                            <span class="detail-value">${result.test_category || 'Ikizamini'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Itariki:</span>
+                            <span class="detail-value">${date}</span>
+                        </div>
+                    </div>
+                    ${questionsHtml ? `
+                        <div class="mt-6">
+                            <h4 class="font-bold mb-3 flex items-center gap-2">
+                                <i class="fas fa-question-circle"></i>
+                                Ibibazo by'Ikizamini
+                            </h4>
+                            ${questionsHtml}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.getElementById('exportSinglePDF').onclick = () => exportSingleResultPDF(result);
+            modal.classList.remove('hidden');
+        }
+
+        function hideResultDetails() {
+            document.getElementById('resultDetailsModal').classList.add('hidden');
+        }
+
+        // ============================================
+        // ENHANCED PDF EXPORT WITH LOGO & FIREBASE USER
+        // ============================================
+        async function fetchLogoAsBase64() {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.crossOrigin = 'Anonymous';
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+                        const dataURL = canvas.toDataURL('image/png');
+                        resolve(dataURL);
+                    } catch (e) {
+                        console.warn('Canvas toDataURL error:', e);
+                        resolve(null);
+                    }
+                };
+                img.onerror = () => {
+                    console.warn('Logo failed to load, using fallback');
+                    resolve(null);
+                };
+                img.src = CONFIG.LOGO_URL + '?t=' + Date.now(); // Cache bust
+            });
+        }
+
+        async function exportToPDF() {
+            showToast('Irakora PDF...', 'info');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                // Fetch logo or use fallback
+                let logoBase64 = await fetchLogoAsBase64();
+                const generatedBy = `Generated by: ${currentUser.name} (${currentUser.role})`;
+                const dateStr = new Date().toLocaleDateString('rw-RW');
+                const timeStr = new Date().toLocaleTimeString('rw-RW');
+                
+                // ===== BEAUTIFUL HEADER WITH LOGO =====
+                doc.setFillColor(30, 58, 138);
+                doc.rect(0, 0, 297, 35, 'F');
+                
+                // Logo or Fallback
+                if (logoBase64) {
+                    try {
+                        doc.addImage(logoBase64, 'PNG', 15, 8, 20, 20);
+                    } catch (e) {
+                        drawPoliceShield(doc, 15, 8, 20);
+                    }
+                } else {
+                    drawPoliceShield(doc, 15, 8, 20);
+                }
+                
+                // Title
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18);
+                doc.setFont('helvetica', 'bold');
+                doc.text('MAYE SYSTEM', 45, 18);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Police Rwanda - Ikizamini cy\'Agateganyo', 45, 26);
+                
+                // User and Date Info
+                doc.setFontSize(9);
+                doc.text(generatedBy, 270, 12, { align: 'right' });
+                doc.text(dateStr, 270, 20, { align: 'right' });
+                doc.text(timeStr, 270, 28, { align: 'right' });
+                
+                // Stats Summary
+                const total = filteredResults.length;
+                const passed = filteredResults.filter(r => (Number(r.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE).length;
+                const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+                
+                doc.setFillColor(251, 191, 36);
+                doc.roundedRect(15, 40, 267, 15, 3, 3, 'F');
+                doc.setTextColor(30, 58, 138);
+                doc.setFontSize(10);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`📊 Impuzantego: ${passRate}% (${passed}/${total} yatsinze) • Itariki: ${dateStr}`, 20, 49);
+                
+                // Table
+                const headers = [['#', 'Izina', 'ID', 'Icyiciro', 'Amanota', '%', 'Ibisubizo', 'Itariki']];
+                const rows = filteredResults.slice(0, 100).map((r, i) => [
+                    i + 1,
+                    r.student_name || 'Umwigishwa',
+                    r.student_id || '-',
+                    r.test_category || 'Ikizamini',
+                    `${r.final_score || 0}/20`,
+                    `${Number(r.percentage) || 0}%`,
+                    (Number(r.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE ? 'Watsinze' : 'Ntiwatsinze',
+                    r.timestamp ? new Date(r.timestamp).toLocaleDateString() : 'N/A'
+                ]);
+                
+                doc.autoTable({
+                    head: headers,
+                    body: rows,
+                    startY: 60,
+                    theme: 'grid',
+                    styles: { fontSize: 8, cellPadding: 3, halign: 'center' },
+                    headStyles: { fillColor: [30, 58, 138], textColor: 255, fontStyle: 'bold' },
+                    alternateRowStyles: { fillColor: [245, 248, 250] }
+                });
+                
+                // ===== BEAUTIFUL FOOTER WITH POLICE BADGE =====
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    
+                    // Footer background
+                    doc.setFillColor(30, 58, 138);
+                    doc.rect(0, 285, 297, 15, 'F');
+                    
+                    // Police shield decoration
+                    doc.setDrawColor(251, 191, 36);
+                    doc.setLineWidth(0.5);
+                    doc.circle(15, 292, 4, 'S');
+                    doc.setFontSize(10);
+                    doc.setTextColor(251, 191, 36);
+                    doc.text('★', 15, 294, { align: 'center' });
+                    
+                    // Footer text
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text('✓ Ibi bisubizo ni iby\'ukuri kandi bihuje n\'ikizamini cya Police kuri Machine.', 25, 293);
+                    doc.text(`© MAYE SYSTEM • ${generatedBy} • Page ${i} of ${pageCount}`, 270, 293, { align: 'right' });
+                }
+                
+                const fileName = `MAYE_Results_${formatDate(new Date())}.pdf`;
+                doc.save(fileName);
+                showToast(`✅ PDF yakuwe: ${fileName}`, 'success');
+            } catch (error) {
+                console.error('PDF Export Error:', error);
+                showToast('❌ Ntibishoboye gukora PDF', 'error');
+            }
+        }
+
+        function drawPoliceShield(doc, x, y, size) {
+            // Beautiful Police Shield Fallback
+            doc.setFillColor(255, 255, 255);
+            doc.roundedRect(x, y, size, size, 3, 3, 'F');
+            doc.setDrawColor(251, 191, 36);
+            doc.setLineWidth(0.5);
+            doc.circle(x + size/2, y + size/2, size/2.5, 'S');
+            doc.setFontSize(12);
+            doc.setTextColor(30, 58, 138);
+            doc.setFont('helvetica', 'bold');
+            doc.text('P', x + size/2, y + size/2 + 2, { align: 'center' });
+        }
+
+        async function exportSingleResultPDF(result) {
+            showToast('Irakora PDF...', 'info');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                
+                let logoBase64 = await fetchLogoAsBase64();
+                const generatedBy = `Generated by: ${currentUser.name} (${currentUser.role})`;
+                const dateStr = new Date().toLocaleDateString('rw-RW');
+                const timeStr = new Date().toLocaleTimeString('rw-RW');
+                
+                // ===== HEADER WITH LOGO =====
+                doc.setFillColor(30, 58, 138);
+                doc.rect(0, 0, 210, 30, 'F');
+                
+                if (logoBase64) {
+                    try {
+                        doc.addImage(logoBase64, 'PNG', 15, 5, 20, 20);
+                    } catch (e) {
+                        drawPoliceShield(doc, 15, 5, 20);
+                    }
+                } else {
+                    drawPoliceShield(doc, 15, 5, 20);
+                }
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(16);
+                doc.setFont('helvetica', 'bold');
+                doc.text('MAYE SYSTEM', 45, 12);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                doc.text('Police Rwanda - Ikizamini cy\'Agateganyo', 45, 20);
+                doc.text(generatedBy, 190, 10, { align: 'right' });
+                doc.text(dateStr, 190, 18, { align: 'right' });
+                doc.text(timeStr, 190, 26, { align: 'right' });
+                
+                // ===== CERTIFICATE STYLE RESULT CARD =====
+                const passed = (Number(result.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE;
+                
+                // Gold border for passed, red border for failed
+                doc.setDrawColor(passed ? 251 : 220, passed ? 191 : 38, passed ? 36 : 38);
+                doc.setLineWidth(1);
+                doc.roundedRect(15, 35, 180, 60, 5, 5, 'S');
+                
+                // Score in large text
+                doc.setFontSize(28);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(passed ? 16 : 220, passed ? 185 : 38, passed ? 129 : 38);
+                doc.text(`${Number(result.percentage) || 0}%`, 105, 60, { align: 'center' });
+                
+                doc.setFontSize(14);
+                doc.text(passed ? '✓ WATSINZE' : '✗ NTIWATSINZE', 105, 80, { align: 'center' });
+                
+                // ===== DETAILS TABLE =====
+                let yPos = 105;
+                const details = [
+                    ['Umwigishwa:', result.student_name || 'Umwigishwa'],
+                    ['ID y\'Umwigishwa:', result.student_id || '-'],
+                    ['Imyeli:', result.student_email || '-'],
+                    ['Telefone:', result.student_phone || '-'],
+                    ['Icyiciro:', result.test_category || 'Ikizamini'],
+                    ['Amanota:', `${result.final_score || 0}/20`],
+                    ['Igihe:', formatTime(result.time_spent)],
+                    ['Itariki:', result.timestamp ? new Date(result.timestamp).toLocaleString() : 'N/A']
+                ];
+                
+                doc.setFontSize(10);
+                details.forEach(([label, value]) => {
+                    doc.setFont('helvetica', 'bold');
+                    doc.setTextColor(30, 58, 138);
+                    doc.text(label, 25, yPos);
+                    doc.setFont('helvetica', 'normal');
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(value, 65, yPos);
+                    yPos += 7;
+                });
+                
+                // ===== BEAUTIFUL FOOTER =====
+                doc.setFillColor(30, 58, 138);
+                doc.rect(0, 285, 210, 15, 'F');
+                doc.setDrawColor(251, 191, 36);
+                doc.circle(15, 292, 4, 'S');
+                doc.setTextColor(251, 191, 36);
+                doc.text('★', 15, 294, { align: 'center' });
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(8);
+                doc.text('✓ Ibi bisubizo ni iby\'ukuri kandi bihuje n\'ikizamini cya Police kuri Machine.', 25, 293);
+                doc.text(`© MAYE SYSTEM • ${generatedBy}`, 190, 293, { align: 'right' });
+                
+                const fileName = `MAYE_Result_${result.student_name?.replace(/\s+/g, '_') || 'Student'}_${formatDate(new Date())}.pdf`;
+                doc.save(fileName);
+                showToast(`✅ PDF yakuwe: ${fileName}`, 'success');
+            } catch (error) {
+                console.error('Single PDF Export Error:', error);
+                showToast('❌ Ntibishoboye gukora PDF', 'error');
+            }
+        }
+
+        // ============================================
+        // ENHANCED PRINT WITH LOGO
+        // ============================================
+        function exportToPrint() {
+            const printWindow = window.open('', '_blank');
+            const now = new Date();
+            const total = filteredResults.length;
+            const passed = filteredResults.filter(r => (Number(r.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE).length;
+            const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+            const generatedBy = `${currentUser.name} (${currentUser.role})`;
+            
+            let tableRows = '';
+            filteredResults.slice(0, 100).forEach((r, i) => {
+                const passed = (Number(r.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE;
+                tableRows += `
+                    <tr>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${i + 1}</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><strong>${r.student_name || 'Umwigishwa'}</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${r.student_id || '-'}</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${r.test_category || 'Ikizamini'}</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${r.final_score || 0}/20</td>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;"><strong style="color: ${passed ? '#10b981' : '#ef4444'};">${Number(r.percentage) || 0}%</strong></td>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">
+                            <span style="background: ${passed ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'}; color: ${passed ? '#10b981' : '#ef4444'}; padding: 4px 12px; border-radius: 20px; font-weight: 600;">
+                                ${passed ? 'Watsinze' : 'Ntiwatsinze'}
+                            </span>
+                        </td>
+                        <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${r.timestamp ? new Date(r.timestamp).toLocaleDateString() : 'N/A'}</td>
+                    </tr>
+                `;
+            });
+            
+            const content = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>MAYE Results - ${formatDate(now)}</title>
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+                        * { margin: 0; padding: 0; box-sizing: border-box; }
+                        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: #f8fafc; padding: 30px; }
+                        
+                        /* Header with Police Colors */
+                        .header { 
+                            background: linear-gradient(135deg, #1e3a8a, #0f172a); 
+                            color: white; 
+                            padding: 25px; 
+                            border-radius: 16px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: space-between; 
+                            margin-bottom: 25px;
+                            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                        }
+                        
+                        .logo-area { 
+                            display: flex; 
+                            align-items: center; 
+                            gap: 15px; 
+                        }
+                        
+                        .logo { 
+                            width: 60px; 
+                            height: 60px; 
+                            background: white; 
+                            border-radius: 12px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            color: #1e3a8a; 
+                            font-size: 28px; 
+                            font-weight: bold; 
+                            border: 3px solid #fbbf24;
+                            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+                        }
+                        
+                        .title h1 { 
+                            font-size: 26px; 
+                            margin-bottom: 5px; 
+                            letter-spacing: 0.5px;
+                        }
+                        
+                        .title p { 
+                            opacity: 0.9; 
+                            font-size: 14px; 
+                        }
+                        
+                        .user-info {
+                            text-align: right;
+                            font-size: 13px;
+                            border-left: 2px solid rgba(255,255,255,0.3);
+                            padding-left: 20px;
+                        }
+                        
+                        .stats { 
+                            display: flex; 
+                            gap: 20px; 
+                            margin-bottom: 25px; 
+                        }
+                        
+                        .stat-card { 
+                            background: white; 
+                            border-radius: 12px; 
+                            padding: 15px 25px; 
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+                            border-left: 4px solid #1e3a8a; 
+                            flex: 1; 
+                        }
+                        
+                        .stat-value { 
+                            font-size: 28px; 
+                            font-weight: 700; 
+                            margin-bottom: 5px; 
+                        }
+                        
+                        .stat-label { 
+                            color: #64748b; 
+                            font-size: 14px; 
+                        }
+                        
+                        table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            background: white; 
+                            border-radius: 16px; 
+                            overflow: hidden; 
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.05); 
+                        }
+                        
+                        th { 
+                            background: #1e3a8a; 
+                            color: white; 
+                            padding: 15px; 
+                            text-align: left; 
+                            font-weight: 600; 
+                        }
+                        
+                        td { 
+                            padding: 12px 15px; 
+                            border-bottom: 1px solid #e2e8f0; 
+                        }
+                        
+                        tr:hover { 
+                            background: #f8fafc; 
+                        }
+                        
+                        .footer { 
+                            margin-top: 30px; 
+                            padding: 20px; 
+                            background: linear-gradient(135deg, #1e3a8a, #0f172a); 
+                            color: white; 
+                            border-radius: 12px; 
+                            display: flex; 
+                            justify-content: space-between; 
+                            align-items: center;
+                            font-size: 12px; 
+                        }
+                        
+                        .police-badge {
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+                        
+                        .badge-icon {
+                            width: 30px;
+                            height: 30px;
+                            background: white;
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            color: #1e3a8a;
+                            font-weight: bold;
+                            border: 2px solid #fbbf24;
+                        }
+                        
+                        @media print {
+                            body { padding: 15px; }
+                            .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                            th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                            .footer { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo-area">
+                            <div class="logo">
+                                <span>P</span>
+                            </div>
+                            <div class="title">
+                                <h1>MAYE SYSTEM</h1>
+                                <p>Police Rwanda - Ikizamini cy'Agateganyo</p>
+                            </div>
+                        </div>
+                        <div class="user-info">
+                            <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">${generatedBy}</div>
+                            <div>${now.toLocaleDateString('rw-RW')} • ${now.toLocaleTimeString('rw-RW')}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-value">${total}</div>
+                            <div class="stat-label">Ibisubizo byose</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: #10b981;">${passed}</div>
+                            <div class="stat-label">Byatsinze</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: #ef4444;">${total - passed}</div>
+                            <div class="stat-label">Byatsinzwe</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" style="color: #f59e0b;">${passRate}%</div>
+                            <div class="stat-label">Pass Rate</div>
+                        </div>
+                    </div>
+                    
+                    <h2 style="margin-bottom: 15px; color: #1e3a8a; font-size: 20px;">
+                        <i class="fas fa-list-ul" style="margin-right: 10px;"></i>
+                        Ibisubizo by'Ikizamini
+                    </h2>
+                    <p style="margin-bottom: 15px; color: #64748b;">Erekana ${Math.min(100, filteredResults.length)} bya ${filteredResults.length}</p>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Izina</th>
+                                <th>ID</th>
+                                <th>Icyiciro</th>
+                                <th>Amanota</th>
+                                <th>%</th>
+                                <th>Ibisubizo</th>
+                                <th>Itariki</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    
+                    <div class="footer">
+                        <div class="police-badge">
+                            <div class="badge-icon">
+                                <span>P</span>
+                            </div>
+                            <span>Ibi bisubizo ni iby'ukuri kandi bihuje n'ikizamini cya Police kuri Machine.</span>
+                        </div>
+                        <div>
+                            © MAYE SYSTEM • ${generatedBy} • ${now.toLocaleDateString()}
+                        </div>
+                    </div>
+                    
+                    <script>
+                        window.onload = function() { 
+                            setTimeout(() => { window.print(); }, 300);
+                        }
+                    <\/script>
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(content);
+            printWindow.document.close();
+        }
+
+        // ============================================
+        // EXCEL, CSV EXPORTS
+        // ============================================
+        function exportToExcel() {
+            showToast('Irakora Excel...', 'info');
+            try {
+                const wb = XLSX.utils.book_new();
+                const headers = ['#', 'Izina', 'Imyeli', 'ID y\'Umwigishwa', 'Icyiciro', 'Amanota', 'Percentage', 'Status', 'Igihe', 'Itariki'];
+                const rows = filteredResults.map((r, i) => [
+                    i + 1,
+                    r.student_name || 'Umwigishwa',
+                    r.student_email || '-',
+                    r.student_id || '-',
+                    r.test_category || 'Ikizamini',
+                    `${r.final_score || 0}/20`,
+                    Number(r.percentage) || 0,
+                    (Number(r.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE ? 'PASSED' : 'FAILED',
+                    r.time_spent || 0,
+                    r.timestamp ? new Date(r.timestamp).toLocaleString() : 'N/A'
+                ]);
+                
+                const wsData = [headers, ...rows];
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                ws['!cols'] = [
+                    { wch: 5 }, { wch: 20 }, { wch: 25 }, { wch: 15 },
+                    { wch: 20 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 20 }
+                ];
+                
+                XLSX.utils.book_append_sheet(wb, ws, 'Ibisubizo');
+                const fileName = `MAYE_Results_${formatDate(new Date())}.xlsx`;
+                XLSX.writeFile(wb, fileName);
+                showToast(`✅ Excel yakuwe: ${fileName}`, 'success');
+            } catch (error) {
+                console.error('Excel Export Error:', error);
+                showToast('❌ Ntibishoboye gukora Excel', 'error');
+            }
+        }
+
+        function exportToCSV() {
+            showToast('Irakora CSV...', 'info');
+            try {
+                const headers = ['Izina', 'Imyeli', 'ID', 'Icyiciro', 'Amanota', 'Percentage', 'Status', 'Itariki'];
+                const rows = filteredResults.map(r => [
+                    r.student_name || 'Umwigishwa',
+                    r.student_email || '-',
+                    r.student_id || '-',
+                    r.test_category || 'Ikizamini',
+                    `${r.final_score || 0}/20`,
+                    Number(r.percentage) || 0,
+                    (Number(r.percentage) || 0) >= CONFIG.TEST_CONFIG.PASSING_SCORE ? 'PASSED' : 'FAILED',
+                    r.timestamp ? new Date(r.timestamp).toLocaleDateString() : 'N/A'
+                ]);
+                
+                const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `MAYE_Results_${formatDate(new Date())}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                showToast('✅ CSV yakuwe!', 'success');
+            } catch (error) {
+                console.error('CSV Export Error:', error);
+                showToast('❌ Ntibishoboye gukora CSV', 'error');
+            }
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function formatDate(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            return d.toISOString().split('T')[0];
+        }
+
+        function formatTime(seconds) {
+            if (!seconds) return '-';
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function handleInitializationError(error) {
+            console.error('Init Error:', error);
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.innerHTML = `
+                <div class="bg-white rounded-xl p-8 max-w-md text-center">
+                    <div class="text-6xl text-red-500 mb-4"><i class="fas fa-exclamation-triangle"></i></div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Ikosa ryabaye</h2>
+                    <p class="text-gray-600 mb-6">${error.message || 'Sisitemu ntishoboye gutangiza'}</p>
+                    <div class="flex gap-4">
+                        <button onclick="window.location.reload()" class="flex-1 px-6 py-3 bg-police-blue text-white rounded-xl hover:bg-blue-900">
+                            <i class="fas fa-redo mr-2"></i>Ongera ugerageze
+                        </button>
+                        <a href="/dereva.html" class="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 text-center">
+                            <i class="fas fa-home mr-2"></i>Subira
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type} animate__animated animate__fadeInRight`;
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('animate__fadeOutRight');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // ============================================
+        // EVENT LISTENERS
+        // ============================================
+        function setupEventListeners() {
+            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileMenu);
+            document.getElementById('themeCheckbox').addEventListener('change', toggleTheme);
+            
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchFilters.search = this.value;
+                    applyFilters();
+                }, 500);
+            });
+            
+            document.getElementById('dateFrom').addEventListener('change', function() {
+                searchFilters.dateFrom = this.value;
+                applyFilters();
+            });
+            document.getElementById('dateTo').addEventListener('change', function() {
+                searchFilters.dateTo = this.value;
+                applyFilters();
+            });
+            document.getElementById('categoryFilter').addEventListener('change', function() {
+                searchFilters.category = this.value;
+                applyFilters();
+            });
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                searchFilters.status = this.value;
+                applyFilters();
+            });
+            document.getElementById('clearFilters').addEventListener('click', clearFilters);
+            document.getElementById('entriesPerPage').addEventListener('change', function() {
+                updatePagination();
+                renderTable();
+            });
+            document.getElementById('refreshTableBtn').addEventListener('click', loadResults);
+            
+            // Export buttons
+            document.getElementById('exportPDF').addEventListener('click', exportToPDF);
+            document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+            document.getElementById('exportCSV').addEventListener('click', exportToCSV);
+            document.getElementById('exportPrint').addEventListener('click', exportToPrint);
+            document.getElementById('exportDelete').addEventListener('click', confirmBulkDelete);
+            
+            // Bulk delete buttons
+            document.getElementById('selectAllBtn').addEventListener('click', selectAllResults);
+            document.getElementById('deselectAllBtn').addEventListener('click', deselectAllResults);
+            document.getElementById('deleteSelectedBtn').addEventListener('click', confirmBulkDelete);
+            document.getElementById('selectAllCheckbox').addEventListener('change', handleSelectAllChange);
+            document.getElementById('confirmDeleteBtn').addEventListener('click', executeBulkDelete);
+            document.getElementById('cancelDeleteBtn').addEventListener('click', hideDeleteConfirm);
+            
+            document.getElementById('notificationBtn').addEventListener('click', showNotifications);
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            document.querySelector('.user-menu').addEventListener('click', () => {
+                showToast('Umwirondoro: ' + currentUser.name, 'info');
+            });
+            document.getElementById('systemStatus').addEventListener('click', showSystemStatus);
+            
+            // Online/offline detection
+            window.addEventListener('online', () => {
+                updateSystemStatus();
+                showToast('✅ Interineti yagarutse', 'success');
+            });
+            window.addEventListener('offline', () => {
+                updateSystemStatus();
+                showToast('⚠️ Ntaho uri interineti', 'warning');
+            });
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const icon = document.querySelector('#sidebarToggle i');
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            icon.className = sidebar.classList.contains('collapsed') ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
+            localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            const isDark = document.getElementById('themeCheckbox').checked;
+            const theme = isDark ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('dateFrom').value = '';
+            document.getElementById('dateTo').value = '';
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            searchFilters = { search: '', dateFrom: '', dateTo: '', category: 'all', status: 'all' };
+            applyFilters();
+            showToast('Amashyiraho yasibwe!', 'success');
+        }
+
+        function showNotifications() {
+            const modal = document.getElementById('notificationsModal');
+            const list = document.getElementById('notificationsList');
+            
+            // Generate notifications from recent results
+            const recentResults = allResults.slice(0, 5);
+            let notificationsHtml = '';
+            
+            if (recentResults.length > 0) {
+                notificationsHtml = recentResults.map(r => `
+                    <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-semibold">${r.student_name || 'Umwigishwa'}</p>
+                                <p class="text-sm text-gray-600">${r.test_category || 'Ikizamini'} - ${r.percentage}%</p>
+                            </div>
+                            <span class="text-xs text-gray-500">${new Date(r.timestamp).toLocaleTimeString()}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                notificationsHtml = `<div class="text-center py-8 text-gray-500"><i class="fas fa-bell-slash text-3xl mb-3 opacity-50"></i><p>Nta matangazo mashya</p></div>`;
+            }
+            
+            list.innerHTML = notificationsHtml;
+            modal.classList.remove('hidden');
+        }
+
+        function hideNotifications() {
+            document.getElementById('notificationsModal').classList.add('hidden');
+        }
+
+        function markAllAsRead() {
+            showToast('Amatangazo yose yarasomwe', 'success');
+            hideNotifications();
+        }
+
+        function showSystemStatus() {
+            const isOnline = navigator.onLine;
+            const firebaseConnected = firebaseDatabase ? true : false;
+            showToast(`Sisitemu: Iteguye | Interineti: ${isOnline ? '✅' : '❌'} | Firebase: ${firebaseConnected ? '✅' : '❌'}`, isOnline ? 'success' : 'warning');
+        }
+
+        function updateSystemStatus() {
+            const statusEl = document.getElementById('systemStatus');
+            if (statusEl) {
+                const isOnline = navigator.onLine;
+                statusEl.textContent = isOnline ? 'Iteguye' : 'Ntaho';
+                statusEl.className = `flex items-center ${isOnline ? 'text-green-300' : 'text-yellow-300'}`;
+            }
+        }
+
+        async function logout() {
+            if (confirm('Urakaza gusohoka muri sisitemu?')) {
+                try {
+                    // Clean up listeners
+                    realtimeListeners.forEach(off => off && off());
+                    
+                    await firebaseAuth.signOut();
+                    localStorage.removeItem('currentUser');
+                    window.location.href = '/dereva/auth/auth.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    showToast('Ikosa mu gusohoka', 'error');
+                }
+            }
+        }
+
+        // ============================================
+        // WINDOW EXPORTS
+        // ============================================
+        window.changePage = changePage;
+        window.showResultDetails = showResultDetails;
+        window.hideResultDetails = hideResultDetails;
+        window.hideNotifications = hideNotifications;
+        window.markAllAsRead = markAllAsRead;
+        window.clearFilters = clearFilters;
+        window.toggleSelectResult = toggleSelectResult;
+        window.selectAllResults = selectAllResults;
+        window.deselectAllResults = deselectAllResults;
+        window.confirmBulkDelete = confirmBulkDelete;
+        window.confirmSingleDelete = confirmSingleDelete;
+        window.hideDeleteConfirm = hideDeleteConfirm;
+        window.executeBulkDelete = executeBulkDelete;
+        window.exportToPDF = exportToPDF;
+        window.exportSingleResultPDF = exportSingleResultPDF;
+        window.exportToPrint = exportToPrint;
+    </script>
+</body>
+</html>

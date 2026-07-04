@@ -1,0 +1,718 @@
+/* ==================================== */
+/* 1. General About Page Styles - UPDATED */
+/* ==================================== */
+
+/* Gushyiraho style ku mutwe w'igice (Section Subtitle) */
+.section-subtitle {
+    text-align: center;
+    color: #6b7280;
+    margin-bottom: 2.5rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Style y'umurongo utandukanya ibice - UPDATED */
+hr {
+    border: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #10b981, transparent);
+    margin: 3rem 0;
+}
+
+/* ==================================== */
+/* 2. Hero Section - UPDATED */
+/* ==================================== */
+
+.page-hero {
+    background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #1B5E20 100%);
+    color: white;
+    padding: 5rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.page-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+    background-size: cover;
+}
+
+.page-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.page-hero p {
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.25rem;
+    opacity: 0.95;
+    line-height: 1.6;
+    position: relative;
+}
+
+/* ==================================== */
+/* 3. Story and Mission Section - UPDATED */
+/* ==================================== */
+
+.story-mission-section {
+    padding: 5rem 1rem;
+    background: #ffffff;
+}
+
+.content-flex {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.text-content {
+    padding: 2rem 0;
+}
+
+.image-content {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 1rem;
+    padding: 3rem 2rem;
+    text-align: center;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.image-content:hover {
+    border-color: #10b981;
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    transform: translateY(-2px);
+}
+
+.text-content h2 {
+    color: #1f2937;
+    font-size: 2.25rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.text-content p {
+    color: #6b7280;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+.text-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 2rem 0;
+}
+
+.text-content ul li {
+    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="%2310b981" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>') no-repeat left top;
+    background-size: 20px;
+    padding-left: 2.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: #4b5563;
+    font-size: 1.1rem;
+}
+
+.text-content strong {
+    color: #10b981;
+    font-weight: 600;
+}
+
+/* ==================================== */
+/* 4. Values Section - UPDATED */
+/* ==================================== */
+
+.values-section {
+    padding: 5rem 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #f1f5f9 100%);
+    position: relative;
+}
+
+.light-bg {
+    background: linear-gradient(135deg, #f8f9fa 0%, #f1f5f9 100%);
+}
+
+.values-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #10b981, #3b82f6, #8b5cf6);
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.value-item {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid #10b981;
+    position: relative;
+    overflow: hidden;
+}
+
+.value-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #10b981, transparent);
+}
+
+.value-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -4px rgba(0, 0, 0, 0.15), 0 8px 10px -4px rgba(0, 0, 0, 0.1);
+}
+
+.value-item h3 {
+    color: #1f2937;
+    font-size: 1.5rem;
+    margin: 1rem 0 1rem 0;
+    font-weight: 600;
+}
+
+.value-item p {
+    color: #6b7280;
+    line-height: 1.7;
+    margin: 0;
+}
+
+/* Icon styles for values */
+.value-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.value-icon.heart {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    color: #10b981;
+}
+
+.value-icon.handshake {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #3b82f6;
+}
+
+.value-icon.coins {
+    background: linear-gradient(135deg, #faf5ff, #e9d5ff);
+    color: #8b5cf6;
+}
+
+/* ==================================== */
+/* 5. Team Section - UPDATED */
+/* ==================================== */
+
+.team-section {
+    padding: 5rem 1rem;
+    background: white;
+    text-align: center;
+}
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.team-member {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid #f3f4f6;
+    position: relative;
+}
+
+.team-member::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #10b981, #3b82f6);
+    border-radius: 1rem 1rem 0 0;
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.team-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 1.5rem;
+    border: 4px solid #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    transition: all 0.3s ease;
+}
+
+.team-member:hover .team-photo {
+    border-color: #3b82f6;
+    transform: scale(1.05);
+}
+
+.team-member h4 {
+    color: #1f2937;
+    font-size: 1.25rem;
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.team-member .role {
+    color: #10b981;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+    font-size: 1rem;
+}
+
+.team-member .bio {
+    color: #6b7280;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Placeholder for team photos */
+.photo-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    border: 4px solid #10b981;
+}
+
+.photo-placeholder.user {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    color: #10b981;
+}
+
+.photo-placeholder.chart {
+    background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    color: #3b82f6;
+}
+
+.photo-placeholder.users {
+    background: linear-gradient(135deg, #faf5ff, #e9d5ff);
+    color: #8b5cf6;
+}
+
+/* ==================================== */
+/* 6. Loading States - UPDATED */
+/* ==================================== */
+
+.loading-component {
+    background: #f8f9fa;
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+    transition: all 0.3s ease;
+}
+
+.loading-spinner {
+    border: 2px solid #f3f4f6;
+    border-top: 2px solid #10b981;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==================================== */
+/* 7. Animation Utilities - UPDATED */
+/* ==================================== */
+
+.fade-in {
+    animation: fadeIn 0.8s ease-out;
+}
+
+.slide-up {
+    animation: slideUp 0.8s ease-out;
+}
+
+.stagger-animation > * {
+    opacity: 0;
+    animation: slideUp 0.8s ease-out forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==================================== */
+/* 8. Container Utilities - UPDATED */
+/* ==================================== */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.container-narrow {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* ==================================== */
+/* 9. Color Scheme Variables - UPDATED */
+/* ==================================== */
+
+:root {
+    --primary-green: #10b981;
+    --primary-blue: #3b82f6;
+    --primary-purple: #8b5cf6;
+    --text-dark: #1f2937;
+    --text-gray: #6b7280;
+    --bg-light: #f8f9fa;
+    --border-light: #e5e7eb;
+}
+
+/* ==================================== */
+/* 10. Utility Classes - UPDATED */
+/* ==================================== */
+
+.text-center {
+    text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.mb-8 {
+    margin-bottom: 2rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.mt-8 {
+    margin-top: 2rem;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.py-8 {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.py-12 {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+.gap-8 {
+    gap: 2rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.block {
+    display: block;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+/* ==================================== */
+/* 11. Responsive Design - UPDATED */
+/* ==================================== */
+
+@media (max-width: 768px) {
+    .page-hero {
+        padding: 3rem 1rem;
+    }
+    
+    .page-hero h1 {
+        font-size: 2rem;
+    }
+    
+    .page-hero p {
+        font-size: 1.125rem;
+    }
+    
+    .content-flex {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .image-content {
+        order: -1;
+        min-height: 200px;
+        padding: 2rem 1rem;
+    }
+    
+    .text-content h2 {
+        font-size: 1.75rem;
+    }
+    
+    .values-grid,
+    .team-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .value-item,
+    .team-member {
+        padding: 1.5rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .story-mission-section,
+    .values-section,
+    .team-section {
+        padding: 3rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-hero h1 {
+        font-size: 1.75rem;
+    }
+    
+    .page-hero p {
+        font-size: 1rem;
+    }
+    
+    .text-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .value-item h3,
+    .team-member h4 {
+        font-size: 1.25rem;
+    }
+    
+    .values-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .team-member {
+        padding: 1rem;
+    }
+}
+
+/* ==================================== */
+/* 12. Print Styles - UPDATED */
+/* ==================================== */
+
+@media print {
+    .page-hero {
+        background: white !important;
+        color: black !important;
+        padding: 2rem 1rem;
+    }
+    
+    .value-item,
+    .team-member {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .loading-component {
+        display: none;
+    }
+}
+
+/* ==================================== */
+/* 13. Focus States for Accessibility */
+/* ==================================== */
+
+.value-item:focus-within,
+.team-member:focus-within {
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* ==================================== */
+/* 14. High Contrast Mode Support */
+/* ==================================== */
+
+@media (prefers-contrast: high) {
+    .value-item,
+    .team-member {
+        border: 2px solid #000;
+    }
+    
+    .text-content strong {
+        color: #000;
+    }
+}
+
+/* ==================================== */
+/* 15. Reduced Motion Support */
+/* ==================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .value-item,
+    .team-member,
+    .image-content {
+        transition: none;
+    }
+    
+    .value-item:hover,
+    .team-member:hover,
+    .image-content:hover {
+        transform: none;
+    }
+    
+    .loading-spinner {
+        animation: none;
+    }
+    
+    .fade-in,
+    .slide-up {
+        animation: none;
+        opacity: 1;
+    }
+}

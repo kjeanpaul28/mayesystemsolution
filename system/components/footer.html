@@ -1,0 +1,144 @@
+<footer id="mainFooter" class="footer modern-footer fade-in no-print" role="contentinfo" aria-label="Amakuru y'inyuma y'urubuga">
+  <style>
+    /* Footer Styling — MAYE Green Theme (CSS yose irasigara uko yari iri) */
+    .modern-footer {
+      background: linear-gradient(to right, #1B5E20, #2E7D32, #1B5E20);
+      color: #fff;
+      padding: 2rem 1rem;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+      user-select: none;
+      box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .footer-top-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
+    
+    .footer-bottom-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .separator {
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 700;
+      margin: 0 0.75rem;
+    }
+    
+    a {
+      color: #FFD54F; /* Amber Accent */
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.25s ease, transform 0.25s ease;
+      white-space: nowrap;
+    }
+    a:hover {
+      color: #FFF;
+      transform: translateY(-1px);
+    }
+    
+    /* Print Specific Styling */
+    @media print {
+      .modern-footer.no-print {
+        display: none !important;
+      }
+      
+      /* Style for the injected print footer */
+      .print-footer-content {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        border-top: 1px solid #ccc;
+        background: white;
+        color: #6B7280;
+        font-size: 0.8rem;
+        z-index: 5000;
+      }
+    }
+  </style>
+  
+  <div class="footer-container">
+    <div class="footer-top-line">
+      <span><strong>Izina:</strong> 🌿 MAYE-SYSTEM</span>
+      <span class="separator">|</span>
+      <span><strong>Aderesi:</strong> KN 12 Ave, Muhima – Kigali, Rwanda</span>
+    </div>
+    
+    <div class="footer-bottom-line">
+      <span>📞 +250 784 067 694</span>
+      <span class="separator">|</span>
+      <span>✉ <a href="mailto:kjeanpaul28@gmail.com" target="_blank" rel="noopener noreferrer">kjeanpaul28@gmail.com</a></span>
+      <span class="separator">|</span>
+      <span class="version-tag">Version: <span id="app-version">1.0.0</span></span>
+      <span class="separator">|</span>
+      <span>© <span id="current-year">2025</span> MAYE-SYSTEM —Ikemura byinshi by'imicungire y'umutungo</span>
+    </div>
+  </div>
+</footer>
+
+<div id="pdfPrintFooterContent" style="display:none;" class="print-footer-content">
+  <p>
+    &copy; <span class="print-year">2025</span> MAYE-SYSTEM — Mwari Ama Y'ubuzima | Raporo yakorewe muri Sisitemu ku <span class="current-print-datetime"></span>
+  </p>
+</div>
+
+<script type="module">
+  class FooterManager {
+    constructor() {
+      // Version ngenderwaho y'application
+      this.APP_VERSION = 'v1.0.0 (Beta)'; 
+      this.init();
+    }
+
+    init() {
+      this.updateVersion();
+      this.updateCurrentYear();
+      // Turitega ko updatePrintDateTime ya HeaderManager nayo ishobora kuvugurura hano
+    }
+
+    // Gushyira version ya App mu footer
+    updateVersion() {
+      const versionEl = document.getElementById('app-version');
+      if (versionEl) {
+        versionEl.textContent = this.APP_VERSION;
+      }
+    }
+
+    // Gushyiramo umwaka uriho automatically
+    updateCurrentYear() {
+      const year = new Date().getFullYear();
+      const yearElements = document.querySelectorAll('#current-year, .print-year');
+      yearElements.forEach(el => el.textContent = year);
+    }
+  }
+
+  // Gutangiza FooterManager rimwe gusa
+  if (document.getElementById('mainFooter') && !window.footerComponentInit) {
+    window.footerManager = new FooterManager();
+    window.footerComponentInit = true;
+  }
+</script>

@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MAYE-SYSTEM - Kwinjira / Kwiyandikisha</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --primary-color: #2E7D32;
+      --primary-dark: #1B5E20;
+      --primary-light: #4CAF50;
+      --accent-color: #2196F3;
+      --danger-color: #f44336;
+      --warning-color: #ff9800;
+      --success-color: #4caf50;
+      --dark-color: #2d3748;
+      --light-color: #f8f9fa;
+      --gray-200: #edf2f7;
+      --gray-300: #e2e8f0;
+      --gray-400: #cbd5e0;
+      --gray-500: #a0aec0;
+      --gray-600: #718096;
+      --gray-700: #4a5568;
+      --gray-800: #2d3748;
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --transition: all 0.3s ease;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: var(--dark-color);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      backdrop-filter: blur(10px);
+    }
+    
+    .loader.hidden {
+      display: none;
+    }
+    
+    .loader-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--gray-300);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    .loader p {
+      margin-top: 1rem;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .auth-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      min-height: 100vh;
+    }
+    
+    .auth-card {
+      background: white;
+      max-width: 450px;
+      width: 100%;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: slideUp 0.6s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .auth-tabs {
+      display: flex;
+      background: var(--gray-200);
+    }
+    
+    .tab {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--gray-600);
+      transition: var(--transition);
+      border-bottom: 3px solid transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .tab.active {
+      background: white;
+      color: var(--primary-color);
+      border-bottom-color: var(--primary-color);
+    }
+    
+    .tab:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.5);
+      color: var(--primary-dark);
+    }
+    
+    .form-panel {
+      display: none;
+      padding: 2rem;
+    }
+    
+    .form-panel.active {
+      display: block;
+      animation: fadeIn 0.5s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .form-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      color: var(--dark-color);
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .input-group {
+      margin-bottom: 1.25rem;
+      position: relative;
+    }
+    
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--gray-700);
+    }
+    
+    .input-group input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      font-size: 1rem;
+      border: 2px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+      background: white;
+    }
+    
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+    }
+    
+    .input-group input.error {
+      border-color: var(--danger-color);
+      box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+    }
+    
+    .error-message {
+      color: var(--danger-color);
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: none;
+      font-weight: 500;
+    }
+    
+    .error-message.active {
+      display: block;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--gray-500);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    
+    .password-toggle:hover {
+      color: var(--primary-color);
+    }
+    
+    .password-strength {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    
+    .password-strength.weak {
+      color: var(--danger-color);
+    }
+    
+    .password-strength.medium {
+      color: var(--warning-color);
+    }
+    
+    .password-strength.strong {
+      color: var(--success-color);
+    }
+    
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .forgot-link {
+      background: none;
+      border: none;
+      color: var(--accent-color);
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: var(--transition);
+    }
+    
+    .forgot-link:hover {
+      color: var(--primary-dark);
+    }
+    
+    .terms-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .terms-row a {
+      color: var(--accent-color);
+      font-weight: 500;
+      text-decoration: underline;
+    }
+    
+    .terms-row a:hover {
+      color: var(--primary-dark);
+    }
+    
+    .btn-primary {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-google {
+      width: 100%;
+      padding: 1rem;
+      background: white;
+      color: var(--gray-700);
+      border: 2px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .btn-google:hover {
+      background: var(--gray-200);
+      border-color: var(--gray-400);
+    }
+    
+    .social-login {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--gray-300);
+    }
+    
+    .social-login p {
+      text-align: center;
+      color: var(--gray-600);
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal.active {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .modal-content {
+      background: white;
+      max-width: 400px;
+      width: 90%;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      padding: 2rem;
+      position: relative;
+      animation: slideUp 0.3s ease;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray-500);
+      transition: var(--transition);
+    }
+    
+    .modal-close:hover {
+      color: var(--dark-color);
+    }
+    
+    .modal-title {
+      margin-bottom: 1rem;
+      color: var(--dark-color);
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .btn-secondary {
+      flex: 1;
+      padding: 0.75rem;
+      background: var(--gray-300);
+      color: var(--gray-700);
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--gray-400);
+    }
+    
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius-md);
+      color: white;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      z-index: 1001;
+      display: none;
+      animation: slideInRight 0.3s ease;
+      max-width: 400px;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(100%);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .notification.success {
+      background: linear-gradient(135deg, var(--success-color), #2e7d32);
+    }
+    
+    .notification.error {
+      background: linear-gradient(135deg, var(--danger-color), #d32f2f);
+    }
+    
+    .notification.warning {
+      background: linear-gradient(135deg, var(--warning-color), #f57c00);
+    }
+    
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: 1rem;
+      }
+      
+      .auth-card {
+        margin: 1rem;
+      }
+      
+      .form-panel {
+        padding: 1.5rem;
+      }
+      
+      .form-title {
+        font-size: 1.5rem;
+      }
+      
+      .options-row {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="loader" class="loader">
+    <div class="loader-spinner"></div>
+    <p>Iyubaka sisitemu...</p>
+  </div>
+
+  <main class="auth-container" role="main">
+    <div class="auth-card">
+      <nav class="auth-tabs" role="tablist" aria-label="Amatariki yo kwinjira">
+        <button id="login-tab" class="tab active" role="tab" aria-selected="true" aria-controls="login-panel">
+          <i class="fas fa-sign-in-alt"></i> Kwinjira
+        </button>
+        <button id="register-tab" class="tab" role="tab" aria-selected="false" aria-controls="register-panel">
+          <i class="fas fa-user-plus"></i> Kwiyandikisha
+        </button>
+      </nav>
+
+      <form id="login-panel" class="form-panel active" role="tabpanel" aria-labelledby="login-tab" novalidate>
+        <h2 class="form-title">Kwinjira muri MAYE-SYSTEM</h2>
+        
+        <div class="input-group">
+          <label for="login-email">Imeli</label>
+          <input type="email" id="login-email" placeholder="andika@imeli.com" required autocomplete="email">
+          <div id="login-email-error" class="error-message"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="login-password">Ijambobanga</label>
+          <input type="password" id="login-password" placeholder="Andika ijambobanga" required autocomplete="current-password">
+          <button type="button" class="password-toggle" aria-label="Erekana ijambobanga">
+            <i class="fas fa-eye"></i>
+          </button>
+          <div id="login-password-error" class="error-message"></div>
+        </div>
+        
+        <div class="options-row">
+          <label class="remember-me">
+            <input type="checkbox" id="remember-me">
+            Ibuka imeli
+          </label>
+          <button type="button" class="forgot-link" id="forgot-password-btn">
+            Wibagiwe ijambobanga?
+          </button>
+        </div>
+        
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-sign-in-alt"></i> Injira
+        </button>
+        
+        <div class="social-login">
+          <p>Cyangwa kwinjira na:</p>
+          <button type="button" class="btn-google" id="google-login-btn">
+            <i class="fab fa-google"></i> Google
+          </button>
+        </div>
+      </form>
+
+      <form id="register-panel" class="form-panel" role="tabpanel" aria-labelledby="register-tab" novalidate>
+        <h2 class="form-title">Iyandikishe muri MAYE-SYSTEM</h2>
+        
+        <div class="input-group">
+          <label for="register-fullName">Amazina yuzuye</label>
+          <input type="text" id="register-fullName" placeholder="Andika amazina yawe" required autocomplete="name">
+          <div id="register-fullName-error" class="error-message"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="register-email">Imeli</label>
+          <input type="email" id="register-email" placeholder="andika@imeli.com" required autocomplete="email">
+          <div id="register-email-error" class="error-message"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="register-phone">Telefone</label>
+          <input type="tel" id="register-phone" placeholder="+250 78 123 4567" required autocomplete="tel">
+          <div id="register-phone-error" class="error-message"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="register-password">Ijambobanga</label>
+          <input type="password" id="register-password" placeholder="Inyuguti 8 byibuze" required autocomplete="new-password">
+          <button type="button" class="password-toggle" aria-label="Erekana ijambobanga">
+            <i class="fas fa-eye"></i>
+          </button>
+          <div id="register-password-error" class="error-message"></div>
+          <div class="password-strength" id="password-strength"></div>
+        </div>
+        
+        <div class="input-group">
+          <label for="register-confirmPassword">Emeza ijambobanga</label>
+          <input type="password" id="register-confirmPassword" placeholder="Andika ijambobanga na none" required autocomplete="new-password">
+          <button type="button" class="password-toggle" aria-label="Erekana ijambobanga">
+            <i class="fas fa-eye"></i>
+          </button>
+          <div id="register-confirmPassword-error" class="error-message"></div>
+        </div>
+        
+        <div class="terms-row">
+          <input type="checkbox" id="accept-terms" required>
+          <label for="accept-terms">
+            Nemera <a href="#" onclick="showNotification('Amategeko ntiyashyizweho', 'warning')">Amategeko & Ubuzima bwite</a>
+          </label>
+        </div>
+        
+        <button type="submit" class="btn-primary">
+          <i class="fas fa-user-plus"></i> Iyandikishe
+        </button>
+        
+        <div class="social-login">
+          <p>Cyangwa kwiyandikisha na:</p>
+          <button type="button" class="btn-google" id="google-register-btn">
+            <i class="fab fa-google"></i> Google
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div id="forgot-password-modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Funga">&times;</button>
+      <h3 class="modal-title">Wibagiwe ijambobanga?</h3>
+      <form id="forgot-password-form">
+        <div class="input-group">
+          <label for="reset-email">Imeli yawe</label>
+          <input type="email" id="reset-email" placeholder="andika@imeli.com" required>
+          <div id="reset-email-error" class="error-message"></div>
+        </div>
+        <div class="modal-buttons">
+          <button type="submit" class="btn-primary">Ohereza</button>
+          <button type="button" class="btn-secondary" id="cancel-reset">Hagarika</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="notification" class="notification"></div>
+  
+  <script>
+    // Firebase Configuration
+    // Firebase Configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+    authDomain: "life-service-4cd35.firebaseapp.com",
+    projectId: "life-service-4cd35",
+    storageBucket: "life-service-4cd35.firebasestorage.app",
+    messagingSenderId: "182030784033",
+    appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+};
+
+// 🚀 IMPINDUKA Y'INGENZI: Single Firebase Initialization
+(function initializeFirebase() {
+  try {
+    if (typeof firebase === 'undefined') {
+      throw new Error('Firebase SDK ntiyashyize');
+    }
+    
+    // Check if Firebase is already initialized
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+      console.log('✅ Firebase yashyize muri auth.html');
+    } else {
+      console.log('✅ Firebase isanzwe ishyizweho');
+    }
+    
+    // 🔧 IMPINDUKA: Set auth persistence to SESSION ONLY
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        console.log('✅ Auth persistence set to SESSION');
+      })
+      .catch((error) => {
+        console.log('⚠️ Could not set auth persistence:', error);
+      });
+    
+    window.firebaseAuth = firebase.auth();
+    window.firebaseDB = firebase.firestore();
+    
+  } catch (error) {
+    console.error('Amakosa mu kushyiraho Firebase:', error);
+    showNotification('Sistema ntiyashoboye gutangira. Reba interineti yawe.', 'error');
+  }
+})();
+
+// Wait for DOM to be ready
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('🔍 Kugenzura auth state...');
+  
+  // 🚀 IMPINDUKA Y'INGENZI: Check URL parameters for redirect
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectTo = urlParams.get('redirect_to');
+  const isLogout = urlParams.get('logout') === 'true';
+  const forceAuth = urlParams.get('forceAuth') === 'true';
+  
+  console.log('🔗 URL Parameters - redirect_to:', redirectTo, 'logout:', isLogout, 'forceAuth:', forceAuth);
+  
+  if (isLogout || forceAuth) {
+    console.log('🚫 Logout detected, forcing auth page to stay');
+    // Clear any cached auth state
+    localStorage.removeItem('lastAuthTime');
+    sessionStorage.clear();
+    
+    // Force sign out to be sure
+    firebase.auth().signOut().then(() => {
+      console.log('✅ Force signed out for logout');
+      initializeAuthApp();
+    }).catch(() => {
+      initializeAuthApp();
+    });
+    return;
+  }
+  
+  // 🚀 IMPINDUKA Y'INGENZI: Simple auth check - ONLY redirect if fresh login
+  const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      console.log('🔍 User yinjiye:', user.email);
+      
+      // 🔧 IMPINDUKA: Reba niba ari "fresh login" (user yinjiye muri minute 1 ishize)
+      const currentTime = new Date().getTime();
+      const lastAuthTime = parseInt(localStorage.getItem('lastAuthTime') || '0');
+      const timeDiff = currentTime - lastAuthTime;
+      
+      console.log('⏰ Time since last auth:', timeDiff, 'ms');
+      
+      // Niba user yinjiye muri minute 1 ishize (fresh login), jya kuri redirect page
+      if (timeDiff < 1 * 60 * 1000) { // 1 minute
+        console.log('✅ Fresh login detected, redirecting...');
+        
+        // Redirect to specified page or dashboard
+        if (redirectTo) {
+          window.location.href = `../${redirectTo}`;
+        } else {
+          redirectToDashboard();
+        }
+      } else {
+        console.log('🔶 Stuck user detected, forcing sign out and staying on auth page');
+        // 🔧 IMPINDUKA: Sign out stuck user kugira ngo bagerageze kwinjira na none
+        firebase.auth().signOut().then(() => {
+          console.log('✅ Signed out stuck user');
+          showNotification('Wasohotse neza. Shobora kwinjira na none.', 'success');
+          initializeAuthApp();
+        }).catch((error) => {
+          console.log('⚠️ Could not sign out stuck user:', error);
+          initializeAuthApp();
+        });
+      }
+    } else {
+      console.log('✅ Nta mukoresha winjiye, gukomeza kuri auth page');
+      initializeAuthApp();
+    }
+    unsubscribe(); // Stop listening after first check
+  });
+});
+
+function initializeAuthApp() {
+  console.log('🚀 Starting auth app...');
+  
+  // Hisha loader
+  document.getElementById('loader').classList.add('hidden');
+
+  // Tab switching
+  document.getElementById('login-tab').addEventListener('click', () => switchTab('login'));
+  document.getElementById('register-tab').addEventListener('click', () => switchTab('register'));
+
+  // Password toggle
+  document.querySelectorAll('.password-toggle').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const input = this.previousElementSibling;
+      const icon = this.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+        this.setAttribute('aria-label', 'Hisha ijambobanga');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+        this.setAttribute('aria-label', 'Erekana ijambobanga');
+      }
+    });
+  });
+
+  // Password strength indicator
+  document.getElementById('register-password').addEventListener('input', function() {
+    const strength = checkPasswordStrength(this.value);
+    const strengthElement = document.getElementById('password-strength');
+    strengthElement.textContent = strength.message;
+    strengthElement.className = `password-strength ${strength.class}`;
+  });
+
+  // Form submissions
+  document.getElementById('login-panel').addEventListener('submit', handleLogin);
+  document.getElementById('register-panel').addEventListener('submit', handleRegister);
+  document.getElementById('forgot-password-form').addEventListener('submit', handlePasswordReset);
+
+  // Modal controls
+  document.getElementById('forgot-password-btn').addEventListener('click', () => {
+    document.getElementById('forgot-password-modal').classList.add('active');
+  });
+
+  document.getElementById('cancel-reset').addEventListener('click', closeModals);
+  document.querySelector('.modal-close').addEventListener('click', closeModals);
+
+  // Google authentication
+  document.getElementById('google-login-btn').addEventListener('click', handleGoogleAuth);
+  document.getElementById('google-register-btn').addEventListener('click', handleGoogleAuth);
+
+  // Load remembered email
+  const rememberedEmail = localStorage.getItem('rememberedEmail');
+  if (rememberedEmail) {
+    document.getElementById('login-email').value = rememberedEmail;
+    document.getElementById('remember-me').checked = true;
+  }
+}
+
+function checkFirebaseAvailability() {
+  if (typeof firebase === 'undefined' || !firebase.apps.length) {
+    showNotification('Sistema ntiyashoboye gutangira. Gereranya kwinjira nanone.', 'error');
+    return false;
+  }
+  return true;
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+  document.querySelectorAll('.form-panel').forEach(panel => panel.classList.remove('active'));
+  
+  document.getElementById(`${tabName}-tab`).classList.add('active');
+  document.getElementById(`${tabName}-panel`).classList.add('active');
+}
+
+function checkPasswordStrength(password) {
+  if (password.length === 0) {
+    return { message: '', class: '' };
+  }
+  
+  const hasUpperCase = /[A-Z]/.test(password);
+  const hasLowerCase = /[a-z]/.test(password);
+  const hasNumbers = /\d/.test(password);
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  
+  let strength = 0;
+  if (password.length >= 8) strength++;
+  if (hasUpperCase) strength++;
+  if (hasLowerCase) strength++;
+  if (hasNumbers) strength++;
+  if (hasSpecialChar) strength++;
+  
+  if (strength <= 2) {
+    return { message: 'Ijambobanga ribi', class: 'weak' };
+  } else if (strength <= 4) {
+    return { message: 'Ijambobanga rihagaze', class: 'medium' };
+  } else {
+    return { message: 'Ijambobanga rikomeye', class: 'strong' };
+  }
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  
+  if (!checkFirebaseAvailability()) {
+    showNotification('Sistema ntiyashoboye gukora. Gereranya kwinjira nanone.', 'error');
+    return;
+  }
+  
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const rememberMe = document.getElementById('remember-me').checked;
+  const submitBtn = e.target.querySelector('.btn-primary');
+  
+  // Clear previous errors
+  clearErrors('login');
+  
+  // Validation
+  if (!validateEmail(email)) {
+    showError('login-email', 'Andika imeli itari nyayo');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showError('login-password', 'Ijambobanga rigomba kuba ririmo inyuguti 6 byibuze');
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iri kwinjira...';
+  
+  try {
+    console.log('Attempting login for:', email);
+    
+    // 🔧 IMPINDUKA: Bika igihe cy'uko winjiye
+    localStorage.setItem('lastAuthTime', new Date().getTime().toString());
+    
+    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    
+    console.log('✅ Login successful for:', user.email);
+    
+    // Save email if remember me is checked
+    if (rememberMe) {
+      localStorage.setItem('rememberedEmail', email);
+    } else {
+      localStorage.removeItem('rememberedEmail');
+    }
+    
+    // Log the login action to Firestore
+    try {
+      await firebase.firestore().collection('logs').add({
+        action: 'Kwinjira',
+        category: 'Authentication',
+        email: email,
+        timestamp: new Date().toISOString()
+      });
+    } catch (logError) {
+      console.warn('Failed to save login log:', logError);
+    }
+    
+    showNotification('Kwinjira byakunze!', 'success');
+    
+    // 🔧 IMPINDUKA: Redirect irabaho kuri redirect page
+    setTimeout(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirect_to');
+      
+      if (redirectTo) {
+        window.location.href = `../${redirectTo}`;
+      } else {
+        redirectToDashboard();
+      }
+    }, 1000);
+    
+  } catch (error) {
+    console.error('❌ Login error:', error);
+    let errorMessage = 'Imeli cyangwa ijambobanga ntabwo ari byo';
+    
+    switch (error.code) {
+      case 'auth/user-not-found':
+        errorMessage = 'Nta konti ifite iyi imeli';
+        break;
+      case 'auth/wrong-password':
+        errorMessage = 'Ijambobanga ntabwo ari ryo';
+        break;
+      case 'auth/too-many-requests':
+        errorMessage = 'Byinshi cyane. Gereranya mu kanya';
+        break;
+      case 'auth/invalid-email':
+        errorMessage = 'Imeli ntabwo ari yo';
+        break;
+      case 'auth/network-request-failed':
+        errorMessage = 'Ikibazo mu murongo wa interineti';
+        break;
+    }
+    
+    showError('login-password', errorMessage);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Injira';
+  }
+}
+
+async function handleRegister(e) {
+  e.preventDefault();
+  
+  if (!checkFirebaseAvailability()) {
+    showNotification('Sistema ntiyashoboye gukora. Gereranya kwinjira nanone.', 'error');
+    return;
+  }
+  
+  const fullName = document.getElementById('register-fullName').value.trim();
+  const email = document.getElementById('register-email').value.trim();
+  const phone = document.getElementById('register-phone').value.trim();
+  const password = document.getElementById('register-password').value;
+  const confirmPassword = document.getElementById('register-confirmPassword').value;
+  const acceptTerms = document.getElementById('accept-terms').checked;
+  const submitBtn = e.target.querySelector('.btn-primary');
+  
+  // Clear previous errors
+  clearErrors('register');
+  
+  // Validation
+  if (fullName.length < 2) {
+    showError('register-fullName', 'Andika amazina yawe');
+    return;
+  }
+  
+  if (!validateEmail(email)) {
+    showError('register-email', 'Andika imeli itari nyayo');
+    return;
+  }
+  
+  if (!validatePhone(phone)) {
+    showError('register-phone', 'Andika numero ya telefone nk\'+250781234567');
+    return;
+  }
+  
+  const passwordStrength = checkPasswordStrength(password);
+  if (passwordStrength.class === 'weak') {
+    showError('register-password', 'Ijambobanga rigomba kuba rikomeye');
+    return;
+  }
+  
+  if (password !== confirmPassword) {
+    showError('register-confirmPassword', 'Amajambobanga ntameze kimwe');
+    return;
+  }
+  
+  if (!acceptTerms) {
+    showNotification('Wemere amategeko n\'ubuzima bwite', 'warning');
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iri kwiyandikisha...';
+  
+  try {
+    console.log('Attempting registration for:', email);
+    
+    // 🔧 IMPINDUKA: Bika igihe cy'uko winjiye
+    localStorage.setItem('lastAuthTime', new Date().getTime().toString());
+    
+    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    
+    console.log('✅ Registration successful for:', user.email);
+    
+    // Update profile
+    await user.updateProfile({
+      displayName: fullName
+    });
+    
+    // Save user data to Firestore
+    await firebase.firestore().collection('users').doc(user.uid).set({
+      fullName: fullName,
+      email: email,
+      phone: phone,
+      role: 'user',
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      lastLogin: new Date().toISOString()
+    });
+    
+    // Log the registration
+    try {
+      await firebase.firestore().collection('logs').add({
+        action: 'Kwiyandikisha',
+        category: 'Authentication',
+        email: email,
+        fullName: fullName,
+        timestamp: new Date().toISOString()
+      });
+    } catch (logError) {
+      console.warn('Failed to save registration log:', logError);
+    }
+    
+    showNotification('Konti yawe yashizweho!', 'success');
+    
+    // 🔧 IMPINDUKA: Redirect irabaho kuri redirect page
+    setTimeout(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirect_to');
+      
+      if (redirectTo) {
+        window.location.href = `../${redirectTo}`;
+      } else {
+        redirectToDashboard();
+      }
+    }, 1000);
+    
+  } catch (error) {
+    console.error('❌ Registration error:', error);
+    let errorMessage = 'Ikosa mu kwiyandikisha';
+    
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        errorMessage = 'Iyi imeli isanzwe ikoreshwa';
+        break;
+      case 'auth/invalid-email':
+        errorMessage = 'Imeli ntabwo ari yo';
+        break;
+      case 'auth/weak-password':
+        errorMessage = 'Ijambobanga ririmo inyuguti nkeya';
+        break;
+      case 'auth/operation-not-allowed':
+        errorMessage = 'Iyi operation ntabwo yemewe';
+        break;
+      case 'auth/network-request-failed':
+        errorMessage = 'Ikibazo mu murongo wa interineti';
+        break;
+    }
+    
+    showNotification(errorMessage, 'error');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.innerHTML = '<i class="fas fa-user-plus"></i> Iyandikishe';
+  }
+}
+
+async function handlePasswordReset(e) {
+  e.preventDefault();
+  
+  if (!checkFirebaseAvailability()) {
+    showNotification('Sistema ntiyashoboye gukora. Gereranya kwinjira nanone.', 'error');
+    return;
+  }
+  
+  const email = document.getElementById('reset-email').value.trim();
+  const submitBtn = e.target.querySelector('.btn-primary');
+  
+  if (!validateEmail(email)) {
+    showError('reset-email', 'Andika imeli itari nyayo');
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Iri kohereza...';
+  
+  try {
+    await firebase.auth().sendPasswordResetEmail(email);
+    showNotification('Imeli yo gusubiza ijambobanga yoherejwe!', 'success');
+    closeModals();
+  } catch (error) {
+    console.error('❌ Password reset error:', error);
+    let errorMessage = 'Ikosa mu kohereza imeli';
+    
+    if (error.code === 'auth/user-not-found') {
+      errorMessage = 'Nta konti ifite iyi imeli';
+    } else if (error.code === 'auth/network-request-failed') {
+      errorMessage = 'Ikibazo mu murongo wa interineti';
+    }
+    
+    showError('reset-email', errorMessage);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Ohereza';
+  }
+}
+
+async function handleGoogleAuth() {
+  if (!checkFirebaseAvailability()) {
+    showNotification('Sistema ntiyashoboye gukora. Gereranya kwinjira nanone.', 'error');
+    return;
+  }
+  
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await firebase.auth().signInWithPopup(provider);
+    const user = result.user;
+    
+    console.log('✅ Google auth successful for:', user.email);
+    
+    // 🔧 IMPINDUKA: Bika igihe cy'uko winjiye
+    localStorage.setItem('lastAuthTime', new Date().getTime().toString());
+    
+    // Check if user exists in Firestore
+    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+    
+    if (!userDoc.exists) {
+      // Create new user record
+      await firebase.firestore().collection('users').doc(user.uid).set({
+        fullName: user.displayName || 'Unknown',
+        email: user.email,
+        role: 'user',
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        photoURL: user.photoURL || ''
+      });
+    } else {
+      // Update last login
+      await firebase.firestore().collection('users').doc(user.uid).update({
+        lastLogin: new Date().toISOString()
+      });
+    }
+    
+    // Log the Google authentication
+    try {
+      await firebase.firestore().collection('logs').add({
+        action: 'Kwinjira na Google',
+        category: 'Authentication',
+        email: user.email,
+        timestamp: new Date().toISOString()
+      });
+    } catch (logError) {
+      console.warn('Failed to save Google auth log:', logError);
+    }
+    
+    showNotification('Kwinjira byakunze!', 'success');
+    
+    // 🔧 IMPINDUKA: Redirect irabaho kuri redirect page
+    setTimeout(() => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirectTo = urlParams.get('redirect_to');
+      
+      if (redirectTo) {
+        window.location.href = `../${redirectTo}`;
+      } else {
+        redirectToDashboard();
+      }
+    }, 1500);
+    
+  } catch (error) {
+    console.error('❌ Google auth error:', error);
+    let errorMessage = 'Ikosa mu kwinjira na Google';
+    
+    if (error.code === 'auth/popup-closed-by-user') {
+      errorMessage = 'Window yafunguwe n\'umukoresha';
+    } else if (error.code === 'auth/network-request-failed') {
+      errorMessage = 'Ikibazo mu murongo wa interineti';
+    }
+    
+    showNotification(errorMessage, 'error');
+  }
+}
+
+// 🔧 IMPINDUKA Y'INGENZI: FIXED REDIRECT FUNCTION
+function redirectToDashboard() {
+  console.log('🚀 Redirecting to dashboard...');
+  
+  // Koresha location.replace() kugira ngo auth.html itazasubizwa muri history
+  const dashboardPath = '../index.html';
+  
+  // 🔧 IMPINDUKA: Reba niba turi muri local development
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    window.location.href = dashboardPath;
+  } else {
+    window.location.replace(dashboardPath);
+  }
+}
+
+function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+function validatePhone(phone) {
+  const re = /^[\+]?[250]{3}?[78]\d{8}$/;
+  return re.test(phone.replace(/\s/g, ''));
+}
+
+function showError(fieldId, message) {
+  const errorElement = document.getElementById(`${fieldId}-error`);
+  const inputElement = document.getElementById(fieldId);
+  
+  if (errorElement && inputElement) {
+    errorElement.textContent = message;
+    errorElement.classList.add('active');
+    inputElement.classList.add('error');
+    inputElement.focus();
+  }
+}
+
+function clearErrors(formType) {
+  const elements = document.querySelectorAll(`#${formType}-panel .error-message, #${formType}-panel input`);
+  elements.forEach(element => {
+    if (element.classList.contains('error-message')) {
+      element.classList.remove('active');
+      element.textContent = '';
+    } else if (element.classList.contains('error')) {
+      element.classList.remove('error');
+    }
+  });
+}
+
+function showNotification(message, type) {
+  const notification = document.getElementById('notification');
+  notification.textContent = message;
+  notification.className = `notification ${type}`;
+  notification.style.display = 'block';
+  
+  setTimeout(() => {
+    notification.style.display = 'none';
+  }, 4000);
+}
+
+function closeModals() {
+  document.querySelectorAll('.modal').forEach(modal => {
+    modal.classList.remove('active');
+  });
+}
+
+// Make functions available globally
+window.validateEmail = validateEmail;
+window.validatePhone = validatePhone;
+window.showNotification = showNotification;
+window.redirectToDashboard = redirectToDashboard;
+  </script>
+</body>
+</html>

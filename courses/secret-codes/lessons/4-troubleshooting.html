@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gukoresha Code mu Gukemura Ibibazo - MAYE SYSTEMS</title>
+    <link rel="stylesheet" href="../../../css/tailwind.css">
+    <style>
+        .lesson-tab-content {
+            display: none;
+            animation: slideInUp 0.6s ease-out;
+        }
+        .lesson-tab-content.active {
+            display: block;
+        }
+        .lesson-tab-button {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-bottom: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        .lesson-tab-button::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(-50%);
+        }
+        .lesson-tab-button.active::before {
+            width: 100%;
+        }
+        .lesson-tab-button.active {
+            color: #f59e0b;
+            font-weight: 700;
+        }
+        .trouble-code {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-left: 4px solid #f59e0b;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .trouble-code::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        .trouble-code:hover::before {
+            left: 100%;
+        }
+        .trouble-code:hover {
+            transform: translateX(8px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.3);
+        }
+        .problem-card {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 1px solid #fcd34d;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .problem-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.15);
+        }
+        .solution-card {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-left: 4px solid #10b981;
+        }
+        .warning-card {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid #f59e0b;
+        }
+        .danger-card {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-left: 4px solid #ef4444;
+        }
+        .step-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .step-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .trouble-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .problem-type-badge {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .solution-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .interactive-code {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .interactive-code:hover {
+            background: linear-gradient(135deg, #b45309, #92400e);
+            transform: scale(1.02);
+        }
+        .copy-btn {
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .trouble-code:hover .copy-btn {
+            opacity: 1;
+        }
+        .trouble-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .trouble-item {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid #e5e7eb;
+        }
+        .trouble-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .trouble-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        .flow-chart {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+        }
+        .flow-arrow {
+            text-align: center;
+            margin: 0.5rem 0;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 to-amber-50 font-sans">
+    <!-- Header -->
+    <div id="header"></div>
+
+    <main class="min-h-screen py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Breadcrumb -->
+            <nav class="flex items-center space-x-2 text-sm text-gray-600 mb-8">
+                <a href="../../index.html" class="hover:text-orange-600 transition-colors duration-300 flex items-center">
+                    <span class="text-lg">📚</span>
+                    <span class="ml-2">Amasomo</span>
+                </a>
+                <span class="text-gray-400">›</span>
+                <a href="../index.html" class="hover:text-orange-600 transition-colors duration-300 flex items-center">
+                    <span class="text-lg">🔐</span>
+                    <span class="ml-2">Code z'Telefone</span>
+                </a>
+                <span class="text-gray-400">›</span>
+                <span class="text-orange-600 font-semibold flex items-center">
+                    <span>Gukemura Ibibazo</span>
+                </span>
+            </nav>
+
+            <!-- Lesson Header -->
+            <div class="bg-white rounded-3xl shadow-2xl p-10 mb-10 border border-white/20">
+                <div class="flex items-start justify-between mb-8">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-4 mb-6">
+                            <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg">
+                                <span class="text-2xl text-white">4</span>
+                            </div>
+                            <div>
+                                <h1 class="text-4xl font-bold text-gray-900 mb-2">Gukoresha Code mu Gukemura Ibibazo</h1>
+                                <p class="text-xl text-gray-600">Menya uko ukoresha code mu gukemura ibibazo by'itelefone: network, call, SMS, n'ibindi</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-8 text-lg text-gray-600">
+                            <span class="flex items-center space-x-3 bg-orange-50 px-4 py-2 rounded-full">
+                                <svg class="w-5 h-5 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>25 min</span>
+                            </span>
+                            <span class="flex items-center space-x-3 bg-amber-50 px-4 py-2 rounded-full">
+                                <svg class="w-5 h-5 text-amber-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>20+ Code</span>
+                            </span>
+                            <span class="flex items-center space-x-3 bg-yellow-50 px-4 py-2 rounded-full">
+                                <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span>8 Ibibazo</span>
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Completion Check -->
+                    <button id="complete-lesson" class="flex items-center space-x-3 bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    </button>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full bg-gray-200 rounded-full h-3 mb-4 overflow-hidden">
+                    <div id="lesson-progress" class="bg-gradient-to-r from-orange-500 to-amber-600 h-3 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
+                </div>
+                <div class="flex justify-between text-sm text-gray-600">
+                    <span>Imikurire: <span id="progress-percent">0%</span></span>
+                    <span>🔢 0/6 Ibyavunzwe</span>
+                </div>
+            </div>
+
+            <!-- Lesson Tabs Navigation -->
+            <div class="bg-white rounded-3xl shadow-2xl mb-10 overflow-hidden border border-white/20">
+                <div class="flex overflow-x-auto bg-gradient-to-r from-gray-50 to-orange-50/30 border-b border-gray-200">
+                    <button class="lesson-tab-button flex-1 px-6 py-5 text-center font-semibold text-gray-700 hover:text-orange-700 transition-all duration-400 active" data-tab="introduction">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl">🔧</span>
+                            <span>Intangiriro</span>
+                        </div>
+                    </button>
+                    <button class="lesson-tab-button flex-1 px-6 py-5 text-center font-semibold text-gray-700 hover:text-orange-700 transition-all duration-400" data-tab="network-problems">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl">📶</span>
+                            <span>Umuyoboro</span>
+                        </div>
+                    </button>
+                    <button class="lesson-tab-button flex-1 px-6 py-5 text-center font-semibold text-gray-700 hover:text-orange-700 transition-all duration-400" data-tab="call-problems">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl">📞</span>
+                            <span>Amahamagara</span>
+                        </div>
+                    </button>
+                    <button class="lesson-tab-button flex-1 px-6 py-5 text-center font-semibold text-gray-700 hover:text-orange-700 transition-all duration-400" data-tab="sms-problems">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl">💬</span>
+                            <span>SMS</span>
+                        </div>
+                    </button>
+                    <button class="lesson-tab-button flex-1 px-6 py-5 text-center font-semibold text-gray-700 hover:text-orange-700 transition-all duration-400" data-tab="data-problems">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl">🌐</span>
+                            <span>Data</span>
+                        </div>
+                    </button>
+                    <button class="lesson-tab-button flex-1 px-6 py-5 text-center font-semibold text-gray-700 hover:text-orange-700 transition-all duration-400" data-tab="advanced">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl">⚡</span>
+                            <span>Advanced</span>
+                        </div>
+                    </button>
+                    <button class="lesson-tab-button flex-1 px-6 py-5 text-center font-semibold text-gray-700 hover:text-orange-700 transition-all duration-400" data-tab="practice">
+                        <div class="flex items-center justify-center space-x-2">
+                            <span class="text-xl">🧪</span>
+                            <span>Gerageza</span>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Introduction Tab -->
+                <div id="introduction" class="lesson-tab-content active p-8">
+                    <div class="grid lg:grid-cols-2 gap-8 mb-8">
+                        <div class="space-y-6">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6">🔧 Gukemura Ibibazo: Inzira yo Gukoresha Code</h2>
+                            
+                            <div class="problem-card rounded-2xl p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-3">🎯 Icyitegererezo cyo Gukemura</h3>
+                                <p class="text-gray-700 leading-relaxed">
+                                    Code z'itelefone zirashobora kugufasha mu gukemura ibibazo bitandukanye 
+                                    bidakenera kujya kuri technicien. Ushobora gukemura:
+                                </p>
+                                <ul class="text-gray-600 mt-3 space-y-2">
+                                    <li>• Ibibazo by'umuyoboro (network)</li>
+                                    <li>• Amahamagara atariyo (call issues)</li>
+                                    <li>• SMS zitagenda (message problems)</li>
+                                    <li>• Data itagenda (internet issues)</li>
+                                    <li>• Ibibazo bya SIM card</li>
+                                </ul>
+                            </div>
+
+                            <div class="step-card">
+                                <div class="flex items-start mb-4">
+                                    <div class="step-number">1</div>
+                                    <div>
+                                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Inzira yo Gukemura</h4>
+                                        <ol class="text-gray-600 space-y-2 list-decimal list-inside">
+                                            <li>Menya ikibazo cyawe</li>
+                                            <li>Shakisha code ihuje n'ikibazo</li>
+                                            <li>Koresha code mu buryo bwiza</li>
+                                            <li>Reba niba ikibazo cyarakemutse</li>
+                                            <li>Subira usuzume niba byarakozwe</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-gradient-to-br from-orange-500 to-amber-600 rounded-2xl p-8 text-white">
+                                <h3 class="text-2xl font-bold mb-4">💡 Ibyingenzi mu Gukemura</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        <span>Menya ikibazo mbere</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        <span>Koresha code zihuje</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        <span>Subira usuzume nyuma</span>
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-3 h-3 bg-white rounded-full"></div>
+                                        <span>Ntugire code z'umutekano</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="warning-card rounded-2xl p-6">
+                                <h3 class="text-xl font-semibold text-yellow-800 mb-3">⚠️ Icyitonderwa</h3>
+                                <ul class="text-yellow-700 space-y-2">
+                                    <li>• Ntugire code utazi neza</li>
+                                    <li>• Bika amakuru yawe</li>
+                                    <li>• Reba code mbere yo gukoresha</li>
+                                    <li>• Ntugire uhindure settings utazi</li>
+                                </ul>
+                            </div>
+
+                            <div class="flow-chart">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-4">📊 Inzira yo Gukemura</h4>
+                                <div class="flow-step">
+                                    <div class="step-number">1</div>
+                                    <span>Menya ikibazo</span>
+                                </div>
+                                <div class="flow-arrow">↓</div>
+                                <div class="flow-step">
+                                    <div class="step-number">2</div>
+                                    <span>Shakisha code</span>
+                                </div>
+                                <div class="flow-arrow">↓</div>
+                                <div class="flow-step">
+                                    <div class="step-number">3</div>
+                                    <span>Koresha code</span>
+                                </div>
+                                <div class="flow-arrow">↓</div>
+                                <div class="flow-step">
+                                    <div class="step-number">4</div>
+                                    <span>Suzuma igisubizo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Network Problems Tab -->
+                <div id="network-problems" class="lesson-tab-content p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">📶 Gukemura Ibibazo by'Umuyoboro</h2>
+                    
+                    <div class="trouble-grid mb-8">
+                        <div class="trouble-item">
+                            <div class="trouble-icon">📶</div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Signal Mbi</h4>
+                            <p class="text-gray-600 mb-4">Nta signal cyangwa signal mbi</p>
+                            <div class="trouble-code rounded-lg p-4 text-white mb-3">
+                                <div class="font-mono text-sm">*#0011#</div>
+                                <div class="text-xs text-orange-200">Service Mode</div>
+                            </div>
+                            <div class="solution-card rounded-lg p-3">
+                                <p class="text-green-700 text-sm">Reba signal strength, hindura network mode</p>
+                            </div>
+                        </div>
+
+                        <div class="trouble-item">
+                            <div class="trouble-icon">🚫</div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">No Service</h4>
+                            <p class="text-gray-600 mb-4">Telefone ivuga "No Service"</p>
+                            <div class="trouble-code rounded-lg p-4 text-white mb-3">
+                                <div class="font-mono text-sm">*#2263#</div>
+                                <div class="text-xs text-orange-200">Network Band</div>
+                            </div>
+                            <div class="solution-card rounded-lg p-3">
+                                <p class="text-green-700 text-sm">Hindura network band, gerageza Automatic</p>
+                            </div>
+                        </div>
+
+                        <div class="trouble-item">
+                            <div class="trouble-icon">🔄</div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Network Switching</h4>
+                            <p class="text-gray-600 mb-4">Umuyoboro uhindu-hinduka</p>
+                            <div class="trouble-code rounded-lg p-4 text-white mb-3">
+                                <div class="font-mono text-sm">*#*#4636#*#*</div>
+                                <div class="text-xs text-orange-200">Phone Info</div>
+                            </div>
+                            <div class="solution-card rounded-lg p-3">
+                                <p class="text-green-700 text-sm">Reba network type, run phone information</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">🔧 Code z'Umuyoboro</h3>
+                            
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#0011#</span>
+                                    <span class="trouble-badge">Service Mode</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba service mode - Reba signal strength details</p>
+                                <div class="problem-type-badge">Network Issue</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#2263#</span>
+                                    <span class="trouble-badge">Band Selection</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba no guhitamo network bands</p>
+                                <div class="problem-type-badge">Network Config</div>
+                            </div>
+
+                            <div class="step-card">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Uko Gukemura Signal Mbi</h4>
+                                <ol class="text-gray-600 space-y-2 list-decimal list-inside">
+                                    <li>Koresha <strong>*#0011#</strong> kureba signal</li>
+                                    <li>Reba RSSI (signal strength)</li>
+                                    <li>Niba mbi, koresha <strong>*#2263#</strong></li>
+                                    <li>Hitamo "Automatic"</li>
+                                    <li>Subira usuzume signal</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">📊 Signal Strength Guide</h3>
+
+                            <div class="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
+                                <h4 class="text-lg font-bold mb-4">📶 Signal Quality</h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span>-50 to -70 dBm</span>
+                                        <span class="bg-white text-green-600 px-2 rounded">Nziza Cyane</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>-71 to -90 dBm</span>
+                                        <span class="bg-white text-green-600 px-2 rounded">Nziza</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>-91 to -110 dBm</span>
+                                        <span class="bg-yellow-100 text-yellow-600 px-2 rounded">Mbi</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>-111+ dBm</span>
+                                        <span class="bg-red-100 text-red-600 px-2 rounded">Mbi Cyane</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="warning-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-yellow-800 mb-3">⚠️ Icyitonderwa</h4>
+                                <ul class="text-yellow-700 space-y-2">
+                                    <li>• Ntugire uhindure band settings</li>
+                                    <li>• "Automatic" ni byiza</li>
+                                    <li>• Reba signal mbere na nyuma</li>
+                                    <li>• Niba signal iracya mbi, gerageza ahandi</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call Problems Tab -->
+                <div id="call-problems" class="lesson-tab-content p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">📞 Gukemura Ibibazo by'Amahamagara</h2>
+                    
+                    <div class="trouble-grid mb-8">
+                        <div class="trouble-item">
+                            <div class="trouble-icon">📵</div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Calls Not Working</h4>
+                            <p class="text-gray-600 mb-4">Ntushobora guhamagara</p>
+                            <div class="trouble-code rounded-lg p-4 text-white mb-3">
+                                <div class="font-mono text-sm">*#*#4636#*#*</div>
+                                <div class="text-xs text-orange-200">Phone Info</div>
+                            </div>
+                            <div class="solution-card rounded-lg p-3">
+                                <p class="text-green-700 text-sm">Reba call settings, run phone information</p>
+                            </div>
+                        </div>
+
+                        <div class="trouble-item">
+                            <div class="trouble-icon">🔄</div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Call Forwarding Issues</h4>
+                            <p class="text-gray-600 mb-4">Amahamagara yoherejwa ahandi</p>
+                            <div class="trouble-code rounded-lg p-4 text-white mb-3">
+                                <div class="font-mono text-sm">#21#</div>
+                                <div class="text-xs text-orange-200">Stop Forward</div>
+                            </div>
+                            <div class="solution-card rounded-lg p-3">
+                                <p class="text-green-700 text-sm">Guhagarika call forwarding yose</p>
+                            </div>
+                        </div>
+
+                        <div class="trouble-item">
+                            <div class="trouble-icon">⏳</div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-2">Call Waiting Problems</h4>
+                            <p class="text-gray-600 mb-4">Ntushobora kubona calls zikaza</p>
+                            <div class="trouble-code rounded-lg p-4 text-white mb-3">
+                                <div class="font-mono text-sm">*#43#</div>
+                                <div class="text-xs text-orange-200">Call Waiting</div>
+                            </div>
+                            <div class="solution-card rounded-lg p-3">
+                                <p class="text-green-700 text-sm">Kureba call waiting status</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">📞 Code z'Amahamagara</h3>
+                            
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#*#4636#*#*</span>
+                                    <span class="trouble-badge">Phone Info</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba phone information - Call settings</p>
+                                <div class="problem-type-badge">Call Issue</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">#21#</span>
+                                    <span class="trouble-badge">Stop Forward</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Guhagarika call forwarding yose</p>
+                                <div class="problem-type-badge">Forwarding Issue</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#43#</span>
+                                    <span class="trouble-badge">Call Waiting</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba call waiting status</p>
+                                <div class="problem-type-badge">Waiting Issue</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">🔧 Uko Gukemura</h3>
+
+                            <div class="step-card">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Ibibazo by'Amahamagara</h4>
+                                <ul class="text-gray-600 space-y-2">
+                                    <li>• <strong>Ntushobora guhamagara:</strong> Koresha *#*#4636#*#*</li>
+                                    <li>• <strong>Amahamagara yoherejwa:</strong> Koresha #21#</li>
+                                    <li>• <strong>Call waiting:</strong> Koresha *#43#</li>
+                                    <li>• <strong>Busy calls:</strong> Koresha *67*numero#</li>
+                                </ul>
+                            </div>
+
+                            <div class="solution-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-green-800 mb-3">💡 Inama</h4>
+                                <p class="text-green-700">
+                                    Mbere yo gukoresha code, menya ikibazo cyawe. 
+                                    Code zitandukanye zikemura ibibazo bitandukanye.
+                                </p>
+                            </div>
+
+                            <div class="danger-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-red-800 mb-3">🚫 Ibitakwiye</h4>
+                                <ul class="text-red-700 space-y-2">
+                                    <li>• Ntugire code z'umutekano</li>
+                                    <li>• Ntugire uhindure settings utazi</li>
+                                    <li>• Reba code mbere yo gukoresha</li>
+                                    <li>• Ntugire ubuze amakuru yawe</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMS Problems Tab -->
+                <div id="sms-problems" class="lesson-tab-content p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">💬 Gukemura Ibibazo by'SMS</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">📨 SMS Center Issues</h3>
+                            
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#5005*7672#</span>
+                                    <span class="trouble-badge">SMS Center</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba SMS center number</p>
+                                <div class="problem-type-badge">SMS Issue</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#5005*7672*+250XXXXXXXX#</span>
+                                    <span class="trouble-badge">SMS Setup</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Gushyiraho SMS center number</p>
+                                <div class="problem-type-badge">SMS Config</div>
+                            </div>
+
+                            <div class="step-card">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Uko Gukemura SMS Issues</h4>
+                                <ol class="text-gray-600 space-y-2 list-decimal list-inside">
+                                    <li>Koresha <strong>*#5005*7672#</strong> kureba SMS center</li>
+                                    <li>Niba itariho, shyiraho SMS center</li>
+                                    <li>Koresha code yo gushyiraho</li>
+                                    <li>Gerageza kohereza SMS</li>
+                                    <li>Niba bitakora, hamagara operateri</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">📱 SMS Center Numbers</h3>
+
+                            <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 text-white">
+                                <h4 class="text-lg font-bold mb-4">📞 SMS Center za Operateri</h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <span>MTN Rwanda</span>
+                                        <span class="font-mono bg-white/20 px-2 rounded">+250780001100</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Airtel Rwanda</span>
+                                        <span class="font-mono bg-white/20 px-2 rounded">+250730001100</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span>Tigo Rwanda</span>
+                                        <span class="font-mono bg-white/20 px-2 rounded">+250790001100</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="warning-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-yellow-800 mb-3">⚠️ Icyitonderwa</h4>
+                                <ul class="text-yellow-700 space-y-2">
+                                    <li>• Menya operateri wawe mbere</li>
+                                    <li>• Koresha SMS center ya operateri wawe</li>
+                                    <li>• Niba SMS zitagenda, gerageza gushyiraho</li>
+                                    <li>• Hamagara operateri niba bitakora</li>
+                                </ul>
+                            </div>
+
+                            <div class="solution-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-green-800 mb-3">💡 Inama</h4>
+                                <p class="text-green-700">
+                                    SMS center ni ingenzi mu kohereza SMS. 
+                                    Niba SMS center ntabwo iriho cyangwa itariho neza, 
+                                    SMS ntizakora.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Problems Tab -->
+                <div id="data-problems" class="lesson-tab-content p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">🌐 Gukemura Ibibazo by'Data</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">📊 Data Connection Issues</h3>
+                            
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#*#4636#*#*</span>
+                                    <span class="trouble-badge">Phone Info</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba data connection status</p>
+                                <div class="problem-type-badge">Data Issue</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#3282#</span>
+                                    <span class="trouble-badge">Data Info</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba data usage information</p>
+                                <div class="problem-type-badge">Data Info</div>
+                            </div>
+
+                            <div class="step-card">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">Uko Gukemura Data Issues</h4>
+                                <ol class="text-gray-600 space-y-2 list-decimal list-inside">
+                                    <li>Koresha <strong>*#*#4636#*#*</strong></li>
+                                    <li>Hitamo "Phone information"</li>
+                                    <li>Reba data connection status</li>
+                                    <li>Niba itariho, gerageza kuyishyiramo</li>
+                                    <li>Subira usuzume</li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">🔧 APN Settings</h3>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#*#4636#*#*</span>
+                                    <span class="trouble-badge">APN Info</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba APN settings</p>
+                                <div class="problem-type-badge">APN Issue</div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl p-6 text-white">
+                                <h4 class="text-lg font-bold mb-4">🌐 APN ya Operateri</h4>
+                                <div class="space-y-3 text-sm">
+                                    <div>
+                                        <strong>MTN Rwanda:</strong>
+                                        <div class="font-mono mt-1">internet.mtn.rw</div>
+                                    </div>
+                                    <div>
+                                        <strong>Airtel Rwanda:</strong>
+                                        <div class="font-mono mt-1">internet.airtel.rw</div>
+                                    </div>
+                                    <div>
+                                        <strong>Tigo Rwanda:</strong>
+                                        <div class="font-mono mt-1">internet</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="warning-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-yellow-800 mb-3">⚠️ Icyitonderwa</h4>
+                                <ul class="text-yellow-700 space-y-2">
+                                    <li>• APN ni ingenzi mu koresha data</li>
+                                    <li>• Menya APN ya operateri wawe</li>
+                                    <li>• Ntugire uhindure APN utazi</li>
+                                    <li>• Reba APN mbere yo guhindura</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Tab -->
+                <div id="advanced" class="lesson-tab-content p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">⚡ Advanced Troubleshooting</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">🔧 Advanced Codes</h3>
+                            
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#*#7262626#*#*</span>
+                                    <span class="trouble-badge">Field Test</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Field test for network (some devices)</p>
+                                <div class="problem-type-badge">Advanced</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#*#232338#*#*</span>
+                                    <span class="trouble-badge">MAC Address</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Kureba WiFi MAC address</p>
+                                <div class="problem-type-badge">Advanced</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#*#0842#*#*</span>
+                                    <span class="trouble-badge">Vibration</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Test device vibration and backlight</p>
+                                <div class="problem-type-badge">Hardware Test</div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">🛠️ Hardware Testing</h3>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#0*#</span>
+                                    <span class="trouble-badge">LCD Test</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Test LCD screen and colors</p>
+                                <div class="problem-type-badge">Hardware Test</div>
+                            </div>
+
+                            <div class="trouble-code rounded-xl p-6 text-white relative interactive-code">
+                                <button class="copy-btn absolute top-4 right-4 bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors">
+                                    📋
+                                </button>
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="text-lg font-mono font-bold">*#*#2664#*#*</span>
+                                    <span class="trouble-badge">Touch Test</span>
+                                </div>
+                                <p class="text-orange-200 mb-2">Test touch screen functionality</p>
+                                <div class="problem-type-badge">Hardware Test</div>
+                            </div>
+
+                            <div class="danger-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-red-800 mb-3">🚫 Advanced Warning</h4>
+                                <ul class="text-red-700 space-y-2">
+                                    <li>• Advanced code zirakenewe gukoreshwa</li>
+                                    <li>• Ntugire uhindure settings utazi</li>
+                                    <li>• Bika amakuru yawe mbere</li>
+                                    <li>• Code nshya zishobora kuba nshya</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Practice Tab -->
+                <div id="practice" class="lesson-tab-content p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8">🧪 Gerageza Ubumenyi Bwawe</h2>
+                    
+                    <div class="grid lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">❓ Ibibazo</h3>
+                            
+                            <div class="step-card">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">1. Code yo kureba service mode ni iyihe?</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz1" value="a" class="text-orange-600">
+                                        <span>A) *123#</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz1" value="b" class="text-orange-600">
+                                        <span>B) *#0011#</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz1" value="c" class="text-orange-600">
+                                        <span>C) *#06#</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="step-card">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">2. Code yo guhagarika call forwarding yose ni iyihe?</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz2" value="a" class="text-orange-600">
+                                        <span>A) *21*numero#</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz2" value="b" class="text-orange-600">
+                                        <span>B) #21#</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz2" value="c" class="text-orange-600">
+                                        <span>C) *61*numero#</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="step-card">
+                                <h4 class="text-lg font-semibold text-gray-900 mb-3">3. Code yo kureba SMS center number ni iyihe?</h4>
+                                <div class="space-y-2">
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz3" value="a" class="text-orange-600">
+                                        <span>A) *#5005*7672#</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz3" value="b" class="text-orange-600">
+                                        <span>B) *#06#</span>
+                                    </label>
+                                    <label class="flex items-center space-x-3">
+                                        <input type="radio" name="quiz3" value="c" class="text-orange-600">
+                                        <span>C) *123#</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button id="check-quiz" class="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                                🔍 Reba Impinduro
+                            </button>
+
+                            <div id="quiz-result" class="hidden p-6 rounded-2xl text-center"></div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-6">💻 Gerageza Code</h3>
+                            
+                            <div class="bg-gradient-to-br from-amber-500 to-orange-600 rounded-2xl p-8 text-white">
+                                <h4 class="text-xl font-bold mb-4">🧪 Gerageza Code mu Gukemura</h4>
+                                <p class="mb-6">Koresha telefone yawe kugirango ugerageze code zo gukemura:</p>
+                                
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between p-4 bg-white/20 rounded-lg">
+                                        <span class="font-mono text-lg">*#0011#</span>
+                                        <button class="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors" onclick="testCode('*#0011#')">
+                                            🧪 Gerageza
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 bg-white/20 rounded-lg">
+                                        <span class="font-mono text-lg">#21#</span>
+                                        <button class="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors" onclick="testCode('#21#')">
+                                            🧪 Gerageza
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-4 bg-white/20 rounded-lg">
+                                        <span class="font-mono text-lg">*#5005*7672#</span>
+                                        <button class="bg-white/20 hover:bg-white/30 p-2 rounded-lg transition-colors" onclick="testCode('*#5005*7672#')">
+                                            🧪 Gerageza
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 p-4 bg-white/10 rounded-lg">
+                                    <p class="text-sm">💡 <strong>Inama:</strong> Code zo gukemura zirakenewe gukoreshwa mu buryo bwiza!</p>
+                                </div>
+                            </div>
+
+                            <div class="solution-card rounded-2xl p-6">
+                                <h4 class="text-lg font-semibold text-green-800 mb-3">📝 Icyitonderwa</h4>
+                                <ul class="text-green-700 space-y-2">
+                                    <li>• Menya ikibazo cyawe mbere</li>
+                                    <li>• Koresha code zihuje n'ikibazo</li>
+                                    <li>• Subira usuzume nyuma</li>
+                                    <li>• Ntugire code z'umutekano</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Reference Section -->
+            <div class="bg-white rounded-3xl shadow-2xl p-10 mb-10">
+                <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">📋 Inyandiko yo Gukemura</h2>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl text-orange-600">📶</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Umuyoboro</h3>
+                        <ul class="text-gray-600 space-y-2 text-left text-sm">
+                            <li>• *#0011# - Service Mode</li>
+                            <li>• *#2263# - Network Band</li>
+                            <li>• *#*#4636#*#* - Phone Info</li>
+                            <li>• Field Test - Signal Strength</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl text-blue-600">📞</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Amahamagara</h3>
+                        <ul class="text-gray-600 space-y-2 text-left text-sm">
+                            <li>• #21# - Stop Forwarding</li>
+                            <li>• *#43# - Call Waiting</li>
+                            <li>• *#*#4636#*#* - Call Info</li>
+                            <li>• *67*numero# - Busy Forward</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <span class="text-2xl text-green-600">💬</span>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">SMS & Data</h3>
+                        <ul class="text-gray-600 space-y-2 text-left text-sm">
+                            <li>• *#5005*7672# - SMS Center</li>
+                            <li>• *#3282# - Data Info</li>
+                            <li>• *#*#4636#*#* - APN Info</li>
+                            <li>• Know your APN settings</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-6 pt-8 border-t border-gray-200">
+                <a href="3-iphone-codes.html" class="flex items-center space-x-3 text-gray-600 hover:text-orange-600 transition-colors duration-300 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-xl font-semibold">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    <span>Subira ku Gice</span>
+                </a>
+                
+                <div class="flex items-center space-x-4">
+                    <span class="text-gray-500 text-sm">Warangije: <span id="completed-sections">0/6</span></span>
+                    <a href="../quiz.html" class="flex items-center space-x-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <span>Genda ku Quiz</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <script>
+        // Lesson Tabs Management for Troubleshooting
+        class TroubleshootingLessonManager {
+            constructor() {
+                this.currentTab = 'introduction';
+                this.completedTabs = new Set();
+                this.init();
+            }
+
+            init() {
+                this.setupTabs();
+                this.setupQuiz();
+                this.setupProgress();
+                this.setupCopyButtons();
+            }
+
+            setupTabs() {
+                const tabButtons = document.querySelectorAll('.lesson-tab-button');
+                const tabContents = document.querySelectorAll('.lesson-tab-content');
+
+                tabButtons.forEach(button => {
+                    button.addEventListener('click', () => {
+                        const tabId = button.dataset.tab;
+                        
+                        // Remove active class from all buttons and contents
+                        tabButtons.forEach(btn => btn.classList.remove('active'));
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        
+                        // Add active class to current button and content
+                        button.classList.add('active');
+                        document.getElementById(tabId).classList.add('active');
+                        this.currentTab = tabId;
+
+                        // Mark tab as viewed
+                        this.markTabCompleted(tabId);
+                    });
+                });
+            }
+
+            markTabCompleted(tabId) {
+                if (!this.completedTabs.has(tabId)) {
+                    this.completedTabs.add(tabId);
+                    this.updateProgress();
+                }
+            }
+
+            updateProgress() {
+                const progress = (this.completedTabs.size / 6) * 100; // 6 main tabs (excluding practice)
+                const progressBar = document.getElementById('lesson-progress');
+                const progressPercent = document.getElementById('progress-percent');
+                const completedSections = document.getElementById('completed-sections');
+                
+                if (progressBar && progressPercent && completedSections) {
+                    progressBar.style.width = `${progress}%`;
+                    progressPercent.textContent = `${Math.round(progress)}%`;
+                    completedSections.textContent = `${this.completedTabs.size}/6`;
+                }
+
+                // Enable completion button when all tabs are viewed
+                if (this.completedTabs.size >= 5) { // At least 5 of 6 main tabs
+                    this.enableCompletion();
+                }
+            }
+
+            enableCompletion() {
+                const completeButton = document.getElementById('complete-lesson');
+                if (completeButton) {
+                    completeButton.classList.remove('bg-gray-200', 'text-gray-700');
+                    completeButton.classList.add('bg-gradient-to-r', 'from-orange-500', 'to-amber-600', 'hover:from-orange-600', 'hover:to-amber-700', 'text-white', 'shadow-lg', 'hover:shadow-xl');
+                    completeButton.innerHTML = `
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Emeza Kurangiza</span>
+                    `;
+                    
+                    completeButton.onclick = () => this.completeLesson();
+                }
+            }
+
+            setupQuiz() {
+                document.getElementById('check-quiz')?.addEventListener('click', () => {
+                    this.checkQuiz();
+                });
+            }
+
+            checkQuiz() {
+                const answers = {
+                    quiz1: 'b', // *#0011# for Service Mode
+                    quiz2: 'b', // #21# to stop call forwarding
+                    quiz3: 'a'  // *#5005*7672# for SMS center
+                };
+
+                let correct = 0;
+                let total = 0;
+
+                for (const [question, correctAnswer] of Object.entries(answers)) {
+                    const selected = document.querySelector(`input[name="${question}"]:checked`);
+                    if (selected) {
+                        total++;
+                        if (selected.value === correctAnswer) {
+                            correct++;
+                            selected.parentElement.classList.add('text-green-600', 'font-semibold');
+                        } else {
+                            selected.parentElement.classList.add('text-red-600');
+                        }
+                    }
+                }
+
+                const resultDiv = document.getElementById('quiz-result');
+                if (resultDiv) {
+                    resultDiv.className = `p-6 rounded-2xl text-center ${
+                        correct === total ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }`;
+                    resultDiv.innerHTML = `
+                        <strong class="text-lg">Igisubizo:</strong> 
+                        <div class="text-2xl font-bold my-2">${correct} ku ${total}</div>
+                        <p class="text-lg">${
+                            correct === total ? 
+                            '🎉 Wakoze neza! Urasobanukiwe gukoresha code mu gukemura ibibazo.' : 
+                            '💪 Hari ibyo usabwa kongera kwiga. Subira usome inzira yo gukemura.'
+                        }</p>
+                    `;
+                    resultDiv.classList.remove('hidden');
+
+                    // Mark practice tab as completed if quiz is passed
+                    if (correct === total) {
+                        this.markTabCompleted('practice');
+                    }
+                }
+            }
+
+            setupCopyButtons() {
+                document.querySelectorAll('.copy-btn').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const codeExample = e.target.closest('.trouble-code');
+                        const codeText = codeExample.querySelector('.font-mono').textContent;
+                        
+                        navigator.clipboard.writeText(codeText).then(() => {
+                            const originalText = button.innerHTML;
+                            button.innerHTML = '✅';
+                            setTimeout(() => {
+                                button.innerHTML = originalText;
+                            }, 2000);
+                        });
+                    });
+                });
+            }
+
+            completeLesson() {
+                // Mark lesson as completed in course progress
+                const courseProgress = JSON.parse(localStorage.getItem('progress-secret-codes') || '[]');
+                const lessonIndex = courseProgress.findIndex(l => l.id === '4');
+                if (lessonIndex !== -1 && !courseProgress[lessonIndex].completed) {
+                    courseProgress[lessonIndex].completed = true;
+                    localStorage.setItem('progress-secret-codes', JSON.stringify(courseProgress));
+                }
+
+                // Show success message
+                const completeButton = document.getElementById('complete-lesson');
+                if (completeButton) {
+                    completeButton.innerHTML = `
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Warangije! 🎉</span>
+                    `;
+                    completeButton.disabled = true;
+                }
+
+                alert('🎉 Warangije neza iki gice cyo Gukoresha Code mu Gukemura Ibibazo! Urashobora gukomeza ku quiz.');
+            }
+
+            setupProgress() {
+                // Load existing progress
+                const savedProgress = localStorage.getItem('lesson-4-progress');
+                if (savedProgress) {
+                    this.completedTabs = new Set(JSON.parse(savedProgress));
+                    this.updateProgress();
+                }
+            }
+        }
+
+        // Global function to test troubleshooting codes
+        function testCode(code) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(code).then(() => {
+                    alert(`📋 Code yo gukemura "${code}" yakopiwe! Genda uyandike mu telefone yawe.`);
+                });
+            } else {
+                // Fallback for browsers that don't support clipboard API
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert(`📋 Code yo gukemura "${code}" yakopiwe! Genda uyandike mu telefone yawe.`);
+            }
+        }
+
+        // Initialize the lesson
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load components
+            fetch('../../../components/header.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('header').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load header:', err));
+
+            fetch('../../../components/footer.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('footer').innerHTML = html;
+                })
+                .catch(err => console.error('Failed to load footer:', err));
+
+            // Initialize Troubleshooting Lesson Manager
+            window.troubleshootingManager = new TroubleshootingLessonManager();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!-- ===== COMPACT FOOTER - SINGLE HORIZONTAL LAYOUT ===== -->
+<footer id="mainFooter" class="modern-footer fade-in no-print" role="contentinfo" aria-label="Amakuru y'inyuma y'urubuga">
+    <style>
+        /* ===== COMPACT FOOTER STYLES ===== */
+        .modern-footer {
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 50%, #1B5E20 100%);
+            color: #fff;
+            padding: 1.5rem 1rem 0.8rem 1rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.75rem;
+            letter-spacing: 0.01em;
+            user-select: none;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            border-top: 3px solid #FFD54F;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 0.5rem;
+        }
+
+        /* ===== SINGLE HORIZONTAL GRID LAYOUT ===== */
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 1fr 1.5fr 1.2fr; /* 5 columns - balanced */
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section {
+            padding: 0 5px;
+        }
+
+        .footer-section h4 {
+            color: #FFD54F;
+            font-size: 0.8rem;
+            margin-bottom: 0.6rem;
+            border-bottom: 1px solid rgba(255, 213, 79, 0.3);
+            padding-bottom: 3px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            padding: 1px 0;
+            font-size: 0.7rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .footer-section a:hover {
+            color: #FFD54F;
+            transform: translateX(2px);
+        }
+
+        .footer-section i {
+            width: 12px;
+            margin-right: 4px;
+            text-align: center;
+            font-size: 0.65rem;
+        }
+
+        /* ===== COMPACT BOTTOM SECTION ===== */
+        .footer-bottom-line {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.65rem;
+            text-align: center;
+        }
+
+        .footer-details-bottom {
+            margin-top: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .version-tag {
+            background: rgba(255, 213, 79, 0.15);
+            padding: 1px 4px;
+            border-radius: 6px;
+            font-size: 0.6rem;
+        }
+
+        .contact-highlight {
+            color: #FFD54F !important;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.7rem;
+        }
+
+        .contact-highlight:hover {
+            text-decoration: underline;
+        }
+
+        /* Interactive elements - COMPACT */
+        .interactive-item {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin: 1px 0;
+            font-size: 0.7rem;
+        }
+
+        .interactive-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .location-pin { color: #FF6B6B; }
+        .phone-icon { color: #4ECDC4; }
+        .email-icon { color: #45B7D1; }
+        .car-icon { color: #FFD54F; }
+
+        /* Driving Questions Section - COMPACT */
+        .driving-questions {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            border-left: 3px solid #FFD54F;
+        }
+
+        .driving-questions h4 {
+            color: #FFD54F !important;
+            margin-bottom: 6px !important;
+        }
+
+        .driving-link {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 213, 79, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 3px 0;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: white;
+            font-size: 0.65rem;
+        }
+
+        .driving-link:hover {
+            background: rgba(255, 213, 79, 0.3);
+        }
+
+        .driving-link i {
+            font-size: 0.8rem;
+            margin-right: 6px;
+        }
+
+        .pdf-badge {
+            background: #FFD54F;
+            color: #1B5E20;
+            padding: 1px 4px;
+            border-radius: 8px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            margin-left: 6px;
+        }
+
+        /* Course progress indicators - COMPACT */
+        .course-progress {
+            display: inline-block;
+            width: 40px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 1px;
+            margin-left: 5px;
+            vertical-align: middle;
+            overflow: hidden;
+        }
+
+        .course-progress-fill {
+            height: 100%;
+            background: #FFD54F;
+            border-radius: 1px;
+            transition: width 0.5s ease;
+        }
+
+        /* Quick links - COMPACT */
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .quick-link {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1px 6px;
+            border-radius: 10px;
+            font-size: 0.6rem;
+            text-decoration: none;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .quick-link:hover {
+            background: rgba(255, 213, 79, 0.2);
+            color: #FFD54F;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Toast notifications - COMPACT */
+        .footer-toast {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: #2E7D32;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            max-width: 250px;
+        }
+
+        .footer-toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 1.2fr 1fr 1fr 1.3fr 1.2fr;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .modern-footer {
+                padding: 1rem 0.5rem 0.6rem 0.5rem;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .footer-section h4 {
+                font-size: 0.75rem;
+            }
+            
+            .footer-section ul li {
+                justify-content: center;
+            }
+            
+            .footer-details-bottom {
+                flex-direction: column;
+                gap: 3px;
+            }
+
+            .footer-toast {
+                left: 15px;
+                right: 15px;
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modern-footer {
+                padding: 0.8rem 0.3rem 0.5rem 0.3rem;
+                font-size: 0.7rem;
+            }
+            
+            .footer-section {
+                padding: 0 2px;
+            }
+            
+            .footer-section a {
+                font-size: 0.65rem;
+            }
+        }
+
+        /* ===== PRINT STYLES ===== */
+        .no-print {
+            @media print {
+                display: none !important;
+            }
+        }
+
+        /* Watermark effect */
+        .modern-footer::before {
+            content: "MAYE SYSTEMS";
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            font-size: 0.5rem;
+            color: rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+            z-index: 0;
+        }
+    </style>
+    
+    <div class="footer-container">
+        
+        <!-- SINGLE HORIZONTAL LAYOUT - 5 COLUMNS -->
+        <div class="footer-grid">
+                
+            <!-- Column 1: Location & Contact -->
+            <div class="footer-section">
+                <h4><i class="fas fa-map-marker-alt"></i>Aho Duherereye</h4>
+                <ul>
+                    <li class="interactive-item" onclick="openLocation('Muhima, Kigali')">
+                        <i class="fas fa-map-marker-alt location-pin"></i>Muhima, KIGALI
+                    </li>
+                    <li class="interactive-item" onclick="openLocation('KN 12 Avenue, Rugenge')">
+                        <i class="fas fa-road location-pin"></i>KN 12 Av, RUGENGE
+                    </li>
+                    <li class="interactive-item contact-highlight" onclick="makePhoneCall()">
+                        <i class="fas fa-phone phone-icon"></i>+250 784 067 694
+                    </li>
+                    <li class="interactive-item" onclick="sendEmail()">
+                        <i class="fas fa-envelope email-icon"></i>kjeanpaul28@gmail.com
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Column 2: Services -->
+            <div class="footer-section">
+                <h4><i class="fas fa-cogs"></i>Serivisi</h4>
+                <ul>
+                    <li><a href="../services.html"><i class="fas fa-building"></i>Gucunga Umutungo</a></li>
+                    <li><a href="../elearning.html"><i class="fas fa-graduation-cap"></i>Amasomo</a></li>
+                    <li><a href="../pricing.html"><i class="fas fa-tags"></i>Ibiciro</a></li>
+                    <li><a href="../contact.html#itsupport"><i class="fas fa-headset"></i>IT Support</a></li>
+                </ul>
+            </div>
+
+            <!-- Column 3: Courses -->
+            <div class="footer-section">
+                <h4><i class="fas fa-book-open"></i>Amasomo</h4>
+                <ul>
+                    <li>
+                        <a href="../courses/computer-basics/index.html">
+                            <i class="fas fa-desktop"></i>Computer
+                        </a>
+                        <span class="course-progress">
+                            <span class="course-progress-fill" id="progress-computer" style="width: 0%"></span>
+                        </span>
+                    </li>
+                    
+                    <li>
+                        <a href="../courses/mobile-basics/index.html">
+                            <i class="fas fa-mobile-alt"></i>Mobile
+                        </a>
+                        <span class="course-progress">
+                            <span class="course-progress-fill" id="progress-mobile" style="width: 0%"></span>
+                        </span>
+                    </li>
+                    
+                    <li>
+                        <a href="../courses/secret-codes/index.html">
+                            <i class="fas fa-key"></i>Code
+                        </a>
+                        <span class="course-progress">
+                            <span class="course-progress-fill" id="progress-codes" style="width: 0%"></span>
+                        </span>
+                    </li>
+                    
+                    <li>
+                        <a href="../driving-test.html">
+                            <i class="fas fa-car"></i>Driving Quiz
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Column 4: Driving Questions -->
+            <div class="footer-section driving-questions">
+                <h4><i class="fas fa-car car-icon"></i>Amategeko</h4>
+                <div class="driving-links">
+                    <a href="https://ik.imagekit.io/73qho7kh9/questions.pdf?updatedAt=1764137988225" 
+                       target="_blank" 
+                       class="driving-link"
+                       onclick="trackDrivingPDF()">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>Ibibazo & Ibisubizo</span>
+                        <span class="pdf-badge">PDF</span>
+                    </a>
+                    
+                    <a href="../driving-test.html" 
+                       class="driving-link"
+                       onclick="trackDrivingQuiz()">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Tangira Quiz</span>
+                    </a>
+                    
+                    <a href="../courses/index.html" 
+                       class="driving-link"
+                       onclick="trackAllCourses()">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Amasomo Yose</span>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Column 5: System & Legal -->
+            <div class="footer-section">
+                <h4><i class="fas fa-link"></i>System</h4>
+                <ul>
+                    <li><a href="../system/auth/auth.html"><i class="fas fa-sign-in-alt"></i>Kwinjira</a></li>
+                    <li><a href="../system/auth/terms.html"><i class="fas fa-gavel"></i>Amategeko</a></li>
+                    <li><a href="../system/report.html"><i class="fas fa-chart-bar"></i>Raporo</a></li>
+                    <li><a href="../contact.html"><i class="fas fa-comments"></i>Tuvugishe</a></li>
+                    <li><a href="../about.html"><i class="fas fa-info-circle"></i>Ibyerekeye</a></li>
+                </ul>
+            </div>
+
+        </div>
+        
+        <!-- BOTTOM LINE - COMPACT -->
+        <div class="footer-bottom-line">
+            <span>© <span id="current-year">2024</span> MAYE SYSTEMS Ltd | All Rights Reserved.</span>
+            <div class="footer-details-bottom">
+                <span>Ikemura byinshi by'imicungire y'umutungo n'ubumenyi.</span>
+                <span class="version-tag">Version: <span id="app-version">3.2.0</span></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="footerToast" class="footer-toast"></div>
+</footer>
+
+<script>
+    // Compact Footer Manager
+    class FooterManager {
+        constructor() {
+            this.APP_VERSION = 'v3.2.0';
+            this.courses = {
+                'computer-basics': { element: 'progress-computer', storageKey: 'computer-basics-progress' },
+                'mobile-basics': { element: 'progress-mobile', storageKey: 'mobile-basics-progress' },
+                'secret-codes': { element: 'progress-codes', storageKey: 'secret-codes-progress' }
+            };
+            this.init();
+        }
+
+        init() {
+            this.updateVersion();
+            this.updateCurrentYear();
+            this.loadFontAwesome();
+            this.loadCourseProgress();
+            this.setupInteractiveElements();
+        }
+
+        updateVersion() {
+            const versionEl = document.getElementById('app-version');
+            if (versionEl) {
+                versionEl.textContent = this.APP_VERSION;
+            }
+        }
+
+        updateCurrentYear() {
+            const year = new Date().getFullYear();
+            const yearEl = document.getElementById('current-year');
+            if (yearEl) {
+                yearEl.textContent = year;
+            }
+        }
+
+        loadFontAwesome() {
+            if (!document.querySelector('link[href*="font-awesome"]') && 
+                !document.querySelector('link[href*="fontawesome"]')) {
+                const faLink = document.createElement('link');
+                faLink.rel = 'stylesheet';
+                faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+                document.head.appendChild(faLink);
+            }
+        }
+
+        loadCourseProgress() {
+            Object.values(this.courses).forEach(course => {
+                const progress = localStorage.getItem(course.storageKey) || 0;
+                const progressElement = document.getElementById(course.element);
+                if (progressElement) {
+                    setTimeout(() => {
+                        progressElement.style.width = `${progress}%`;
+                    }, 300);
+                }
+            });
+        }
+
+        setupInteractiveElements() {
+            // Contact interactions
+            document.querySelectorAll('.interactive-item').forEach(item => {
+                if (item.textContent.includes('@')) {
+                    item.addEventListener('click', this.sendEmail.bind(this));
+                } else if (item.textContent.includes('+250')) {
+                    item.addEventListener('click', this.makePhoneCall.bind(this));
+                } else if (item.textContent.includes('KN') || item.textContent.includes('Muhima')) {
+                    item.addEventListener('click', () => this.openLocation(item.textContent));
+                }
+            });
+
+            // Driving questions interactions
+            document.querySelectorAll('.driving-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const href = e.currentTarget.href;
+                    if (href.includes('.pdf')) {
+                        e.preventDefault();
+                        this.showToast('📄 Gufungura PDF...', 'info');
+                        setTimeout(() => {
+                            window.open(href, '_blank');
+                        }, 500);
+                    }
+                });
+            });
+        }
+
+        // Compact contact methods
+        sendEmail() {
+            const email = 'kjeanpaul28@gmail.com';
+            const subject = 'Information - MAYE SYSTEMS';
+            const body = 'Mwaramutse,\n\nNshaka amakuru kuri MAYE SYSTEMS.\n\nMwese,';
+            
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            this.showToast('📧 Gufungura email...', 'success');
+        }
+
+        makePhoneCall() {
+            const phoneNumber = '+250784067694';
+            window.location.href = `tel:${phoneNumber}`;
+            this.showToast('📞 Gufungura telephone...', 'success');
+        }
+
+        openLocation(locationName) {
+            const address = 'KN 12 Avenue, Rugenge, Muhima, Kigali';
+            window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+            this.showToast('🗺️ Gufungura Maps...', 'success');
+        }
+
+        // Compact toast system
+        showToast(message, type = 'info') {
+            const toast = document.getElementById('footerToast');
+            if (!toast) return;
+
+            toast.textContent = message;
+            toast.className = 'footer-toast';
+            toast.style.background = type === 'success' ? '#2E7D32' : '#1976d2';
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Progress update method
+        updateCourseProgress(courseName, progress) {
+            const course = this.courses[courseName];
+            if (course) {
+                localStorage.setItem(course.storageKey, progress);
+                const progressElement = document.getElementById(course.element);
+                if (progressElement) {
+                    progressElement.style.width = `${progress}%`;
+                }
+            }
+        }
+    }
+
+    // Global functions
+    function trackDrivingPDF() {
+        console.log('🚗 PDF tracked');
+    }
+
+    function trackDrivingQuiz() {
+        console.log('🚗 Quiz tracked');
+    }
+
+    function trackAllCourses() {
+        console.log('🚗 Courses tracked');
+    }
+
+    function sendEmail() {
+        if (window.footerManager) window.footerManager.sendEmail();
+    }
+
+    function makePhoneCall() {
+        if (window.footerManager) window.footerManager.makePhoneCall();
+    }
+
+    function openLocation(locationName) {
+        if (window.footerManager) window.footerManager.openLocation(locationName);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('mainFooter') && !window.footerManager) {
+            window.footerManager = new FooterManager();
+        }
+    });
+</script>

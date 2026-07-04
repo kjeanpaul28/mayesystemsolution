@@ -1,0 +1,4334 @@
+<!DOCTYPE html>
+<html lang="rw" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYE SYSTEM - Gucunga Abakozi</title>
+    
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    
+    <!-- XLSX Library -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <style>
+        /* ===== POLICE COLORS & THEME ===== */
+        :root {
+            --police-blue: #1e3a8a;
+            --police-red: #dc2626;
+            --police-gold: #fbbf24;
+            --police-dark: #0f172a;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+        
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #475569;
+        }
+        
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            overflow-x: hidden;
+        }
+        
+        /* ===== MAIN LAYOUT ===== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--police-blue) 0%, var(--police-dark) 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .sidebar.collapsed {
+            transform: translateX(-85%);
+        }
+        
+        .sidebar.collapsed .nav-text,
+        .sidebar.collapsed .logo-text,
+        .sidebar.collapsed .user-details,
+        .sidebar.collapsed .nav-title {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            position: absolute;
+        }
+        
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 0.75rem;
+        }
+        
+        .sidebar.collapsed .nav-icon {
+            margin-right: 0;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+        }
+        
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            object-fit: contain;
+            border: 2px solid white;
+            background: white;
+        }
+        
+        .logo-icon-fallback {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .logo-icon-fallback i {
+            color: var(--police-blue);
+            font-size: 1.3rem;
+        }
+        
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .logo-text h1 {
+            font-size: 1.1rem;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .logo-text span {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        .sidebar-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(180deg);
+        }
+        
+        /* User Profile */
+        .user-profile {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--police-gold), #f59e0b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+        
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .user-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .user-role {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+        
+        /* Navigation */
+        .nav-section {
+            padding: 1rem 0;
+        }
+        
+        .nav-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            opacity: 0.6;
+            margin-bottom: 0.5rem;
+            padding-left: 1rem;
+            white-space: nowrap;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            margin: 0 0.5rem 0.25rem;
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-item.active {
+            background: rgba(251, 191, 36, 0.2);
+            color: white;
+            border-left: 3px solid var(--police-gold);
+        }
+        
+        .nav-icon {
+            width: 24px;
+            margin-right: 0.75rem;
+            text-align: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        
+        .nav-text {
+            flex: 1;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .nav-badge {
+            background: var(--police-red);
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.1rem 0.4rem;
+            border-radius: 10px;
+            margin-left: auto;
+        }
+        
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            background: var(--bg-secondary);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .main-content.expanded {
+            margin-left: 70px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
+        
+        /* Top Bar */
+        .top-bar {
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: var(--header-height);
+        }
+        
+        @media (max-width: 768px) {
+            .top-bar {
+                padding: 0 1rem;
+            }
+        }
+        
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .breadcrumb-item {
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .breadcrumb-item.active {
+            color: var(--police-blue);
+            font-weight: 600;
+        }
+        
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        /* Theme Toggle */
+        .theme-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .theme-toggle {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .theme-checkbox {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .theme-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .theme-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        .theme-checkbox:checked + .theme-slider {
+            background-color: var(--police-blue);
+        }
+        
+        .theme-checkbox:checked + .theme-slider:before {
+            transform: translateX(30px);
+        }
+        
+        /* Notification Button */
+        .notification-btn {
+            position: relative;
+            background: var(--bg-tertiary);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .notification-btn:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: var(--police-red);
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+        }
+        
+        /* User Menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .user-menu:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        .user-avatar-small {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--police-blue), #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* ===== DASHBOARD CONTENT ===== */
+        .dashboard-content {
+            padding: 2rem;
+            min-height: calc(100vh - var(--header-height));
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 1rem;
+            }
+        }
+        
+        /* Welcome Banner */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--police-blue), var(--police-red));
+            color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .welcome-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: contain;
+            border: 3px solid white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: white;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--police-blue), var(--police-red));
+        }
+        
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+        }
+        
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .stat-trend.positive {
+            color: #10b981;
+        }
+        
+        .stat-trend.negative {
+            color: #ef4444;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        /* Bulk Actions Bar - NEW */
+        .bulk-actions-bar {
+            background: var(--bg-primary);
+            border: 2px solid var(--police-blue);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.3s ease;
+        }
+        
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .bulk-actions-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .bulk-select-all {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .bulk-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--police-blue);
+        }
+        
+        .bulk-selected-count {
+            background: var(--police-blue);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .bulk-actions-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .bulk-action-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .bulk-delete {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .bulk-activate {
+            background: #10b981;
+            color: white;
+        }
+        
+        .bulk-deactivate {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .bulk-export {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .bulk-role {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .bulk-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .bulk-action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Search and Filter Section */
+        .search-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .search-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .search-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .search-input, .search-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus, .search-select:focus {
+            outline: none;
+            border-color: var(--police-blue);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .search-with-icon {
+            position: relative;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+        
+        .search-with-icon input {
+            padding-left: 3rem;
+        }
+        
+        /* Export Buttons */
+        .export-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            padding: 0.5rem 1.25rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .export-pdf {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .export-excel {
+            background: #10b981;
+            color: white;
+        }
+        
+        .export-csv {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .export-print {
+            background: #8b5cf6;
+            color: white;
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Action Buttons */
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--police-blue);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .btn-warning {
+            background: #f59e0b;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        /* Table Styles */
+        .table-container {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .table-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .entries-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .entries-selector select {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+        
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: var(--bg-tertiary);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+        
+        tr.selected {
+            background: rgba(30, 58, 138, 0.05);
+            border-left: 3px solid var(--police-blue);
+        }
+        
+        /* Status Badges */
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .badge-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .badge-inactive {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        .badge-super-admin {
+            background: rgba(139, 92, 246, 0.1);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        
+        .badge-admin {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        
+        /* Pagination */
+        .pagination {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .pagination-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        .pagination-controls {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .page-btn:hover {
+            background: var(--police-blue);
+            color: white;
+            border-color: var(--police-blue);
+        }
+        
+        .page-btn.active {
+            background: var(--police-blue);
+            color: white;
+            border-color: var(--police-blue);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* ===== MODALS ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background: var(--bg-primary);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 90%;
+            width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+        
+        .modal-content.wide {
+            width: 700px;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .modal-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            object-fit: contain;
+            background: white;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+        
+        .modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        
+        .modal-footer {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--police-blue);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .form-check-input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .form-text {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+        
+        /* Detail View */
+        .detail-view {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        /* Bulk Role Modal - NEW */
+        .role-selector-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .role-option {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .role-option:hover {
+            border-color: var(--police-blue);
+            background: rgba(30, 58, 138, 0.05);
+        }
+        
+        .role-option.selected {
+            border-color: var(--police-blue);
+            background: rgba(30, 58, 138, 0.1);
+        }
+        
+        .role-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .role-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+        
+        .role-desc {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Access Denied */
+        .access-denied {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .access-icon {
+            font-size: 5rem;
+            color: var(--police-red);
+            margin-bottom: 1.5rem;
+        }
+        
+        .access-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        
+        .access-message {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+        
+        .access-btn {
+            background: var(--police-blue);
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .access-btn:hover {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.3);
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+        
+        .toast {
+            margin-bottom: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            animation: slideInRight 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0%); opacity: 1; }
+        }
+        
+        .toast-success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+            color: white;
+        }
+        
+        .toast-error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95));
+            color: white;
+        }
+        
+        .toast-info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(29, 78, 216, 0.95));
+            color: white;
+        }
+        
+        .toast-warning {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+            color: white;
+        }
+        
+        .toast-animation {
+            animation: slideInRight 0.3s ease;
+        }
+        
+        /* Loading Shimmer */
+        .loading-shimmer {
+            background: linear-gradient(90deg, 
+                var(--bg-secondary) 0%, 
+                rgba(255,255,255,0.1) 50%, 
+                var(--bg-secondary) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+        
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+        
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--police-blue), var(--police-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .role-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .role-student { background: #3b82f6; color: white; }
+        .role-admin { background: #10b981; color: white; }
+        .role-super_admin { background: #8b5cf6; color: white; }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+        
+        /* Print Styles - UPDATED with MAYE Logo */
+        @media print {
+            .sidebar, .top-bar, .export-buttons, .table-controls, .pagination, 
+            .search-section, .modal-close, .modal-footer button,
+            .action-btn, .bulk-actions-bar, .notification-btn, .user-menu {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0 !important;
+            }
+            
+            .dashboard-content {
+                padding: 0.5in;
+            }
+            
+            .welcome-banner {
+                background: #1e3a8a !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .welcome-logo {
+                display: block !important;
+            }
+            
+            .table-container {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+            
+            th {
+                background: #1e3a8a !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .badge {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .badge-active {
+                background: #10b981 !important;
+                color: white !important;
+            }
+            
+            .badge-inactive {
+                background: #ef4444 !important;
+                color: white !important;
+            }
+            
+            .badge-super-admin {
+                background: #8b5cf6 !important;
+                color: white !important;
+            }
+            
+            .badge-admin {
+                background: #3b82f6 !important;
+                color: white !important;
+            }
+            
+            @page {
+                size: A4 landscape;
+                margin: 0.5in;
+                
+                @top-center {
+                    content: "MAYE SYSTEM - Abakozi";
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 9pt;
+                    color: #1e3a8a;
+                }
+                
+                @bottom-center {
+                    content: "© MAYE SYSTEM • Police Rwanda • " counter(page);
+                    font-family: 'Segoe UI', sans-serif;
+                    font-size: 8pt;
+                    color: #475569;
+                }
+            }
+        }
+        
+        /* Status Indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .status-active {
+            background: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        
+        .status-inactive {
+            background: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+        
+        .status-pending {
+            background: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+        }
+        
+        /* Permission Tags */
+        .permission-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin: 0.2rem;
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Activity Indicator */
+        .activity-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            margin-right: 6px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        /* Export Preview - NEW */
+        .export-preview {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 1200px;
+            height: 80vh;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .export-preview-header {
+            background: var(--police-blue);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .export-preview-content {
+            flex: 1;
+            overflow: auto;
+            padding: 1.5rem;
+        }
+        
+        .export-preview-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+        
+        /* Statistics Chart Container */
+        .chart-container {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-police-blue flex flex-col items-center justify-center z-50">
+        <div class="relative">
+            <div class="w-24 h-24 border-4 border-white border-t-transparent rounded-full animate-spin mb-6"></div>
+            <div class="absolute inset-0 flex-center">
+                <i class="fas fa-shield-alt text-white text-2xl"></i>
+            </div>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-2">MAYE SYSTEM</h2>
+        <p id="loadingMessage" class="text-white/80 mb-8">Sisitemu irahurizwa...</p>
+        <div class="w-64 bg-white/20 rounded-full h-2 overflow-hidden">
+            <div id="loadingProgress" class="h-full bg-white rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="appContainer" class="app-container hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img id="sidebarLogo" src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                         alt="MAYE Logo" class="logo-img" 
+                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo-icon-fallback" style="display: none;">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>MAYE SYSTEM</h1>
+                        <span>Super Admin</span>
+                    </div>
+                </div>
+                <button id="sidebarToggle" class="sidebar-toggle" data-tooltip="Guhindura sidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name" id="sidebarUserName">Umuyobozi</div>
+                        <div class="user-role">
+                            <span id="sidebarUserRole" class="role-badge role-super_admin">Super Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<nav class="nav-section">
+    <div class="nav-title">Umuyobozi</div>
+    <!-- Hinduye href: /dereva/admin/dashboard.html -> /dereva.html -->
+    <a href="/dereva.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-home"></i></div>
+        <div class="nav-text">Dashboard</div>
+    </a>
+    <a href="/dereva/admin/category-control.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-folder"></i></div>
+        <div class="nav-text">Ibyiciro</div>
+    </a>
+    <a href="/dereva/admin/results.html" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-list-check"></i></div>
+        <div class="nav-text">Ibisubizo</div>
+    </a>
+    <a href="/dereva/super-admin/manage-admins.html" class="nav-item active">
+        <div class="nav-icon"><i class="fas fa-users-cog"></i></div>
+        <div class="nav-text">Abakozi</div>
+        <div class="nav-badge" id="adminsBadge">0</div>
+    </a>
+    <a href="#" class="nav-item" data-section="system">
+        <div class="nav-icon"><i class="fas fa-cogs"></i></div>
+        <div class="nav-text">Sisitemu</div>
+    </a>
+    
+    <div class="nav-title">Sisitemu</div>
+    <a href="#" class="nav-item" data-section="help">
+        <div class="nav-icon"><i class="fas fa-question-circle"></i></div>
+        <div class="nav-text">Uburyo</div>
+    </a>
+    <a href="#" id="logoutBtn" class="nav-item">
+        <div class="nav-icon"><i class="fas fa-sign-out-alt"></i></div>
+        <div class="nav-text">Ohereza</div>
+    </a>
+</nav>
+
+            <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+                <div class="flex items-center justify-between text-sm">
+                    <span class="opacity-80">Sisitemu:</span>
+                    <span class="flex items-center text-green-300">
+                        <i class="fas fa-circle text-xs mr-2"></i>
+                        <span id="systemStatus">Iteguye</span>
+                    </span>
+                </div>
+                <div class="mt-2 text-xs opacity-60 text-center">
+                    © 2024 MAYE • Police Rwanda
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main id="mainContent" class="main-content">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="breadcrumb">
+                    <button id="mobileMenuToggle" class="md:hidden mr-3 text-xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="breadcrumb-item">
+                        <i class="fas fa-home"></i>
+                        <span>Umuyobozi</span>
+                    </div>
+                    <div class="breadcrumb-item active">
+                        <span>Gucunga Abakozi</span>
+                    </div>
+                </div>
+
+                <div class="top-actions">
+                    <div class="theme-toggle-container">
+                        <i class="fas fa-sun text-yellow-500"></i>
+                        <label class="theme-toggle">
+                            <input type="checkbox" id="themeCheckbox" class="theme-checkbox">
+                            <span class="theme-slider"></span>
+                        </label>
+                        <i class="fas fa-moon text-blue-400"></i>
+                    </div>
+
+                    <button id="notificationBtn" class="notification-btn" data-tooltip="Amatangazo">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge"></span>
+                    </button>
+
+                    <div class="user-menu">
+                        <div class="hidden md:block text-right">
+                            <div class="font-semibold text-sm" id="topBarUserName">Umuyobozi</div>
+                            <div class="text-xs text-gray-500" id="topBarUserRole">Super Admin</div>
+                        </div>
+                        <div class="user-avatar-small" id="topBarUserAvatar">S</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <div id="contentArea" class="dashboard-content">
+                <!-- Access Denied -->
+                <div id="accessDenied" class="access-denied hidden">
+                    <div class="access-icon">
+                        <i class="fas fa-shield-haltered"></i>
+                    </div>
+                    <h1 class="access-title">Ntibyemewe</h1>
+                    <p class="access-message">
+                        Uru rupapuro ruri kuri <strong>Super Admin</strong> gusa.<br>
+                        Ubusanzwe uzasubizwa kuri Dashboard.
+                    </p>
+                    <a href="/dereva/admin/dashboard.html" class="access-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Subira kuri Dashboard
+                    </a>
+                </div>
+
+                <!-- Admin Management Dashboard -->
+                <div id="adminDashboard" class="hidden">
+                    <!-- Welcome Banner - UPDATED with Logo -->
+                    <div class="welcome-banner">
+                        <div class="welcome-content">
+                            <h1 class="text-3xl font-bold mb-2">
+                                Gucunga Abakozi, <span id="welcomeMessage">Umuyobozi</span>
+                            </h1>
+                            <p class="opacity-90 mb-4">
+                                Ongeraho, hindura, cyangwa usibe abakozi ba sisitemu (Admin & Super Admin)
+                            </p>
+                            <div class="flex flex-wrap gap-4">
+                                <div class="bg-white/20 px-4 py-2 rounded-lg flex items-center gap-3">
+                                    <i class="fas fa-users-cog"></i>
+                                    <span id="totalAdminsCount">0</span> abakozi
+                                </div>
+                                <div class="bg-white/20 px-4 py-2 rounded-lg flex items-center gap-3">
+                                    <i class="fas fa-user-shield"></i>
+                                    <span id="totalAdminsCount2">0</span> Admin
+                                </div>
+                                <div class="bg-white/20 px-4 py-2 rounded-lg flex items-center gap-3">
+                                    <i class="fas fa-crown"></i>
+                                    <span id="totalSuperAdminsCount">0</span> Super Admin
+                                </div>
+                            </div>
+                        </div>
+                        <img id="welcomeLogo" src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                             alt="MAYE Logo" class="welcome-logo hidden md:block"
+                             onerror="this.onerror=null; this.style.display='none';">
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed);">
+                                    <i class="fas fa-users-cog"></i>
+                                </div>
+                                <div class="stat-trend positive" id="adminsTrend">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>0%</span>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="statsTotalAdmins">0</div>
+                            <div class="stat-label">Abakozi Bose</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                                    <i class="fas fa-user-shield"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="statsAdmins">0</div>
+                            <div class="stat-label">Admin</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="statsSuperAdmins">0</div>
+                            <div class="stat-label">Super Admin</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="statsActiveAdmins">0</div>
+                            <div class="stat-label">Abakora</div>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Chart - NEW -->
+                    <div class="chart-container hidden md:block">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <i class="fas fa-chart-pie"></i>
+                                Imiterere y'Abakozi
+                            </h3>
+                            <div class="text-sm text-gray-500">
+                                <span class="mr-3"><i class="fas fa-circle text-police-blue"></i> Super Admin</span>
+                                <span class="mr-3"><i class="fas fa-circle text-blue-500"></i> Admin</span>
+                                <span><i class="fas fa-circle text-green-500"></i> Abakora</span>
+                            </div>
+                        </div>
+                        <canvas id="adminChart" style="height: 250px; width: 100%;"></canvas>
+                    </div>
+
+                    <!-- Bulk Actions Bar - NEW -->
+                    <div id="bulkActionsBar" class="bulk-actions-bar hidden">
+                        <div class="bulk-actions-left">
+                            <div class="bulk-select-all">
+                                <input type="checkbox" id="selectAllCheckbox" class="bulk-checkbox">
+                                <label for="selectAllCheckbox">Hitamo byose</label>
+                            </div>
+                            <span class="bulk-selected-count" id="selectedCount">0</span>
+                            <span>yatoranyijwe</span>
+                        </div>
+                        <div class="bulk-actions-buttons">
+                            <button id="bulkActivateBtn" class="bulk-action-btn bulk-activate" title="Kora abatoranyijwe">
+                                <i class="fas fa-play-circle"></i>
+                                <span class="hidden sm:inline">Kora</span>
+                            </button>
+                            <button id="bulkDeactivateBtn" class="bulk-action-btn bulk-deactivate" title="Hagarika abatoranyijwe">
+                                <i class="fas fa-pause-circle"></i>
+                                <span class="hidden sm:inline">Hagarika</span>
+                            </button>
+                            <button id="bulkRoleBtn" class="bulk-action-btn bulk-role" title="Hindura umwanya">
+                                <i class="fas fa-user-tag"></i>
+                                <span class="hidden sm:inline">Umwanya</span>
+                            </button>
+                            <button id="bulkExportBtn" class="bulk-action-btn bulk-export" title="Kuramo amakuru">
+                                <i class="fas fa-download"></i>
+                                <span class="hidden sm:inline">Kuramo</span>
+                            </button>
+                            <button id="bulkDeleteBtn" class="bulk-action-btn bulk-delete" title="Siba abatoranyijwe">
+                                <i class="fas fa-trash-alt"></i>
+                                <span class="hidden sm:inline">Siba</span>
+                            </button>
+                            <button id="bulkClearBtn" class="bulk-action-btn btn-outline" title="Siba amatoranyo">
+                                <i class="fas fa-times"></i>
+                                <span class="hidden sm:inline">Siba</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Search and Export Section -->
+                    <div class="search-section">
+                        <div class="search-header">
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <i class="fas fa-filter"></i>
+                                Gucunga no Gushakisha
+                            </h3>
+                            <div class="flex gap-3">
+                                <button id="addAdminBtn" class="action-btn btn-primary">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Ongeraho Umukozi
+                                </button>
+                                <div class="export-buttons">
+                                    <button id="exportPDF" class="export-btn export-pdf">
+                                        <i class="fas fa-file-pdf"></i>
+                                        PDF
+                                    </button>
+                                    <button id="exportExcel" class="export-btn export-excel">
+                                        <i class="fas fa-file-excel"></i>
+                                        Excel
+                                    </button>
+                                    <button id="exportCSV" class="export-btn export-csv">
+                                        <i class="fas fa-file-csv"></i>
+                                        CSV
+                                    </button>
+                                    <button id="exportPrint" class="export-btn export-print">
+                                        <i class="fas fa-print"></i>
+                                        Print
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="search-grid">
+                            <div class="search-group">
+                                <label class="search-label">Shakisha</label>
+                                <div class="search-with-icon">
+                                    <i class="fas fa-search search-icon"></i>
+                                    <input type="text" id="searchInput" class="search-input w-full" 
+                                           placeholder="Amazina, imeyili, umwanya...">
+                                </div>
+                            </div>
+                            <div class="search-group">
+                                <label class="search-label">Umwanya</label>
+                                <select id="roleFilter" class="search-select">
+                                    <option value="all">Abakozi Bose</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="super-admin">Super Admin</option>
+                                </select>
+                            </div>
+                            <div class="search-group">
+                                <label class="search-label">Status</label>
+                                <select id="statusFilter" class="search-select">
+                                    <option value="all">Byose</option>
+                                    <option value="active">Abakora</option>
+                                    <option value="inactive">Badakora</option>
+                                    <option value="pending">Arategereje</option>
+                                </select>
+                            </div>
+                            <div class="search-group">
+                                <label class="search-label">&nbsp;</label>
+                                <button id="clearFilters" class="w-full px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center justify-center gap-2">
+                                    <i class="fas fa-times"></i>
+                                    Siba amashyiraho
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admins Table -->
+                    <div class="table-container">
+                        <div class="table-header">
+                            <div class="table-title">
+                                <i class="fas fa-users-cog"></i>
+                                Urutonde rw'Abakozi
+                                <span id="tableSubtitle" class="text-sm font-normal text-gray-500 ml-2"></span>
+                            </div>
+                            <div class="table-controls">
+                                <div class="entries-selector">
+                                    <span>Erekana</span>
+                                    <select id="entriesPerPage">
+                                        <option value="10">10</option>
+                                        <option value="25" selected>25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                        <option value="all">Byose</option>
+                                    </select>
+                                    <span>abakozi</span>
+                                </div>
+                                <button id="refreshTableBtn" class="export-btn" style="background: var(--bg-tertiary); color: var(--text-primary);">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="adminsTable">
+                                <thead>
+                                    <tr>
+                                        <th width="40px">
+                                            <input type="checkbox" id="tableSelectAll" class="bulk-checkbox">
+                                        </th>
+                                        <th>#</th>
+                                        <th>Izina</th>
+                                        <th>Imyeli</th>
+                                        <th>Umwanya</th>
+                                        <th>Status</th>
+                                        <th>Icyemerere</th>
+                                        <th>Umusozo wongiwemo</th>
+                                        <th>Igihe cy'ikubiro</th>
+                                        <th>Ibikorwa</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tableBody">
+                                    <tr>
+                                        <td colspan="10" class="text-center py-8">
+                                            <div class="flex flex-col items-center">
+                                                <i class="fas fa-spinner fa-spin text-2xl text-blue-500 mb-2"></i>
+                                                <span class="text-gray-500">Abakozi bari kuramo...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="pagination" class="pagination">
+                            <div class="pagination-info" id="paginationInfo"></div>
+                            <div class="pagination-controls" id="paginationControls"></div>
+                        </div>
+                    </div>
+
+                    <!-- Export Activity Log - NEW -->
+                    <div class="text-xs text-gray-500 text-right mt-2">
+                        <i class="fas fa-history mr-1"></i>
+                        Iheruka gukuramo: <span id="lastExportTime">Ntarakurwamo</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Add/Edit Admin Modal -->
+    <div id="adminModal" class="modal-overlay hidden">
+        <div class="modal-content wide">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <img id="modalLogo" src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                         alt="MAYE" class="modal-logo"
+                         onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo-icon-fallback" style="display: none; width: 32px; height: 32px;">
+                        <i class="fas fa-shield-alt" style="color: var(--police-blue);"></i>
+                    </div>
+                    <span id="modalTitle">Ongeraho Umukozi</span>
+                </h3>
+                <button onclick="hideAdminModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="adminForm">
+                    <input type="hidden" id="adminId" value="">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Amazina yose *</label>
+                            <input type="text" id="adminName" class="form-control" placeholder="Andika amazina yose" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Imyeli *</label>
+                            <input type="email" id="adminEmail" class="form-control" placeholder="andika@imeyili.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Umwanya *</label>
+                            <select id="adminRole" class="form-select" required>
+                                <option value="">-- Hitamo umwanya --</option>
+                                <option value="admin">Admin (Umunyamabanga)</option>
+                                <option value="super-admin">Super Admin (Umuyobozi)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ijambo ry'ibanga *</label>
+                            <input type="password" id="adminPassword" class="form-control" placeholder="********" 
+                                   autocomplete="new-password">
+                            <div class="form-text" id="passwordHint">Reka niba udahindura ijambo ry'ibanga</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Telefone</label>
+                            <input type="tel" id="adminPhone" class="form-control" placeholder="0788 123 456">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Status</label>
+                            <select id="adminStatus" class="form-select">
+                                <option value="active">Akora</option>
+                                <option value="inactive">Ntakora</option>
+                                <option value="pending">Arategereje</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Icyemerere byongewe</label>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                            <div class="form-check">
+                                <input type="checkbox" id="permCategories" class="form-check-input" checked>
+                                <label for="permCategories">Gucunga Ibyiciro</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="permResults" class="form-check-input" checked>
+                                <label for="permResults">Reba Ibisubizo</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="permAnalytics" class="form-check-input" checked>
+                                <label for="permAnalytics">Reba Ibiranga</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="permAdmins" class="form-check-input">
+                                <label for="permAdmins">Gucunga Abakozi</label>
+                                <span class="text-xs text-gray-500 ml-1">(Super Admin)</span>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="permBackup" class="form-check-input">
+                                <label for="permBackup">Backup & Restore</label>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" id="permAudit" class="form-check-input">
+                                <label for="permAudit">Audit Logs</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Ibisobanuro (Opsiyonali)</label>
+                        <textarea id="adminNotes" class="form-control" rows="2" placeholder="Andika ibisobanuro by'umukozi..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideAdminModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    Gira ubwo
+                </button>
+                <button id="saveAdminBtn" class="action-btn btn-success px-6 py-2">
+                    <i class="fas fa-save mr-2"></i>
+                    Bika Umukozi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Admin Details Modal -->
+    <div id="viewAdminModal" class="modal-overlay hidden">
+        <div class="modal-content wide">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-user-shield text-police-blue"></i>
+                    Umwirondoro w'Umukozi
+                </h3>
+                <button onclick="hideViewAdminModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="viewAdminContent" class="detail-view">
+                    <!-- Content will be loaded dynamically -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="editFromViewBtn" class="action-btn btn-primary">
+                    <i class="fas fa-edit mr-2"></i>
+                    Hindura
+                </button>
+                <button id="toggleStatusBtn" class="action-btn btn-warning">
+                    <i class="fas fa-toggle-off mr-2"></i>
+                    Guhindura Status
+                </button>
+                <button onclick="hideViewAdminModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    Gira ubwo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-police-red">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Gusiba Umukozi
+                </h3>
+                <button onclick="hideDeleteModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body text-center py-6">
+                <div class="text-5xl text-police-red mb-4">
+                    <i class="fas fa-user-minus"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-2" id="deleteAdminName">Umukozi</h4>
+                <p class="text-gray-600 mb-4">
+                    Urakaza gusiba uyu mukozi? Iyi gikorwa ntishobora guhinduramo.
+                </p>
+                <div class="bg-yellow-50 p-4 rounded-lg text-sm text-yellow-800 mb-4">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Uyu mukozi ntiyashobora kongera kwinjira muri sisitemu.
+                </div>
+                <div class="bg-red-50 p-3 rounded-lg text-xs text-red-700">
+                    <i class="fas fa-shield-alt mr-1"></i>
+                    Ibikorwa byawe byose biri mu gitabo.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    Gira ubwo
+                </button>
+                <button id="confirmDeleteBtn" class="action-btn btn-danger px-6 py-2">
+                    <i class="fas fa-trash-alt mr-2"></i>
+                    Siba, Ndemera
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Delete Confirmation Modal - NEW -->
+    <div id="bulkDeleteModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title text-police-red">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Gusiba Abakozi benshi
+                </h3>
+                <button onclick="hideBulkDeleteModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body text-center py-6">
+                <div class="text-5xl text-police-red mb-4">
+                    <i class="fas fa-users-slash"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-2">Gusiba <span id="bulkDeleteCount">0</span> abakozi</h4>
+                <p class="text-gray-600 mb-4">
+                    Urakaza gusiba aba bakozi batoranyijwe? Iyi gikorwa ntishobora guhinduramo.
+                </p>
+                <div class="bg-yellow-50 p-4 rounded-lg text-sm text-yellow-800 mb-4">
+                    <i class="fas fa-info-circle mr-2"></i>
+                                        Aba bakozi ntibashobora kongera kwinjira muri sisitemu.
+                </div>
+                <div class="max-h-40 overflow-y-auto bg-gray-50 p-3 rounded-lg text-left text-sm">
+                    <strong>Abatoranyijwe:</strong>
+                    <div id="bulkDeleteList" class="mt-2 space-y-1"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideBulkDeleteModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    Gira ubwo
+                </button>
+                <button id="confirmBulkDeleteBtn" class="action-btn btn-danger px-6 py-2">
+                    <i class="fas fa-trash-alt mr-2"></i>
+                    Siba Byose, Ndemera
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Role Change Modal - NEW -->
+    <div id="bulkRoleModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-user-tag text-police-blue"></i>
+                    Hindura Umwanya ku Bakozi
+                </h3>
+                <button onclick="hideBulkRoleModal()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-4 text-gray-600">
+                    Urahindura umwanya ku <strong id="bulkRoleCount">0</strong> abakozi batoranyijwe.
+                </p>
+                
+                <div class="role-selector-grid">
+                    <div id="roleOptionAdmin" class="role-option" onclick="selectBulkRole('admin')">
+                        <div class="role-icon text-blue-500">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="role-name">Admin</div>
+                        <div class="role-desc">Umunyamabanga - Gucunga ibizamini</div>
+                    </div>
+                    <div id="roleOptionSuperAdmin" class="role-option" onclick="selectBulkRole('super-admin')">
+                        <div class="role-icon text-purple-500">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <div class="role-name">Super Admin</div>
+                        <div class="role-desc">Umuyobozi - Gucunga byose</div>
+                    </div>
+                </div>
+                
+                <input type="hidden" id="selectedBulkRole" value="">
+                
+                <div class="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-blue-800">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    <strong>Icyitonderwa:</strong> Ibi bizahindura icyemerere ku buryo bukwiye.
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="hideBulkRoleModal()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                    Gira ubwo
+                </button>
+                <button id="confirmBulkRoleBtn" class="action-btn btn-primary px-6 py-2">
+                    <i class="fas fa-save mr-2"></i>
+                    Hindura Umwanya
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notificationsModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-bell"></i>
+                    Amatangazo
+                </h3>
+                <button onclick="hideNotifications()" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="notificationsList" class="space-y-4">
+                    <!-- Notifications will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="markAllAsRead()" class="w-full py-2 text-sm text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    Ibanga byose nk'ibyasomewe
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Preview Modal - NEW -->
+    <div id="exportPreviewModal" class="modal-overlay hidden">
+        <div class="export-preview">
+            <div class="export-preview-header">
+                <div class="flex items-center gap-3">
+                    <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" 
+                         alt="MAYE" class="w-8 h-8 rounded-lg bg-white object-contain">
+                    <h3 class="text-xl font-bold">MAYE SYSTEM - Preview yo Gusohora</h3>
+                </div>
+                <button onclick="hideExportPreview()" class="text-white hover:text-gray-200 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="export-preview-content" id="exportPreviewContent">
+                <!-- Preview content will be loaded dynamically -->
+            </div>
+            <div class="export-preview-footer">
+                <button onclick="hideExportPreview()" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+                    Gira ubwo
+                </button>
+                <button id="confirmExportBtn" class="action-btn btn-success">
+                    <i class="fas fa-download mr-2"></i>
+                    Kuramo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const CONFIG = {
+            FIREBASE_CONFIG: {
+                apiKey: "AIzaSyD4VnHyXpCm_1PiKHSjr0JL4XEBade1OwY",
+                authDomain: "driving-e8a66.firebaseapp.com",
+                databaseURL: "https://driving-e8a66-default-rtdb.firebaseio.com",
+                projectId: "driving-e8a66",
+                storageBucket: "driving-e8a66.appspot.com",
+                messagingSenderId: "629983254477",
+                appId: "1:629983254477:web:efe9505af7212013e51684"
+            },
+            ROLES: {
+                STUDENT: 'student',
+                ADMIN: 'admin',
+                SUPER_ADMIN: 'super-admin'
+            },
+            ALLOWED_ROLES: ['super-admin'], // Super Admin gusa
+            LOGO_URL: 'https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png'
+        };
+
+        // ============================================
+        // GLOBAL STATE
+        // ============================================
+        let currentUser = {
+            uid: null,
+            name: 'Umuyobozi',
+            email: '',
+            role: null
+        };
+        let firebaseApp = null;
+        let firebaseDatabase = null;
+        let firebaseAuth = null;
+        let allAdmins = [];
+        let filteredAdmins = [];
+        let paginatedAdmins = [];
+        let currentPage = 1;
+        let entriesPerPage = 25;
+        let totalPages = 1;
+        let searchFilters = {
+            search: '',
+            role: 'all',
+            status: 'all'
+        };
+        let selectedAdminId = null;
+        
+        // ============================================
+        // BULK OPERATIONS STATE - NEW
+        // ============================================
+        let selectedAdminIds = new Set();
+        let isSelectAll = false;
+        let chartInstance = null;
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                updateLoadingMessage('Gutangiza sisitemu...');
+                updateLoadingProgress(10);
+                
+                await initializeFirebase();
+                updateLoadingProgress(30);
+                
+                await checkAuthAndRedirect();
+                updateLoadingProgress(50);
+                
+                if (CONFIG.ALLOWED_ROLES.includes(currentUser.role)) {
+                    updateLoadingProgress(70);
+                    await initializeUI();
+                    updateLoadingProgress(90);
+                    await loadAdmins();
+                    initializeChart();
+                    updateLoadingProgress(100);
+                    
+                    setTimeout(() => {
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                        document.getElementById('appContainer').classList.remove('hidden');
+                        showToast('Sisitemu iteguye! Murakaza neza ' + currentUser.name, 'success');
+                        
+                        // Load last export time
+                        const lastExport = localStorage.getItem('lastExportTime_admins');
+                        if (lastExport) {
+                            document.getElementById('lastExportTime').textContent = formatTimeAgo(parseInt(lastExport));
+                        }
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Initialization failed:', error);
+                handleInitializationError(error);
+            }
+        });
+
+        function updateLoadingMessage(message) {
+            const el = document.getElementById('loadingMessage');
+            if (el) el.textContent = message;
+        }
+
+        function updateLoadingProgress(percentage) {
+            const el = document.getElementById('loadingProgress');
+            if (el) el.style.width = percentage + '%';
+        }
+
+        async function initializeFirebase() {
+            if (typeof firebase === 'undefined') {
+                throw new Error('Firebase SDK not loaded');
+            }
+            if (firebase.apps.length === 0) {
+                firebaseApp = firebase.initializeApp(CONFIG.FIREBASE_CONFIG);
+                firebaseAuth = firebase.auth();
+                firebaseDatabase = firebase.database();
+                console.log('✅ Firebase initialized');
+            } else {
+                firebaseApp = firebase.apps[0];
+                firebaseAuth = firebase.auth();
+                firebaseDatabase = firebase.database();
+            }
+        }
+
+        async function checkAuthAndRedirect() {
+            return new Promise((resolve, reject) => {
+                const unsubscribe = firebaseAuth.onAuthStateChanged(async (user) => {
+                    unsubscribe();
+                    if (user) {
+                        currentUser.uid = user.uid;
+                        currentUser.name = user.displayName || user.email?.split('@')[0] || 'Umuyobozi';
+                        currentUser.email = user.email || '';
+                        
+                        // Sync with Firebase Realtime Database - following the rules
+                        const userRef = firebaseDatabase.ref('users/' + currentUser.uid);
+                        const snapshot = await userRef.once('value');
+                        if (snapshot.exists()) {
+                            const data = snapshot.val();
+                            currentUser.name = data.name || data.displayName || currentUser.name;
+                            currentUser.role = data.role || CONFIG.ROLES.STUDENT;
+                            
+                            if (user.displayName !== currentUser.name) {
+                                try {
+                                    await user.updateProfile({
+                                        displayName: currentUser.name
+                                    });
+                                    console.log('✅ Auth displayName updated to:', currentUser.name);
+                                } catch (e) {
+                                    console.warn('Could not update auth displayName:', e);
+                                }
+                            }
+                        }
+                        
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        
+                        if (!CONFIG.ALLOWED_ROLES.includes(currentUser.role)) {
+                            showAccessDenied();
+                            resolve(false);
+                        } else {
+                            updateUserInterface();
+                            resolve(true);
+                        }
+                    } else {
+                        window.location.href = '/dereva/auth/auth.html';
+                        reject(new Error('No user authenticated'));
+                    }
+                }, reject);
+            });
+        }
+
+        function showAccessDenied() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            document.getElementById('appContainer').classList.remove('hidden');
+            document.getElementById('accessDenied').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            
+            setTimeout(() => {
+                window.location.href = '/dereva/admin/dashboard.html';
+            }, 3000);
+        }
+
+        function updateUserInterface() {
+            const elements = ['sidebarUserName', 'welcomeMessage', 'topBarUserName'];
+            elements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = currentUser.name;
+                }
+            });
+            
+            const avatarEl = document.getElementById('topBarUserAvatar');
+            if (avatarEl) avatarEl.textContent = currentUser.name.charAt(0).toUpperCase();
+            
+            const roleElements = ['sidebarUserRole', 'topBarUserRole'];
+            roleElements.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.textContent = 'Super Admin';
+                    el.className = 'role-badge role-super_admin';
+                }
+            });
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+
+        async function initializeUI() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeCheckbox').checked = savedTheme === 'dark';
+            
+            setupEventListeners();
+            updateSystemStatus();
+            
+            document.getElementById('accessDenied').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            
+            const collapsed = localStorage.getItem('sidebar_collapsed') === 'true';
+            if (collapsed) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('mainContent').classList.add('expanded');
+                const icon = document.querySelector('#sidebarToggle i');
+                if (icon) icon.className = 'fas fa-chevron-right';
+            }
+        }
+
+        // ============================================
+        // CHART INITIALIZATION - NEW
+        // ============================================
+        function initializeChart() {
+            const ctx = document.getElementById('adminChart')?.getContext('2d');
+            if (!ctx) return;
+            
+            // Destroy existing chart if it exists
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            
+            const admins = allAdmins.filter(a => a.role === 'admin').length;
+            const superAdmins = allAdmins.filter(a => a.role === 'super-admin').length;
+            const active = allAdmins.filter(a => a.status === 'active').length;
+            
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Super Admin', 'Admin', 'Abakora'],
+                    datasets: [{
+                        data: [superAdmins, admins, active],
+                        backgroundColor: [
+                            '#1e3a8a',
+                            '#3b82f6',
+                            '#10b981'
+                        ],
+                        borderColor: 'white',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // LOAD ADMINS FROM FIREBASE - COMPLIANT WITH RULES
+        // ============================================
+        async function loadAdmins() {
+            try {
+                showToast('Abakozi bari kuramo...', 'info');
+                
+                // Following the rules: Only Super Admin can read all users
+                const usersRef = firebaseDatabase.ref('users');
+                const snapshot = await usersRef.once('value');
+                
+                allAdmins = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const user = child.val();
+                        // Only include admin and super-admin roles
+                        if (user.role === 'admin' || user.role === 'super-admin') {
+                            allAdmins.push({
+                                uid: child.key,
+                                name: user.name || user.displayName || 'Umukozi',
+                                email: user.email || '',
+                                role: user.role,
+                                status: user.status || 'active',
+                                phone: user.phone || '',
+                                permissions: user.permissions || {
+                                    categories: true,
+                                    results: true,
+                                    analytics: true,
+                                    admins: user.role === 'super-admin' ? true : false,
+                                    backup: user.permissions?.backup || false,
+                                    audit: user.permissions?.audit || false
+                                },
+                                notes: user.notes || '',
+                                createdAt: user.createdAt || user.created_at || Date.now(),
+                                lastLogin: user.lastLogin || user.last_login || null,
+                                createdBy: user.createdBy || null,
+                                updatedAt: user.updatedAt || null,
+                                termsAccepted: user.termsAccepted || false,
+                                termsAcceptedDate: user.termsAcceptedDate || null,
+                                termsVersion: user.termsVersion || null
+                            });
+                        }
+                    });
+                }
+                
+                // Sort by createdAt (newest first)
+                allAdmins.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                
+                console.log(`✅ Loaded ${allAdmins.length} admins`);
+                document.getElementById('adminsBadge').textContent = allAdmins.length;
+                
+                updateStatistics();
+                applyFilters();
+                setupRealtimeListener();
+                clearSelection(); // Clear bulk selection
+                
+            } catch (error) {
+                console.error('Error loading admins:', error);
+                showToast('Ntibishoboye gukurura abakozi: ' + error.message, 'error');
+                
+                const tbody = document.getElementById('tableBody');
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="text-center py-8">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-exclamation-triangle text-3xl text-red-500 mb-2"></i>
+                                <span class="text-gray-500">Ntibishoboye gukurura abakozi. Ongera ugerageze.</span>
+                                <button onclick="loadAdmins()" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                                    <i class="fas fa-sync-alt mr-2"></i>Ongera ugerageze
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function setupRealtimeListener() {
+            const usersRef = firebaseDatabase.ref('users');
+            
+            // Listen for new admins
+            usersRef.on('child_added', (snapshot) => {
+                const user = snapshot.val();
+                if (user.role === 'admin' || user.role === 'super-admin') {
+                    if (!allAdmins.some(a => a.uid === snapshot.key)) {
+                        const newAdmin = {
+                            uid: snapshot.key,
+                            name: user.name || user.displayName || 'Umukozi',
+                            email: user.email || '',
+                            role: user.role,
+                            status: user.status || 'active',
+                            phone: user.phone || '',
+                            permissions: user.permissions || {
+                                categories: true,
+                                results: true,
+                                analytics: true,
+                                admins: user.role === 'super-admin'
+                            },
+                            notes: user.notes || '',
+                            createdAt: user.createdAt || user.created_at || Date.now(),
+                            lastLogin: user.lastLogin || user.last_login || null
+                        };
+                        allAdmins.unshift(newAdmin);
+                        showToast(`Umukozi mushya yongewemo: ${newAdmin.name}`, 'success');
+                        updateStatistics();
+                        applyFilters();
+                        document.getElementById('adminsBadge').textContent = allAdmins.length;
+                        initializeChart();
+                    }
+                }
+            });
+            
+            // Listen for updates
+            usersRef.on('child_changed', (snapshot) => {
+                const user = snapshot.val();
+                const index = allAdmins.findIndex(a => a.uid === snapshot.key);
+                if (index !== -1) {
+                    allAdmins[index] = {
+                        ...allAdmins[index],
+                        ...user,
+                        uid: snapshot.key
+                    };
+                    applyFilters();
+                    initializeChart();
+                }
+            });
+        }
+
+        // ============================================
+        // STATISTICS
+        // ============================================
+        function updateStatistics() {
+            const total = allAdmins.length;
+            const admins = allAdmins.filter(a => a.role === 'admin').length;
+            const superAdmins = allAdmins.filter(a => a.role === 'super-admin').length;
+            const active = allAdmins.filter(a => a.status === 'active').length;
+            
+            document.getElementById('totalAdminsCount').textContent = total;
+            document.getElementById('totalAdminsCount2').textContent = admins;
+            document.getElementById('totalSuperAdminsCount').textContent = superAdmins;
+            document.getElementById('statsTotalAdmins').textContent = total;
+            document.getElementById('statsAdmins').textContent = admins;
+            document.getElementById('statsSuperAdmins').textContent = superAdmins;
+            document.getElementById('statsActiveAdmins').textContent = active;
+            
+            // Trends (simulated but based on real data)
+            const prevTotal = parseInt(localStorage.getItem('prevAdminCount') || total);
+            const trend = total - prevTotal;
+            const trendPercent = prevTotal > 0 ? Math.round((trend / prevTotal) * 100) : 0;
+            
+            const trendEl = document.getElementById('adminsTrend').querySelector('span');
+            if (trendEl) {
+                trendEl.textContent = (trendPercent > 0 ? '+' : '') + trendPercent + '%';
+                const trendContainer = document.getElementById('adminsTrend');
+                if (trendPercent >= 0) {
+                    trendContainer.classList.add('positive');
+                    trendContainer.classList.remove('negative');
+                } else {
+                    trendContainer.classList.add('negative');
+                    trendContainer.classList.remove('positive');
+                }
+            }
+            
+            localStorage.setItem('prevAdminCount', total);
+            
+            // Update chart
+            initializeChart();
+        }
+
+        // ============================================
+        // BULK OPERATIONS - NEW
+        // ============================================
+        
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const tableSelectAll = document.getElementById('tableSelectAll');
+            
+            isSelectAll = selectAllCheckbox.checked;
+            
+            if (isSelectAll) {
+                // Select all filtered admins
+                filteredAdmins.forEach(admin => {
+                    selectedAdminIds.add(admin.uid);
+                });
+            } else {
+                // Clear all selections
+                selectedAdminIds.clear();
+            }
+            
+            // Sync checkboxes
+            if (tableSelectAll) tableSelectAll.checked = isSelectAll;
+            
+            updateBulkActionsUI();
+            renderTable(); // Re-render to update individual checkboxes
+        }
+
+        function toggleSelectAdmin(uid) {
+            if (selectedAdminIds.has(uid)) {
+                selectedAdminIds.delete(uid);
+            } else {
+                selectedAdminIds.add(uid);
+            }
+            
+            // Update select all checkbox
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const tableSelectAll = document.getElementById('tableSelectAll');
+            
+            const allFilteredSelected = filteredAdmins.every(admin => selectedAdminIds.has(admin.uid));
+            
+            if (selectAllCheckbox) selectAllCheckbox.checked = allFilteredSelected;
+            if (tableSelectAll) tableSelectAll.checked = allFilteredSelected;
+            
+            updateBulkActionsUI();
+        }
+
+        function updateBulkActionsUI() {
+            const selectedCount = selectedAdminIds.size;
+            const bulkBar = document.getElementById('bulkActionsBar');
+            const selectedCountEl = document.getElementById('selectedCount');
+            
+            if (selectedCount > 0) {
+                bulkBar.classList.remove('hidden');
+                selectedCountEl.textContent = selectedCount;
+            } else {
+                bulkBar.classList.add('hidden');
+            }
+        }
+
+        function clearSelection() {
+            selectedAdminIds.clear();
+            isSelectAll = false;
+            
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const tableSelectAll = document.getElementById('tableSelectAll');
+            
+            if (selectAllCheckbox) selectAllCheckbox.checked = false;
+            if (tableSelectAll) tableSelectAll.checked = false;
+            
+            updateBulkActionsUI();
+            renderTable();
+        }
+
+        async function bulkActivate() {
+            if (selectedAdminIds.size === 0) {
+                showToast('Nta bakozi batoranyijwe', 'warning');
+                return;
+            }
+            
+            showToast(`Irahindura status ya ${selectedAdminIds.size} abakozi...`, 'info');
+            
+            let success = 0;
+            let failed = 0;
+            
+            for (const uid of selectedAdminIds) {
+                try {
+                    // Following rules: Only update specific fields
+                    await firebaseDatabase.ref('users/' + uid).update({
+                        status: 'active',
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        updatedBy: currentUser.uid
+                    });
+                    success++;
+                } catch (error) {
+                    console.error('Failed to activate admin:', uid, error);
+                    failed++;
+                }
+            }
+            
+            showToast(`${success} abakozi bakozwe, ${failed} bananiwe`, success > 0 ? 'success' : 'error');
+            await loadAdmins();
+            clearSelection();
+        }
+
+        async function bulkDeactivate() {
+            if (selectedAdminIds.size === 0) {
+                showToast('Nta bakozi batoranyijwe', 'warning');
+                return;
+            }
+            
+            // Prevent self-deactivation
+            if (selectedAdminIds.has(currentUser.uid)) {
+                showToast('Ntushobora kwihagarika ubwawe!', 'error');
+                return;
+            }
+            
+            showToast(`Irahagarika ${selectedAdminIds.size} abakozi...`, 'info');
+            
+            let success = 0;
+            let failed = 0;
+            
+            for (const uid of selectedAdminIds) {
+                if (uid === currentUser.uid) {
+                    failed++;
+                    continue;
+                }
+                try {
+                    await firebaseDatabase.ref('users/' + uid).update({
+                        status: 'inactive',
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        updatedBy: currentUser.uid
+                    });
+                    success++;
+                } catch (error) {
+                    console.error('Failed to deactivate admin:', uid, error);
+                    failed++;
+                }
+            }
+            
+            showToast(`${success} abakozi bahagaritswe, ${failed} bananiwe`, success > 0 ? 'success' : 'error');
+            await loadAdmins();
+            clearSelection();
+        }
+
+        function showBulkDeleteModal() {
+            if (selectedAdminIds.size === 0) {
+                showToast('Nta bakozi batoranyijwe', 'warning');
+                return;
+            }
+            
+            // Prevent self-delete
+            if (selectedAdminIds.has(currentUser.uid)) {
+                showToast('Ntushobora kwisiba ubwawe!', 'error');
+                return;
+            }
+            
+            document.getElementById('bulkDeleteCount').textContent = selectedAdminIds.size;
+            
+            const listContainer = document.getElementById('bulkDeleteList');
+            const adminsToDelete = allAdmins.filter(a => selectedAdminIds.has(a.uid));
+            
+            let listHtml = '';
+            adminsToDelete.slice(0, 5).forEach(admin => {
+                listHtml += `<div class="flex items-center gap-2 text-sm">
+                    <i class="fas fa-user text-gray-400"></i>
+                    <span>${admin.name}</span>
+                    <span class="text-xs text-gray-500">(${admin.email})</span>
+                </div>`;
+            });
+            
+            if (adminsToDelete.length > 5) {
+                listHtml += `<div class="text-xs text-gray-500 mt-2">
+                    ... n'ayandi ${adminsToDelete.length - 5}
+                </div>`;
+            }
+            
+            listContainer.innerHTML = listHtml;
+            document.getElementById('bulkDeleteModal').classList.remove('hidden');
+        }
+
+        function hideBulkDeleteModal() {
+            document.getElementById('bulkDeleteModal').classList.add('hidden');
+        }
+
+        async function confirmBulkDelete() {
+            if (selectedAdminIds.size === 0) return;
+            
+            hideBulkDeleteModal();
+            showToast(`Irasiba ${selectedAdminIds.size} abakozi...`, 'info');
+            
+            let success = 0;
+            let failed = 0;
+            
+            for (const uid of selectedAdminIds) {
+                if (uid === currentUser.uid) {
+                    failed++;
+                    continue;
+                }
+                try {
+                    // Following rules: Super Admin can write, but we can't actually delete
+                    // So we mark as deleted
+                    await firebaseDatabase.ref('users/' + uid).update({
+                        status: 'deleted',
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        updatedBy: currentUser.uid
+                    });
+                    success++;
+                } catch (error) {
+                    console.error('Failed to delete admin:', uid, error);
+                    failed++;
+                }
+            }
+            
+            showToast(`${success} abakozi basibwe, ${failed} bananiwe`, success > 0 ? 'success' : 'error');
+            await loadAdmins();
+            clearSelection();
+        }
+
+        function showBulkRoleModal() {
+            if (selectedAdminIds.size === 0) {
+                showToast('Nta bakozi batoranyijwe', 'warning');
+                return;
+            }
+            
+            document.getElementById('bulkRoleCount').textContent = selectedAdminIds.size;
+            document.getElementById('selectedBulkRole').value = '';
+            
+            // Reset selected state
+            document.getElementById('roleOptionAdmin').classList.remove('selected');
+            document.getElementById('roleOptionSuperAdmin').classList.remove('selected');
+            
+            document.getElementById('bulkRoleModal').classList.remove('hidden');
+        }
+
+        function hideBulkRoleModal() {
+            document.getElementById('bulkRoleModal').classList.add('hidden');
+        }
+
+        function selectBulkRole(role) {
+            document.getElementById('selectedBulkRole').value = role;
+            
+            // Update UI
+            const adminOption = document.getElementById('roleOptionAdmin');
+            const superAdminOption = document.getElementById('roleOptionSuperAdmin');
+            
+            if (role === 'admin') {
+                adminOption.classList.add('selected');
+                superAdminOption.classList.remove('selected');
+            } else {
+                adminOption.classList.add('selected');
+                superAdminOption.classList.remove('selected');
+            }
+        }
+
+        async function confirmBulkRole() {
+            const newRole = document.getElementById('selectedBulkRole').value;
+            
+            if (!newRole) {
+                showToast('Hitamo umwanya mushya', 'warning');
+                return;
+            }
+            
+            if (selectedAdminIds.size === 0) return;
+            
+            hideBulkRoleModal();
+            showToast(`Irahindura umwanya wa ${selectedAdminIds.size} abakozi...`, 'info');
+            
+            let success = 0;
+            let failed = 0;
+            
+            for (const uid of selectedAdminIds) {
+                try {
+                    // Following rules: Super Admin can change role
+                    await firebaseDatabase.ref('users/' + uid).update({
+                        role: newRole,
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        updatedBy: currentUser.uid
+                    });
+                    
+                    // Update permissions based on role
+                    const permissions = {
+                        categories: true,
+                        results: true,
+                        analytics: true,
+                        admins: newRole === 'super-admin',
+                        backup: newRole === 'super-admin',
+                        audit: newRole === 'super-admin'
+                    };
+                    
+                    await firebaseDatabase.ref('users/' + uid + '/permissions').set(permissions);
+                    success++;
+                } catch (error) {
+                    console.error('Failed to update role:', uid, error);
+                    failed++;
+                }
+            }
+            
+            showToast(`${success} abakozi bahinduwe, ${failed} bananiwe`, success > 0 ? 'success' : 'error');
+            await loadAdmins();
+            clearSelection();
+        }
+
+        function bulkExport() {
+            if (selectedAdminIds.size === 0) {
+                showToast('Nta bakozi batoranyijwe', 'warning');
+                return;
+            }
+            
+            const selectedAdmins = allAdmins.filter(a => selectedAdminIds.has(a.uid));
+            
+            // Show preview
+            showExportPreview(selectedAdmins);
+        }
+
+        // ============================================
+        // FILTERS & PAGINATION
+        // ============================================
+        function applyFilters() {
+            const searchTerm = searchFilters.search.toLowerCase();
+            const roleFilter = searchFilters.role;
+            const statusFilter = searchFilters.status;
+            
+            filteredAdmins = allAdmins.filter(admin => {
+                // Don't show deleted admins
+                if (admin.status === 'deleted') return false;
+                
+                if (searchTerm) {
+                    const name = (admin.name || '').toLowerCase();
+                    const email = (admin.email || '').toLowerCase();
+                    if (!name.includes(searchTerm) && !email.includes(searchTerm)) {
+                        return false;
+                    }
+                }
+                if (roleFilter !== 'all' && admin.role !== roleFilter) return false;
+                if (statusFilter !== 'all' && admin.status !== statusFilter) return false;
+                return true;
+            });
+            
+            document.getElementById('tableSubtitle').textContent = `(${filteredAdmins.length} yagaragaye)`;
+            currentPage = 1;
+            
+            // Clean up selected IDs that are no longer in filtered list
+            selectedAdminIds.forEach(uid => {
+                if (!filteredAdmins.some(a => a.uid === uid)) {
+                    selectedAdminIds.delete(uid);
+                }
+            });
+            
+            updatePagination();
+            renderTable();
+            updateBulkActionsUI();
+        }
+
+        function updatePagination() {
+            const entriesSelect = document.getElementById('entriesPerPage');
+            entriesPerPage = entriesSelect.value === 'all' ? filteredAdmins.length : parseInt(entriesSelect.value);
+            
+            totalPages = Math.ceil(filteredAdmins.length / entriesPerPage);
+            if (totalPages < 1) totalPages = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            const start = (currentPage - 1) * entriesPerPage;
+            const end = Math.min(start + entriesPerPage, filteredAdmins.length);
+            paginatedAdmins = filteredAdmins.slice(start, end);
+            
+            document.getElementById('paginationInfo').textContent = 
+                `Erekana ${filteredAdmins.length > 0 ? start + 1 : 0} - ${end} bya ${filteredAdmins.length} abakozi`;
+            
+            renderPaginationControls();
+        }
+
+        function renderPaginationControls() {
+            const container = document.getElementById('paginationControls');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            let html = '';
+            html += `<button class="page-btn" onclick="changePage(1)" ${currentPage === 1 ? 'disabled' : ''}>
+                        <i class="fas fa-angle-double-left"></i>
+                    </button>`;
+            html += `<button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
+                        <i class="fas fa-angle-left"></i>
+                    </button>`;
+            
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            if (endPage - startPage < 4) startPage = Math.max(1, endPage - 4);
+            
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+            
+            html += `<button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
+                        <i class="fas fa-angle-right"></i>
+                    </button>`;
+            html += `<button class="page-btn" onclick="changePage(${totalPages})" ${currentPage === totalPages ? 'disabled' : ''}>
+                        <i class="fas fa-angle-double-right"></i>
+                    </button>`;
+            
+            container.innerHTML = html;
+        }
+
+        function changePage(page) {
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                updatePagination();
+                renderTable();
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            
+            if (paginatedAdmins.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="10" class="text-center py-8">
+                            <div class="flex flex-col items-center">
+                                <i class="fas fa-user-slash text-4xl text-gray-400 mb-2"></i>
+                                <span class="text-gray-500">Nta bakozi bahuye n'ibyo ushaka</span>
+                                <button onclick="clearFilters()" class="mt-4 text-sm text-blue-500 hover:underline">
+                                    Siba amashyiraho
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            paginatedAdmins.forEach((admin, index) => {
+                const serial = (currentPage - 1) * entriesPerPage + index + 1;
+                const isSelected = selectedAdminIds.has(admin.uid);
+                const rowClass = isSelected ? 'selected' : '';
+                
+                const roleBadge = admin.role === 'super-admin' 
+                    ? '<span class="badge badge-super-admin"><i class="fas fa-crown mr-1"></i>Super Admin</span>'
+                    : '<span class="badge badge-admin"><i class="fas fa-user-shield mr-1"></i>Admin</span>';
+                
+                const statusBadge = admin.status === 'active'
+                    ? '<span class="badge badge-active"><span class="status-indicator status-active"></span>Akora</span>'
+                    : admin.status === 'pending'
+                    ? '<span class="badge badge-pending"><span class="status-indicator status-pending"></span>Arategereje</span>'
+                    : '<span class="badge badge-inactive"><span class="status-indicator status-inactive"></span>Ntakora</span>';
+                
+                const lastLogin = admin.lastLogin 
+                    ? formatTimeAgo(admin.lastLogin)
+                    : 'Itaraje';
+                
+                const createdAt = admin.createdAt
+                    ? new Date(admin.createdAt).toLocaleDateString()
+                    : 'N/A';
+                
+                const permissions = admin.permissions || {};
+                const permBadges = [];
+                if (permissions.categories) permBadges.push('<span class="permission-tag" title="Ibyiciro"><i class="fas fa-folder text-blue-500"></i></span>');
+                if (permissions.results) permBadges.push('<span class="permission-tag" title="Ibisubizo"><i class="fas fa-list-check text-green-500"></i></span>');
+                if (permissions.analytics) permBadges.push('<span class="permission-tag" title="Ibiranga"><i class="fas fa-chart-line text-purple-500"></i></span>');
+                if (permissions.admins) permBadges.push('<span class="permission-tag" title="Abakozi"><i class="fas fa-crown text-yellow-500"></i></span>');
+                if (permissions.backup) permBadges.push('<span class="permission-tag" title="Backup"><i class="fas fa-database text-indigo-500"></i></span>');
+                
+                html += `
+                    <tr class="${rowClass}">
+                        <td>
+                            <input type="checkbox" class="bulk-checkbox row-checkbox" 
+                                   ${isSelected ? 'checked' : ''}
+                                   onclick="event.stopPropagation(); toggleSelectAdmin('${admin.uid}')">
+                        </td>
+                        <td onclick="viewAdminDetails('${admin.uid}')"><span class="font-mono">${serial}</span></td>
+                        <td onclick="viewAdminDetails('${admin.uid}')">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-police-blue text-white flex items-center justify-center mr-2 text-xs font-bold">
+                                    ${admin.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <div class="font-semibold">${admin.name}</div>
+                                    <div class="text-xs text-gray-500">${admin.phone || ''}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td onclick="viewAdminDetails('${admin.uid}')">${admin.email}</td>
+                        <td onclick="viewAdminDetails('${admin.uid}')">${roleBadge}</td>
+                        <td onclick="viewAdminDetails('${admin.uid}')">${statusBadge}</td>
+                        <td onclick="viewAdminDetails('${admin.uid}')">
+                            <div class="flex flex-wrap gap-1">
+                                ${permBadges.join(' ')}
+                            </div>
+                        </td>
+                        <td onclick="viewAdminDetails('${admin.uid}')">${createdAt}</td>
+                        <td onclick="viewAdminDetails('${admin.uid}')">
+                            <div class="flex items-center">
+                                ${admin.status === 'active' ? '<span class="activity-dot"></span>' : ''}
+                                ${lastLogin}
+                            </div>
+                        </td>
+                        <td>
+                            <button onclick="event.stopPropagation(); editAdmin('${admin.uid}')" class="text-blue-500 hover:text-blue-700 mr-2" title="Hindura">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            ${admin.uid !== currentUser.uid ? `
+                                <button onclick="event.stopPropagation(); confirmDeleteAdmin('${admin.uid}', '${admin.name}')" class="text-red-500 hover:text-red-700" title="Siba">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // ============================================
+        // ADMIN CRUD OPERATIONS - COMPLIANT WITH RULES
+        // ============================================
+        function showAddAdminModal() {
+            selectedAdminId = null;
+            document.getElementById('modalTitle').textContent = 'Ongeraho Umukozi';
+            document.getElementById('adminId').value = '';
+            document.getElementById('adminName').value = '';
+            document.getElementById('adminEmail').value = '';
+            document.getElementById('adminRole').value = '';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPhone').value = '';
+            document.getElementById('adminStatus').value = 'active';
+            document.getElementById('adminNotes').value = '';
+            document.getElementById('passwordHint').textContent = 'Ijambo ry\'ibanga rikenewe';
+            document.getElementById('adminPassword').required = true;
+            
+            // Reset permissions
+            document.getElementById('permCategories').checked = true;
+            document.getElementById('permResults').checked = true;
+            document.getElementById('permAnalytics').checked = true;
+            document.getElementById('permAdmins').checked = false;
+            document.getElementById('permBackup').checked = false;
+            document.getElementById('permAudit').checked = false;
+            
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        async function editAdmin(uid) {
+            const admin = allAdmins.find(a => a.uid === uid);
+            if (!admin) return;
+            
+            selectedAdminId = uid;
+            document.getElementById('modalTitle').textContent = 'Hindura Umukozi';
+            document.getElementById('adminId').value = uid;
+            document.getElementById('adminName').value = admin.name || '';
+            document.getElementById('adminEmail').value = admin.email || '';
+            document.getElementById('adminRole').value = admin.role || '';
+            document.getElementById('adminPassword').value = '';
+            document.getElementById('adminPhone').value = admin.phone || '';
+            document.getElementById('adminStatus').value = admin.status || 'active';
+            document.getElementById('adminNotes').value = admin.notes || '';
+            document.getElementById('passwordHint').textContent = 'Reka niba udahindura ijambo ry\'ibanga';
+            document.getElementById('adminPassword').required = false;
+            
+            // Set permissions
+            const perms = admin.permissions || {};
+            document.getElementById('permCategories').checked = perms.categories !== false;
+            document.getElementById('permResults').checked = perms.results !== false;
+            document.getElementById('permAnalytics').checked = perms.analytics !== false;
+            document.getElementById('permAdmins').checked = perms.admins || false;
+            document.getElementById('permBackup').checked = perms.backup || false;
+            document.getElementById('permAudit').checked = perms.audit || false;
+            
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        async function saveAdmin() {
+            const name = document.getElementById('adminName').value.trim();
+            const email = document.getElementById('adminEmail').value.trim();
+            const role = document.getElementById('adminRole').value;
+            const password = document.getElementById('adminPassword').value;
+            const phone = document.getElementById('adminPhone').value.trim();
+            const status = document.getElementById('adminStatus').value;
+            const notes = document.getElementById('adminNotes').value.trim();
+            
+            if (!name || !email || !role) {
+                showToast('Uzuza amazina, imyeli n\'umwanya', 'error');
+                return;
+            }
+            
+            // Validate email format
+            if (!email.includes('@') || !email.includes('.')) {
+                showToast('Imyeli ntabwo ikora neza', 'error');
+                return;
+            }
+            
+            const isEdit = !!selectedAdminId;
+            if (!isEdit && !password) {
+                showToast('Ijambo ry\'ibanga rikenewe', 'error');
+                return;
+            }
+            
+            // Check if email already exists (for new admin)
+            if (!isEdit) {
+                const existing = allAdmins.find(a => a.email.toLowerCase() === email.toLowerCase());
+                if (existing) {
+                    showToast('Iyi imyeli ikoreshwa n\'undi mukozi', 'error');
+                    return;
+                }
+            }
+            
+            showToast('Irakora...', 'info');
+            
+            try {
+                const permissions = {
+                    categories: document.getElementById('permCategories').checked,
+                    results: document.getElementById('permResults').checked,
+                    analytics: document.getElementById('permAnalytics').checked,
+                    admins: document.getElementById('permAdmins').checked,
+                    backup: document.getElementById('permBackup').checked,
+                    audit: document.getElementById('permAudit').checked
+                };
+                
+                if (isEdit) {
+                    // Update existing admin - following rules
+                    const userRef = firebaseDatabase.ref('users/' + selectedAdminId);
+                    const updateData = {
+                        name: name,
+                        displayName: name,
+                        email: email,
+                        role: role,
+                        phone: phone,
+                        status: status,
+                        notes: notes,
+                        permissions: permissions,
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        updatedBy: currentUser.uid
+                    };
+                    
+                    // Note: Password update requires Firebase Auth - not directly in Realtime DB
+                    if (password) {
+                        showToast('Ijambo ry\'ibanga rizasabwa guhindurwa kuri Firebase Console.', 'warning');
+                    }
+                    
+                    await userRef.update(updateData);
+                    
+                    showToast('Umukozi yahinduwe neza!', 'success');
+                } else {
+                    // Create new admin in Firebase Realtime Database - using push with custom UID
+                    // Following rules: Super Admin can write
+                    const newUserRef = firebaseDatabase.ref('users').push();
+                    const newUid = newUserRef.key;
+                    
+                    await newUserRef.set({
+                        uid: newUid,
+                        name: name,
+                        displayName: name,
+                        email: email,
+                        role: role,
+                        phone: phone,
+                        status: status,
+                        notes: notes,
+                        permissions: permissions,
+                        createdAt: firebase.database.ServerValue.TIMESTAMP,
+                        createdBy: currentUser.uid,
+                        termsAccepted: false,
+                        provider: 'email'
+                    });
+                    
+                    showToast('Umukozi mushya yongewemo!', 'success');
+                }
+                
+                hideAdminModal();
+                await loadAdmins();
+                
+            } catch (error) {
+                console.error('Error saving admin:', error);
+                showToast('Ikosa: ' + error.message, 'error');
+            }
+        }
+
+        async function viewAdminDetails(uid) {
+            const admin = allAdmins.find(a => a.uid === uid);
+            if (!admin) return;
+            
+            const modal = document.getElementById('viewAdminModal');
+            const content = document.getElementById('viewAdminContent');
+            
+            const roleBadge = admin.role === 'super-admin' 
+                ? '<span class="badge badge-super-admin"><i class="fas fa-crown mr-1"></i>Super Admin</span>'
+                : '<span class="badge badge-admin"><i class="fas fa-user-shield mr-1"></i>Admin</span>';
+            
+            const statusBadge = admin.status === 'active'
+                ? '<span class="badge badge-active"><span class="status-indicator status-active"></span>Akora</span>'
+                : admin.status === 'pending'
+                ? '<span class="badge badge-pending"><span class="status-indicator status-pending"></span>Arategereje</span>'
+                : '<span class="badge badge-inactive"><span class="status-indicator status-inactive"></span>Ntakora</span>';
+            
+            const lastLogin = admin.lastLogin 
+                ? new Date(admin.lastLogin).toLocaleString()
+                : 'Ntaraje';
+            
+            const createdAt = admin.createdAt
+                ? new Date(admin.createdAt).toLocaleString()
+                : 'N/A';
+            
+            const updatedAt = admin.updatedAt
+                ? new Date(admin.updatedAt).toLocaleString()
+                : 'N/A';
+            
+            let permissionsHtml = '';
+            if (admin.permissions) {
+                permissionsHtml = '<div class="flex flex-wrap gap-2 mt-2">';
+                if (admin.permissions.categories) permissionsHtml += '<span class="permission-tag"><i class="fas fa-folder text-blue-500 mr-1"></i>Gucunga Ibyiciro</span>';
+                if (admin.permissions.results) permissionsHtml += '<span class="permission-tag"><i class="fas fa-list-check text-green-500 mr-1"></i>Reba Ibisubizo</span>';
+                if (admin.permissions.analytics) permissionsHtml += '<span class="permission-tag"><i class="fas fa-chart-line text-purple-500 mr-1"></i>Reba Ibiranga</span>';
+                if (admin.permissions.admins) permissionsHtml += '<span class="permission-tag"><i class="fas fa-crown text-yellow-500 mr-1"></i>Gucunga Abakozi</span>';
+                if (admin.permissions.backup) permissionsHtml += '<span class="permission-tag"><i class="fas fa-database text-indigo-500 mr-1"></i>Backup & Restore</span>';
+                if (admin.permissions.audit) permissionsHtml += '<span class="permission-tag"><i class="fas fa-history text-orange-500 mr-1"></i>Audit Logs</span>';
+                permissionsHtml += '</div>';
+            }
+            
+            const createdBy = admin.createdBy ? allAdmins.find(a => a.uid === admin.createdBy)?.name || 'N/A' : 'Sisitemu';
+            const updatedBy = admin.updatedBy ? allAdmins.find(a => a.uid === admin.updatedBy)?.name : null;
+            
+            content.innerHTML = `
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 rounded-full bg-police-blue text-white flex items-center justify-center text-2xl font-bold">
+                        ${admin.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold">${admin.name}</h4>
+                        <p class="text-gray-600">${admin.email}</p>
+                        <div class="flex gap-2 mt-2">
+                            ${roleBadge}
+                            ${statusBadge}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h5 class="font-semibold mb-3 text-police-blue">Amakuru y'Umuntu</h5>
+                        <div class="space-y-2">
+                            <div class="detail-row">
+                                <span class="detail-label">Imyeli:</span>
+                                <span class="detail-value">${admin.email}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Telefone:</span>
+                                <span class="detail-value">${admin.phone || '-'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Umwanya:</span>
+                                <span class="detail-value">${admin.role === 'super-admin' ? 'Super Admin' : 'Admin'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status:</span>
+                                <span class="detail-value">${admin.status === 'active' ? 'Akora' : admin.status === 'pending' ? 'Arategereje' : 'Ntakora'}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Ibisobanuro:</span>
+                                <span class="detail-value">${admin.notes || '-'}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h5 class="font-semibold mb-3 text-police-blue">Ibyemerere</h5>
+                        ${permissionsHtml || '<p class="text-gray-500">Nta cyemerere cyihariye</p>'}
+                        
+                        <h5 class="font-semibold mt-6 mb-3 text-police-blue">Amakuru ya Sisitemu</h5>
+                        <div class="space-y-2">
+                            <div class="detail-row">
+                                <span class="detail-label">Umusozo wongiwemo:</span>
+                                <span class="detail-value">${createdAt}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Yongewemo na:</span>
+                                <span class="detail-value">${createdBy}</span>
+                            </div>
+                            ${updatedAt ? `
+                                <div class="detail-row">
+                                    <span class="detail-label">Iheruka guhindurwa:</span>
+                                    <span class="detail-value">${updatedAt}</span>
+                                </div>
+                            ` : ''}
+                            ${updatedBy ? `
+                                <div class="detail-row">
+                                    <span class="detail-label">Hinduwe na:</span>
+                                    <span class="detail-value">${updatedBy}</span>
+                                </div>
+                            ` : ''}
+                            <div class="detail-row">
+                                <span class="detail-label">Igihe cy'ikubiro:</span>
+                                <span class="detail-value">${lastLogin}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">ID:</span>
+                                <span class="detail-value font-mono text-xs">${admin.uid}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Set up buttons
+            document.getElementById('editFromViewBtn').onclick = () => {
+                hideViewAdminModal();
+                editAdmin(admin.uid);
+            };
+            
+            document.getElementById('toggleStatusBtn').onclick = async () => {
+                const newStatus = admin.status === 'active' ? 'inactive' : admin.status === 'inactive' ? 'active' : 'active';
+                try {
+                    await firebaseDatabase.ref('users/' + admin.uid).update({
+                        status: newStatus,
+                        updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                        updatedBy: currentUser.uid
+                    });
+                    showToast(`Status yahinduwe: ${newStatus === 'active' ? 'Akora' : newStatus === 'pending' ? 'Arategereje' : 'Ntakora'}`, 'success');
+                    hideViewAdminModal();
+                    await loadAdmins();
+                } catch (error) {
+                    console.error('Error toggling status:', error);
+                    showToast('Ikosa mu guhindura status', 'error');
+                }
+            };
+            
+            modal.classList.remove('hidden');
+        }
+
+        function confirmDeleteAdmin(uid, name) {
+            if (uid === currentUser.uid) {
+                showToast('Ntushobora kwisiba ubwawe!', 'error');
+                return;
+            }
+            
+            selectedAdminId = uid;
+            document.getElementById('deleteAdminName').textContent = name;
+            document.getElementById('deleteModal').classList.remove('hidden');
+        }
+
+        async function deleteAdmin() {
+            if (!selectedAdminId) return;
+            
+            showToast('Irakora...', 'info');
+            
+            try {
+                // Following rules: Soft delete - mark as deleted
+                await firebaseDatabase.ref('users/' + selectedAdminId).update({
+                    status: 'deleted',
+                    updatedAt: firebase.database.ServerValue.TIMESTAMP,
+                    updatedBy: currentUser.uid
+                });
+                
+                showToast('Umukozi yasibwe neza!', 'success');
+                hideDeleteModal();
+                await loadAdmins();
+                
+            } catch (error) {
+                console.error('Error deleting admin:', error);
+                showToast('Ikosa: ' + error.message, 'error');
+            }
+        }
+
+        function hideAdminModal() {
+            document.getElementById('adminModal').classList.add('hidden');
+        }
+
+        function hideViewAdminModal() {
+            document.getElementById('viewAdminModal').classList.add('hidden');
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+        }
+
+        // ============================================
+        // EXPORT FUNCTIONS - UPDATED WITH LOGO
+        // ============================================
+        
+        function showExportPreview(adminsToExport = filteredAdmins) {
+            const previewContent = document.getElementById('exportPreviewContent');
+            
+            let tableRows = '';
+            adminsToExport.slice(0, 10).forEach((admin, i) => {
+                tableRows += `
+                    <tr>
+                        <td class="p-2 border">${i + 1}</td>
+                        <td class="p-2 border">${admin.name}</td>
+                        <td class="p-2 border">${admin.email}</td>
+                        <td class="p-2 border">${admin.role === 'super-admin' ? 'Super Admin' : 'Admin'}</td>
+                        <td class="p-2 border">${admin.status === 'active' ? 'Akora' : admin.status === 'pending' ? 'Arategereje' : 'Ntakora'}</td>
+                        <td class="p-2 border">${admin.phone || '-'}</td>
+                    </tr>
+                `;
+            });
+            
+            if (adminsToExport.length > 10) {
+                tableRows += `<tr><td colspan="6" class="p-2 text-center text-gray-500">... n'ayandi ${adminsToExport.length - 10}</td></tr>`;
+            }
+            
+            previewContent.innerHTML = `
+                <div style="font-family: 'Segoe UI', sans-serif;">
+                    <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px; padding: 15px; background: #1e3a8a; color: white; border-radius: 10px;">
+                        <img src="${CONFIG.LOGO_URL}" alt="MAYE" style="width: 50px; height: 50px; border-radius: 10px; object-fit: contain; background: white;">
+                        <div>
+                            <h2 style="margin: 0; font-size: 24px;">MAYE SYSTEM</h2>
+                            <p style="margin: 5px 0 0; opacity: 0.9;">Super Admin - Gusohora Abakozi</p>
+                        </div>
+                        <div style="margin-left: auto; text-align: right;">
+                            <div>${new Date().toLocaleDateString('rw-RW')}</div>
+                            <div style="font-size: 12px; opacity: 0.8;">${adminsToExport.length} abakozi</div>
+                        </div>
+                    </div>
+                    
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background: #f1f5f9;">
+                                <th class="p-2 border">#</th>
+                                <th class="p-2 border">Izina</th>
+                                <th class="p-2 border">Imyeli</th>
+                                <th class="p-2 border">Umwanya</th>
+                                <th class="p-2 border">Status</th>
+                                <th class="p-2 border">Telefone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('exportPreviewModal').classList.remove('hidden');
+            
+            // Set confirm button to export with selected format
+            document.getElementById('confirmExportBtn').onclick = () => {
+                hideExportPreview();
+                exportToPDF(adminsToExport);
+            };
+        }
+
+        function hideExportPreview() {
+            document.getElementById('exportPreviewModal').classList.add('hidden');
+        }
+
+        async function exportToPDF(adminsToExport = filteredAdmins) {
+            showToast('Irakora PDF...', 'info');
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                // Header with MAYE Logo
+                try {
+                    const logoImg = new Image();
+                    logoImg.crossOrigin = "Anonymous";
+                    logoImg.src = CONFIG.LOGO_URL;
+                    await new Promise((resolve, reject) => {
+                        logoImg.onload = () => {
+                            doc.addImage(logoImg, 'PNG', 15, 8, 20, 20);
+                            resolve();
+                        };
+                        logoImg.onerror = () => reject();
+                        setTimeout(reject, 1000);
+                    });
+                } catch (e) {
+                    console.warn('Could not load logo for PDF, using fallback');
+                    doc.setFillColor(30, 58, 138);
+                    doc.roundedRect(15, 8, 20, 20, 3, 3, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(14);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('MAYE', 19, 22);
+                }
+                
+                doc.setFillColor(30, 58, 138);
+                doc.rect(0, 0, 297, 35, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(18);
+                doc.text('MAYE SYSTEM', 45, 18);
+                doc.setFontSize(10);
+                doc.text('Super Admin - Abakozi', 45, 26);
+                
+                const now = new Date();
+                doc.setFontSize(10);
+                doc.text(now.toLocaleDateString('rw-RW'), 270, 15, { align: 'right' });
+                doc.text(now.toLocaleTimeString('rw-RW'), 270, 23, { align: 'right' });
+                
+                // Table
+                const headers = [['#', 'Izina', 'Imyeli', 'Umwanya', 'Status', 'Telefone', 'Igihe cy\'ikubiro']];
+                const rows = adminsToExport.map((a, i) => [
+                    i + 1,
+                    a.name,
+                    a.email,
+                    a.role === 'super-admin' ? 'Super Admin' : 'Admin',
+                    a.status === 'active' ? 'Akora' : a.status === 'pending' ? 'Arategereje' : 'Ntakora',
+                    a.phone || '-',
+                    a.lastLogin ? new Date(a.lastLogin).toLocaleDateString() : 'Ntaraje'
+                ]);
+                
+                doc.autoTable({
+                    head: headers,
+                    body: rows,
+                    startY: 45,
+                    theme: 'grid',
+                    styles: { fontSize: 8, cellPadding: 3 },
+                    headStyles: { fillColor: [30, 58, 138], textColor: 255 }
+                });
+                
+                // Footer
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFillColor(30, 58, 138);
+                    doc.rect(0, 285, 297, 15, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(8);
+                    doc.text(`© MAYE SYSTEM • Page ${i} of ${pageCount} • ${now.toLocaleDateString()}`, 270, 293, { align: 'right' });
+                }
+                
+                doc.save(`MAYE_Admins_${formatDate(now)}.pdf`);
+                
+                // Save last export time
+                localStorage.setItem('lastExportTime_admins', Date.now().toString());
+                document.getElementById('lastExportTime').textContent = 'Ubu';
+                
+                showToast('PDF yakuwe!', 'success');
+            } catch (error) {
+                console.error('PDF Export Error:', error);
+                showToast('Ntibishoboye gukora PDF', 'error');
+            }
+        }
+
+        function exportToExcel() {
+            showToast('Irakora Excel...', 'info');
+            try {
+                const wb = XLSX.utils.book_new();
+                const headers = ['#', 'Izina', 'Imyeli', 'Umwanya', 'Status', 'Telefone', 'Igihe cy\'ikubiro', 'ID'];
+                const rows = filteredAdmins.map((a, i) => [
+                    i + 1,
+                    a.name,
+                    a.email,
+                    a.role === 'super-admin' ? 'Super Admin' : 'Admin',
+                    a.status === 'active' ? 'Akora' : a.status === 'pending' ? 'Arategereje' : 'Ntakora',
+                    a.phone || '-',
+                    a.lastLogin ? new Date(a.lastLogin).toLocaleString() : 'Ntaraje',
+                    a.uid
+                ]);
+                
+                const wsData = [headers, ...rows];
+                const ws = XLSX.utils.aoa_to_sheet(wsData);
+                ws['!cols'] = [
+                    { wch: 5 }, { wch: 25 }, { wch: 30 }, { wch: 15 }, { wch: 12 }, { wch: 15 }, { wch: 20 }, { wch: 30 }
+                ];
+                
+                // Add metadata
+                ws['!comments'] = [];
+                ws['!comments'].push({
+                    r: 0, c: 0,
+                    comment: { t: 'MAYE SYSTEM - Abakozi', a: 'Super Admin' }
+                });
+                
+                XLSX.utils.book_append_sheet(wb, ws, 'Abakozi');
+                XLSX.writeFile(wb, `MAYE_Admins_${formatDate(new Date())}.xlsx`);
+                
+                localStorage.setItem('lastExportTime_admins', Date.now().toString());
+                document.getElementById('lastExportTime').textContent = 'Ubu';
+                
+                showToast('Excel yakuwe!', 'success');
+            } catch (error) {
+                console.error('Excel Export Error:', error);
+                showToast('Ntibishoboye gukora Excel', 'error');
+            }
+        }
+
+        function exportToCSV() {
+            showToast('Irakora CSV...', 'info');
+            try {
+                const headers = ['Izina', 'Imyeli', 'Umwanya', 'Status', 'Telefone', 'Igihe cy\'ikubiro'];
+                const rows = filteredAdmins.map(a => [
+                    a.name,
+                    a.email,
+                    a.role === 'super-admin' ? 'Super Admin' : 'Admin',
+                    a.status === 'active' ? 'Akora' : a.status === 'pending' ? 'Arategereje' : 'Ntakora',
+                    a.phone || '-',
+                    a.lastLogin ? new Date(a.lastLogin).toLocaleString() : 'Ntaraje'
+                ]);
+                
+                const csvContent = [headers.join(','), ...rows.map(row => row.map(cell => `"${cell}"`).join(','))].join('\n');
+                const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' }); // UTF-8 BOM for Excel
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', `MAYE_Admins_${formatDate(new Date())}.csv`);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                localStorage.setItem('lastExportTime_admins', Date.now().toString());
+                document.getElementById('lastExportTime').textContent = 'Ubu';
+                
+                showToast('CSV yakuwe!', 'success');
+            } catch (error) {
+                console.error('CSV Export Error:', error);
+                showToast('Ntibishoboye gukora CSV', 'error');
+            }
+        }
+
+        function exportToPrint() {
+            const printWindow = window.open('', '_blank');
+            const now = new Date();
+            
+            let tableRows = '';
+            filteredAdmins.forEach((a, i) => {
+                tableRows += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><strong>${a.name}</strong></td>
+                        <td>${a.email}</td>
+                        <td>${a.role === 'super-admin' ? 'Super Admin' : 'Admin'}</td>
+                        <td><span style="background: ${a.status === 'active' ? '#10b981' : a.status === 'pending' ? '#f59e0b' : '#ef4444'}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">${a.status === 'active' ? 'Akora' : a.status === 'pending' ? 'Arategereje' : 'Ntakora'}</span></td>
+                        <td>${a.phone || '-'}</td>
+                        <td>${a.lastLogin ? new Date(a.lastLogin).toLocaleDateString() : 'Ntaraje'}</td>
+                    </tr>
+                `;
+            });
+            
+            const content = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>MAYE Admins - ${formatDate(now)}</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; }
+                        .header { background: linear-gradient(135deg, #1e3a8a, #0f172a); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+                        .logo { display: flex; align-items: center; gap: 15px; }
+                        .logo-img { width: 50px; height: 50px; border-radius: 10px; background: white; object-fit: contain; }
+                        h1 { margin: 0; font-size: 24px; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th { background: #1e3a8a; color: white; padding: 12px; text-align: left; }
+                        td { padding: 10px; border-bottom: 1px solid #e2e8f0; }
+                        .footer { margin-top: 30px; padding: 15px; background: #0f172a; color: white; border-radius: 12px; text-align: center; font-size: 12px; }
+                        @media print {
+                            .header { background: #1e3a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                            th { background: #1e3a8a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                            td span { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <div class="logo">
+                            <img src="${CONFIG.LOGO_URL}" alt="MAYE" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div style="width: 50px; height: 50px; background: white; border-radius: 10px; display: none; align-items: center; justify-content: center; color: #1e3a8a; font-weight: bold;">MAYE</div>
+                            <div>
+                                <h1>MAYE SYSTEM</h1>
+                                <p style="opacity: 0.9;">Super Admin - Urutonde rw'Abakozi</p>
+                            </div>
+                        </div>
+                        <div>${now.toLocaleDateString('rw-RW')} ${now.toLocaleTimeString('rw-RW')}</div>
+                    </div>
+                    
+                    <h2 style="margin-bottom: 10px;">Abakozi: ${filteredAdmins.length}</h2>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Izina</th>
+                                <th>Imyeli</th>
+                                <th>Umwanya</th>
+                                <th>Status</th>
+                                <th>Telefone</th>
+                                <th>Igihe cy'ikubiro</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    
+                    <div class="footer">
+                        © MAYE SYSTEM • Ibi bisubizo ni iby'ukuri • ${now.toLocaleDateString()}
+                    </div>
+                    
+                    <script>
+                        window.onload = function() { window.print(); }
+                    <\/script>
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(content);
+            printWindow.document.close();
+            
+            localStorage.setItem('lastExportTime_admins', Date.now().toString());
+            document.getElementById('lastExportTime').textContent = 'Ubu';
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function formatDate(date) {
+            if (!date) return '';
+            const d = new Date(date);
+            return d.toISOString().split('T')[0];
+        }
+
+        function formatTimeAgo(timestamp) {
+            if (!timestamp) return 'Itaraje';
+            
+            const now = Date.now();
+            const diff = now - timestamp;
+            
+            if (diff < 0) return 'Mu gihe kizaza';
+            
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            
+            if (days > 0) return `${days} iminsi ishize`;
+            if (hours > 0) return `${hours} amasaha ashize`;
+            if (minutes > 0) return `${minutes} iminota ishize`;
+            return 'Ubu';
+        }
+
+        function handleInitializationError(error) {
+            console.error('Init Error:', error);
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.innerHTML = `
+                <div class="bg-white rounded-xl p-8 max-w-md text-center">
+                    <div class="text-6xl text-red-500 mb-4">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">Ikosa ryabaye</h2>
+                    <p class="text-gray-600 mb-6">${error.message || 'Sisitemu ntishoboye gutangiza'}</p>
+                    <div class="flex gap-4">
+                        <button onclick="window.location.reload()" class="flex-1 px-6 py-3 bg-police-blue text-white rounded-xl hover:bg-blue-900">
+                            <i class="fas fa-redo mr-2"></i>Ongera ugerageze
+                        </button>
+                        <a href="/dereva/admin/dashboard.html" class="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 text-center">
+                            <i class="fas fa-home mr-2"></i>Subira
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type} animate__animated animate__fadeInRight`;
+            
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+            if (type === 'warning') icon = 'fa-exclamation-triangle';
+            
+            toast.innerHTML = `<i class="fas ${icon}"></i><span>${message}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('animate__fadeOutRight');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function setupEventListeners() {
+            // Sidebar
+            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+            document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileMenu);
+            
+            // Theme
+            document.getElementById('themeCheckbox').addEventListener('change', toggleTheme);
+            
+            // Add Admin
+            document.getElementById('addAdminBtn').addEventListener('click', showAddAdminModal);
+            
+            // Search & Filters
+            const searchInput = document.getElementById('searchInput');
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchFilters.search = this.value;
+                    applyFilters();
+                }, 500);
+            });
+            
+            document.getElementById('roleFilter').addEventListener('change', function() {
+                searchFilters.role = this.value;
+                applyFilters();
+            });
+            
+            document.getElementById('statusFilter').addEventListener('change', function() {
+                searchFilters.status = this.value;
+                applyFilters();
+            });
+            
+            document.getElementById('clearFilters').addEventListener('click', clearFilters);
+            document.getElementById('entriesPerPage').addEventListener('change', function() {
+                updatePagination();
+                renderTable();
+            });
+            document.getElementById('refreshTableBtn').addEventListener('click', loadAdmins);
+            
+            // Export
+            document.getElementById('exportPDF').addEventListener('click', () => exportToPDF());
+            document.getElementById('exportExcel').addEventListener('click', exportToExcel);
+            document.getElementById('exportCSV').addEventListener('click', exportToCSV);
+            document.getElementById('exportPrint').addEventListener('click', exportToPrint);
+            
+            // Save Admin
+            document.getElementById('saveAdminBtn').addEventListener('click', saveAdmin);
+            
+            // Delete Confirmation
+            document.getElementById('confirmDeleteBtn').addEventListener('click', deleteAdmin);
+            
+            // Bulk Operations - NEW
+            document.getElementById('selectAllCheckbox').addEventListener('change', toggleSelectAll);
+            document.getElementById('tableSelectAll').addEventListener('change', toggleSelectAll);
+            document.getElementById('bulkActivateBtn').addEventListener('click', bulkActivate);
+            document.getElementById('bulkDeactivateBtn').addEventListener('click', bulkDeactivate);
+            document.getElementById('bulkDeleteBtn').addEventListener('click', showBulkDeleteModal);
+            document.getElementById('bulkRoleBtn').addEventListener('click', showBulkRoleModal);
+            document.getElementById('bulkExportBtn').addEventListener('click', bulkExport);
+            document.getElementById('bulkClearBtn').addEventListener('click', clearSelection);
+            
+            // Bulk Modals
+            document.getElementById('confirmBulkDeleteBtn').addEventListener('click', confirmBulkDelete);
+            document.getElementById('confirmBulkRoleBtn').addEventListener('click', confirmBulkRole);
+            
+            // Notifications
+            document.getElementById('notificationBtn').addEventListener('click', showNotifications);
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+            
+            // User menu
+            document.querySelector('.user-menu').addEventListener('click', () => {
+                showToast('Umwirondoro: ' + currentUser.name + ' (Super Admin)', 'info');
+            });
+            
+            // System status
+            document.getElementById('systemStatus').addEventListener('click', showSystemStatus);
+            
+            // Network status
+            window.addEventListener('online', updateSystemStatus);
+            window.addEventListener('offline', updateSystemStatus);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const icon = document.querySelector('#sidebarToggle i');
+            
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('expanded');
+            icon.className = sidebar.classList.contains('collapsed') ? 'fas fa-chevron-right' : 'fas fa-chevron-left';
+            
+            localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+
+        function toggleTheme() {
+            const isDark = document.getElementById('themeCheckbox').checked;
+            const theme = isDark ? 'dark' : 'light';
+            
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('roleFilter').value = 'all';
+            document.getElementById('statusFilter').value = 'all';
+            
+            searchFilters = { search: '', role: 'all', status: 'all' };
+            applyFilters();
+            
+            showToast('Amashyiraho yasibwe!', 'success');
+        }
+
+        function showNotifications() {
+            const modal = document.getElementById('notificationsModal');
+            const list = document.getElementById('notificationsList');
+            
+            list.innerHTML = `
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-bell-slash text-3xl mb-3 opacity-50"></i>
+                    <p>Nta matangazo mashya</p>
+                    <p class="text-sm mt-2">Amatangazo azagaragara aha</p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
+        function hideNotifications() {
+            document.getElementById('notificationsModal').classList.add('hidden');
+        }
+
+        function markAllAsRead() {
+            showToast('Amatangazo yose yarasomwe', 'success');
+            hideNotifications();
+        }
+
+        function showSystemStatus() {
+            const isOnline = navigator.onLine;
+            showToast(
+                `Sisitemu: Iteguye | Interineti: ${isOnline ? '✅' : '❌'} | Firebase: ✅ | Abakozi: ${allAdmins.length}`,
+                isOnline ? 'success' : 'warning'
+            );
+        }
+
+        function updateSystemStatus() {
+            const statusEl = document.getElementById('systemStatus');
+            if (statusEl) {
+                const isOnline = navigator.onLine;
+                statusEl.textContent = isOnline ? 'Iteguye' : 'Ntaho';
+                statusEl.className = `flex items-center ${isOnline ? 'text-green-300' : 'text-yellow-300'}`;
+            }
+        }
+
+        async function logout() {
+            if (confirm('Urakaza gusohoka muri sisitemu?')) {
+                try {
+                    await firebaseAuth.signOut();
+                    localStorage.removeItem('currentUser');
+                    window.location.href = '/dereva/auth/auth.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    showToast('Ikosa mu gusohoka', 'error');
+                }
+            }
+        }
+
+        // ============================================
+        // WINDOW EXPORTS
+        // ============================================
+        window.changePage = changePage;
+        window.editAdmin = editAdmin;
+        window.viewAdminDetails = viewAdminDetails;
+        window.confirmDeleteAdmin = confirmDeleteAdmin;
+        window.hideAdminModal = hideAdminModal;
+        window.hideViewAdminModal = hideViewAdminModal;
+        window.hideDeleteModal = hideDeleteModal;
+        window.hideNotifications = hideNotifications;
+        window.markAllAsRead = markAllAsRead;
+        window.clearFilters = clearFilters;
+        
+        // Bulk operations exports
+        window.toggleSelectAdmin = toggleSelectAdmin;
+        window.selectBulkRole = selectBulkRole;
+        window.hideBulkDeleteModal = hideBulkDeleteModal;
+        window.hideBulkRoleModal = hideBulkRoleModal;
+        window.hideExportPreview = hideExportPreview;
+    </script>
+</body>
+</html>

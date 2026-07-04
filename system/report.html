@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYE System - Raporo y'Imikoreshereze</title>
+    
+    <!-- Load Chart.js for visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Load jsPDF for export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        
+        .company-info {
+            text-align: left;
+        }
+        
+        .company-info h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+        
+        .company-info p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .contact-info {
+            text-align: right;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .report-header .report-meta {
+            font-size: 0.9rem;
+            opacity: 0.95;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .report-body {
+            padding: 40px;
+        }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            border-left: 5px solid #667eea;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card.income {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            border-left-color: #10b981;
+        }
+        
+        .stat-card.expense {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            border-left-color: #ef4444;
+        }
+        
+        .stat-card.balance {
+            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            color: white;
+            border-left-color: #3b82f6;
+        }
+        
+        .stat-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 5px;
+        }
+        
+        .stat-change {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #2d3748;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .table-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+        
+        th, td {
+            padding: 12px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #374151;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background: #f7fafc;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.6);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #2d3748;
+            font-weight: 600;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(240, 147, 251, 0.6);
+        }
+        
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .filter-section {
+            background: #f7fafc;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .filter-group label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #374151;
+            font-size: 0.9rem;
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s;
+            background: white;
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .summary-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .summary-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .summary-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        .summary-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+        
+        .cash-in { color: #10b981; }
+        .cash-out { color: #ef4444; }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            .report-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .report-header {
+                background: #667eea !important;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.1rem;
+            color: #667eea;
+        }
+
+        .compact-table {
+            font-size: 0.75rem;
+        }
+        
+        .compact-table th,
+        .compact-table td {
+            padding: 10px 8px;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-approved {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .table-total {
+            background: #f8fafc !important;
+            font-weight: 800 !important;
+            border-top: 3px solid #e2e8f0 !important;
+        }
+
+        .table-total td {
+            font-weight: 800 !important;
+            color: #1f2937 !important;
+            font-size: 0.8rem;
+        }
+
+        .export-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 40px 0;
+            text-align: center;
+        }
+
+        .export-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .export-description {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
+        }
+
+        .enhanced-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .enhanced-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+
+        .insight-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .insight-item:last-child {
+            border-bottom: none;
+        }
+
+        .positive {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        .negative {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .neutral {
+            color: #6b7280;
+            font-weight: 700;
+        }
+
+        /* Authentication Styles */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(10px);
+        }
+
+        .auth-message {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .auth-message h2 {
+            color: #ef4444;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .auth-message p {
+            margin-bottom: 25px;
+            font-size: 1rem;
+            color: #4b5563;
+            font-weight: 600;
+        }
+
+        .auth-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Financial Highlight Styles */
+        .financial-highlight {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .financial-highlight .amount {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 10px 0;
+        }
+
+        .financial-highlight .label {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 600;
+        }
+
+        .deficit {
+            color: #ef4444 !important;
+            font-weight: 800 !important;
+        }
+
+        .surplus {
+            color: #10b981 !important;
+            font-weight: 800 !important;
+        }
+
+        .strong {
+            font-weight: 800 !important;
+        }
+
+        .bold {
+            font-weight: 700 !important;
+        }
+        
+        /* Footer Styles */
+        .report-footer {
+            background: #1f2937;
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 5px solid #667eea;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #667eea;
+            font-weight: 800;
+        }
+        
+        .footer-section p {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Overlay -->
+    <div id="auth-overlay" class="auth-overlay" style="display: none;">
+        <div class="auth-message">
+            <div class="auth-spinner"></div>
+            <h2>Kugenzura uburenganzira...</h2>
+            <p>Turimo kugenzura niba ufite uburenganzira bwo kureba iyi raporo.</p>
+            <p style="font-size: 0.9rem; color: #6b7280; font-weight: 600;">Birakorwa, nyihanganira...</p>
+        </div>
+    </div>
+
+    <div class="report-container">
+        <!-- Header -->
+        <div class="report-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <img src="https://ik.imagekit.io/ttioqvtod/file_0000000025ec61f7a8b577d8c1123063%20(1).png?updatedAt=1749096526907" 
+                         alt="MAYE System Logo" class="logo">
+                    <div class="company-info">
+                        <h1>MAYE SYSTEM</h1>
+                        <p>Financial Management & Reporting</p>
+                    </div>
+                </div>
+                <div class="contact-info">
+                    <div><strong>Kigali, Rwanda</strong></div>
+                    <div>+250 728 856 700</div>
+                    <div>https://mayesystemsolution.netlify.app</div>
+                </div>
+            </div>
+            <div class="report-meta">
+                <strong>Itariki:</strong> <span id="report-date"></span> | 
+                <strong>Umukoresha:</strong> <span id="current-user">System</span> |
+                <strong>Raporo:</strong> Imikoreshereze y'Amafaranga
+                <button class="btn btn-warning" onclick="handleLogout()" style="margin-left: 20px; padding: 6px 12px; font-size: 0.75rem;">
+                    <i class="fas fa-sign-out-alt"></i> SoHoka
+                </button>
+            </div>
+        </div>
+        
+        <!-- Body -->
+        <div class="report-body">
+            <!-- Actions Bar -->
+            <div class="actions-bar no-print">
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-warning" onclick="goToDashboard()">
+                        <i class="fas fa-home"></i> Subira kuri Dashboard
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.history.back()">
+                        <i class="fas fa-arrow-left"></i> Subira Inyuma
+                    </button>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-success" onclick="exportCompletePDF()">
+                        <i class="fas fa-file-pdf"></i> Soza Raporo Yose
+                    </button>
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <button class="btn btn-secondary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i> Ongera Uzure
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Financial Highlight -->
+            <div class="financial-highlight">
+                <div class="label">AMAFARANGA ASIGAYE</div>
+                <div class="amount" id="financial-highlight-amount">RF 0</div>
+                <div class="label" id="financial-highlight-status">Status: Mwisuzumye</div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="filter-section no-print">
+                <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 15px; color: #374151;">
+                    <i class="fas fa-filter"></i> Hitamo Igihe
+                </h3>
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label>Itariki y'ibanze</label>
+                        <input type="date" class="filter-input" id="start-date">
+                    </div>
+                    <div class="filter-group">
+                        <label>Itariki y'iperuka</label>
+                        <input type="date" class="filter-input" id="end-date">
+                    </div>
+                    <div class="filter-group">
+                        <label>Ubwoko</label>
+                        <select class="filter-input" id="type-filter">
+                            <option value="all">Byose</option>
+                            <option value="purchase">Ibyaguzwe</option>
+                            <option value="income">Amafaranga Yinjiye</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="applyFilters()">
+                            <i class="fas fa-filter"></i> Koresha Filtire
+                        </button>
+                    </div>
+                    <div class="filter-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn btn-secondary" style="width: 100%;" onclick="resetFilters()">
+                            <i class="fas fa-broom"></i> Sukura Filtire
+                        </button>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: #e0f2fe; border-radius: 8px; border-left: 4px solid #0284c7;">
+                    <p style="font-size: 0.85rem; color: #075985; margin: 0; font-weight: 600;">
+                        <strong>Inama:</strong> Hitamo itariki y'ibanze n'iy'iperuka kugirango urebe amakuru yo mu gihe runaka. 
+                        Niba utahisemo, uzabona amakuru yose.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading-state" class="loading" style="display: none;">
+                <div style="font-size: 3rem; margin-bottom: 15px; color: #667eea;">⏳</div>
+                <p style="font-weight: 700;">Birakorwa... Kuzura amakuru</p>
+                <p style="font-size: 0.9rem; color: #6b7280; margin-top: 10px; font-weight: 600;">Sisitemu irakoze neza</p>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="stat-grid" id="stats-section">
+                <div class="stat-card income">
+                    <div class="stat-label">Amafaranga Yinjiye</div>
+                    <div class="stat-value" id="total-income">0 Frw</div>
+                    <div class="stat-change" id="income-count">0 ibikorwa</div>
+                </div>
+                
+                <div class="stat-card expense">
+                    <div class="stat-label">Ibyaguzwe</div>
+                    <div class="stat-value" id="total-expense">0 Frw</div>
+                    <div class="stat-change" id="expense-count">0 ibikorwa</div>
+                </div>
+                
+                <div class="stat-card balance">
+                    <div class="stat-label">Balance</div>
+                    <div class="stat-value" id="balance">0 Frw</div>
+                    <div class="stat-change" id="balance-status">Status</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-label">Igiteranyo</div>
+                    <div class="stat-value" id="total-transactions">0</div>
+                    <div class="stat-change">Ibikorwa byose</div>
+                </div>
+            </div>
+
+            <!-- Enhanced Insights Section -->
+            <div class="enhanced-card">
+                <h3><i class="fas fa-chart-line"></i> Ibyo Wamenye</h3>
+                <div class="insight-item">
+                    <span><strong>Icyiciro cyo hejuro mu byaguzwe:</strong></span>
+                    <span id="insight-top-category" class="neutral">-</span>
+                </div>
+                <div class="insight-item">
+                    <span><strong>Inkomoko nziza y'amafaranga:</strong></span>
+                    <span id="insight-top-source" class="neutral">-</span>
+                </div>
+                <div class="insight-item">
+                    <span><strong>Impuzandengo y'umunsi:</strong></span>
+                    <span id="insight-daily-avg" class="neutral">0 Frw</span>
+                </div>
+                <div class="insight-item">
+                    <span><strong>Igihe cy'ibanze:</strong></span>
+                    <span id="insight-period" class="neutral">-</span>
+                </div>
+            </div>
+            
+            <!-- Summary Section -->
+            <div class="summary-section">
+                <div class="summary-title">Incamake y'Imikoreshereze</div>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Icyiciro Cyinshi Cyaguzwe</div>
+                        <div class="summary-value" id="top-category">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Inkomoko Nziza</div>
+                        <div class="summary-value" id="top-income-source">-</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Impuzandengo ya %</div>
+                        <div class="summary-value" id="savings-rate">0%</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Ikigereranyo/Umunsi</div>
+                        <div class="summary-value" id="daily-average">0 Frw</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="chart-container no-print">
+                <div class="chart-title"><i class="fas fa-chart-bar"></i> Imikoreshereze y'Amafaranga</div>
+                <canvas id="mainChart" height="80"></canvas>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px; margin-bottom: 30px;">
+                <div class="chart-container no-print">
+                    <div class="chart-title"><i class="fas fa-chart-pie"></i> Ibyiciro by'Ibyaguzwe</div>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+                
+                <div class="chart-container no-print">
+                    <div class="chart-title"><i class="fas fa-chart-pie"></i> Inkomoko z'Amaafaranga</div>
+                    <canvas id="incomeSourceChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Detailed Financial Report Section -->
+            <div id="detailed-report-section">
+                <!-- Incamake y'Amafaranga Section -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <i class="fas fa-file-invoice-dollar"></i> Incamake y'Amafaranga
+                    </div>
+                    <div style="padding: 20px; background: #f9fcff; border: 1px solid #b3d4fc;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                            <span style="font-weight: 800; font-size: 0.9rem;">Amafaranga Yinjiye Yose:</span>
+                            <strong id="summary-total-income" style="font-size: 1.1rem;">RF 0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                            <span style="font-weight: 800; font-size: 0.9rem;">Amafaranga Yakoreshejwe Yose:</span>
+                            <strong id="summary-total-expenditure" style="font-size: 1.1rem;">RF 0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                            <span style="font-weight: 800; font-size: 0.9rem;">Amafaranga Asigaye (Balance):</span>
+                            <strong id="summary-final-balance" style="font-size: 1.1rem;">RF 0</strong>
+                        </div>
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 2px solid #b3d4fc;">
+                            <span style="font-weight: 800; font-size: 0.9rem;">ubusobanuro:</span>
+                            <span id="summary-balance-note" style="font-weight: 600;">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Isesengura ry'Abatanze Umusanzu Section -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <i class="fas fa-users"></i> Isesengura ry'Abatanze Umusanzu
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
+                                    <th><strong>Izina</strong></th>
+                                    <th><strong>Umusanzu</strong></th>
+                                    <th><strong>Ukwiye</strong></th>
+                                    <th><strong>Igisubizo</strong></th>
+                                    <th><strong>Incamake</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody id="contribution-table-body"></tbody>
+                            <tfoot>
+                                <tr class="table-total">
+                                    <td colspan="5" style="text-align: center; font-weight: 800;">
+                                        <strong>Igiteranyo:</strong> <span id="contribution-total">0</span> Abatanze
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Ibyaguzwe byatwaye Amafaranga Menshi Section -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <i class="fas fa-money-bill-wave"></i> Ibyaguzwe byatwaye Amafaranga Menshi
+                    </div>
+                    <div style="padding: 15px; background: #fff7ed; border-bottom: 2px solid #fed7aa;">
+                        <p style="font-weight: 700; margin: 0;">
+                            Dore Urutonde rw'ibintu 5 byambere... bigize <strong><span id="top5-percentage">0%</span></strong> by'amafaranga yose yakoreshejwe.
+                        </p>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="compact-table">
+                            <thead>
+                                <tr>
+                                    <th><strong>Icyakozwe</strong></th>
+                                    <th><strong>Amafaranga</strong></th>
+                                    <th><strong>Icyiciro</strong></th>
+                                    <th><strong>Ijanisha (%)</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody id="top-expenditure-table-body"></tbody>
+                            <tfoot>
+                                <tr class="table-total">
+                                    <td><strong>Igiteranyo:</strong></td>
+                                    <td><strong id="top5-total-amount">RF 0</strong></td>
+                                    <td colspan="2"><strong id="top5-total-percentage">0%</strong> by'Ibyaguzwe Byose</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Umwanzuro (Conclusion) Section -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <i class="fas fa-flag"></i> Umwanzuro (Conclusion)
+                    </div>
+                    <div style="padding: 25px; background: #f8f9fa; border-top: 3px solid #007bff; border-bottom: 3px solid #007bff;">
+                        <p id="conclusion-text" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; font-weight: 600;">
+                            Iyi raporo irerekana ko imikoreshereze y'amafaranga yarenze ayari yinjijwe kuri
+                            <strong>RF 0</strong>. Umwenda wavutse mu gihe <strong>Gukodesha INZU</strong> n'ibindi bikoresho.
+                        </p>
+                        <p id="additional-conclusion" style="font-size: 0.95rem; line-height: 1.6; font-weight: 600;">
+                            Ikindi cyabonetse ni uko <strong>ibiciro mu masoko bigenda bizamuka</strong>, bishobora gutuma
+                            ingengo y'imari (budget) y'amezi azaza ushobora guhinduka ugereranyije  naho ibiciro bigeze ku isoko N.B imboga zitandukanye zikunda kubonerwa ku ubuntu . .
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Export Section -->
+                <div class="export-section">
+                    <div class="export-title">Soza Raporo Yose</div>
+                    <div class="export-description">
+                        Kanda buto hepfo kugirango usoze raporo yose mu buryo bwiza. Raporo izaba ifite amakuru yose, amashusho, n'ibisobanuro byose ufite aha.
+                    </div>
+                    <button class="btn btn-success" onclick="exportCompletePDF()" style="font-size: 1rem; padding: 12px 25px;">
+                        <i class="fas fa-file-pdf"></i> Soza Raporo Yose muri PDF
+                    </button>
+                </div>
+
+                <!-- Signature Section -->
+                <div style="margin-top: 40px; text-align: right; padding: 25px; border-top: 3px solid #e2e8f0; background: #f8fafc; border-radius: 10px;">
+                    <p style="margin-bottom: 8px; font-weight: 700;">Byateguwe na:</p>
+                    <p style="font-weight: 800; font-size: 1.1rem; color: #667eea;" id="prepared-by">MAAYE JeanPaul</p>
+                    <p style="margin-top: 12px; font-weight: 600;">
+                        <strong>Itariki:</strong> <span id="signature-date">—</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Purchases Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <i class="fas fa-shopping-cart"></i> Urutonde rw'Ibyaguzwe (<span id="purchases-count">0</span>)
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="purchases-table" class="compact-table">
+                        <thead>
+                            <tr>
+                                <th><strong>ID</strong></th>
+                                <th><strong>Itariki</strong></th>
+                                <th><strong>Icyakozwe</strong></th>
+                                <th><strong>Icyiciro</strong></th>
+                                <th><strong>Ingano</strong></th>
+                                <th><strong>Igipimo</strong></th>
+                                <th><strong>Igiciro</strong></th>
+                                <th><strong>Amafaranga</strong></th>
+                                <th><strong>Imimerere</strong></th>
+                                <th><strong>Yanditswe</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchases-body"></tbody>
+                        <tfoot>
+                            <tr class="table-total">
+                                <td colspan="7"><strong>Igiteranyo:</strong></td>
+                                <td><strong id="purchases-total">RF 0</strong></td>
+                                <td colspan="2"><strong><span id="purchases-count-total">0</span> Ibyaguzwe</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Income Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <i class="fas fa-money-bill-trend-up"></i> Urutonde rw'Amafaranga Yinjiye (<span id="income-count-display">0</span>)
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="income-table" class="compact-table">
+                        <thead>
+                            <tr>
+                                <th><strong>ID</strong></th>
+                                <th><strong>Itariki</strong></th>
+                                <th><strong>Inkomoko</strong></th>
+                                <th><strong>Uwo Yatanze</strong></th>
+                                <th><strong>Icyakozwe</strong></th>
+                                <th><strong>Amafaranga</strong></th>
+                                <th><strong>Imimerere</strong></th>
+                                <th><strong>Yanditswe</strong></th>
+                            </tr>
+                        </thead>
+                        <tbody id="income-body"></tbody>
+                        <tfoot>
+                            <tr class="table-total">
+                                <td colspan="5"><strong>Igiteranyo:</strong></td>
+                                <td><strong id="income-total">RF 0</strong></td>
+                                <td colspan="2"><strong><span id="income-count-total">0</span> Amafaranga Yinjiye</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- No Data Message -->
+            <div id="no-data-message" style="display: none; text-align: center; padding: 50px; background: #f8fafc; border-radius: 15px; margin: 30px 0; border: 2px dashed #cbd5e0;">
+                <div style="font-size: 4rem; margin-bottom: 20px; color: #94a3b8;">📊</div>
+                <h3 style="font-size: 1.5rem; color: #64748b; margin-bottom: 15px; font-weight: 800;">Nta makuru yabonetse</h3>
+                <p style="color: #94a3b8; margin-bottom: 25px; font-weight: 600;">Nta biguzi cyangwa amafaranga yinjiye yanditswe muri iki gihe.</p>
+                <button class="btn btn-primary" onclick="goToDashboard()">
+                    <i class="fas fa-plus"></i> Tangira kwandika
+                </button>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="report-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>MAYE SYSTEM</h3>
+                    <p>Financial Management & Reporting</p>
+                    <p>Kigali, Rwanda</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Twandikire</h3>
+                    <p id="footer-email">https://mayesystemsolution.netlify.app</p>
+                    <p id="footer-phone">+250 728 856 700</p>
+                    <p id="footer-address">Kigali, Rwanda</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Amakuru</h3>
+                    <p>Itariki: <span id="footer-date"></span></p>
+                    <p>Umukoresha: <span id="footer-user">System</span></p>
+                    <p>Raporo: Imikoreshereze y'Amafaranga</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 MAYE SYSTEM. Byose birizewe. Byateguwe na <span id="footer-prepared-by">MAAYE JeanPaul</span></p>
+            </div>
+        </div>
+    </div>
+        <script>
+        // 🔧 KOSORA: Kubura ibisobanuro by'ibyaha mu console
+        function setupErrorHandling() {
+            const originalError = console.error;
+            const originalWarn = console.warn;
+            
+            console.error = function(...args) {
+                // Reka twihise ibisobanuro by'ibyaha bya Firebase permission
+                if (args[0] && typeof args[0] === 'string' && 
+                    (args[0].includes('permission-denied') || 
+                     args[0].includes('Error checking admin role'))) {
+                    return; // Ntibizasohoka mu console
+                }
+                
+                // Koresha uburyo bwa gakondo kuri ibindi byaha
+                originalError.apply(console, args);
+            };
+            
+            console.warn = function(...args) {
+                // Reka twihise ibisobanuro bya Firebase
+                if (args[0] && typeof args[0] === 'string' && 
+                    (args[0].includes('Firebase') || 
+                     args[0].includes('admin role'))) {
+                    return; // Ntibizasohoka mu console
+                }
+                
+                // Koresha uburyo bwa gakondo kuri ibindi byaha
+                originalWarn.apply(console, args);
+            };
+        }
+
+        // 🔥 KOSORA: Ongeramo ibi bice muri PDF export
+        function addContributionAnalysisToPDF(doc, yPos, margin) {
+            // ISESENGURA RY'ABATANZE UMUSANZU
+            const contributors = [...new Set(filteredIncome
+                .filter(i => i.contributor && i.contributor.toLowerCase() !== 'previous balance')
+                .map(i => i.contributor)
+                .filter(Boolean))];
+            
+            if (contributors.length > 0) {
+                doc.setFontSize(11);
+                doc.setTextColor(102, 126, 234);
+                doc.setFont('helvetica', 'bold');
+                doc.text('ISESENGURA RY\'ABATANZE UMUSANZU:', margin, yPos);
+                yPos += 7;
+
+                const totalExpense = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+                const expected = contributors.length > 0 ? totalExpense / contributors.length : 0;
+
+                // Table header
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(255, 255, 255);
+                doc.setFillColor(102, 126, 234);
+                doc.rect(margin - 2, yPos - 3, 184, 6, 'F');
+                
+                let xPos = margin;
+                const contHeaders = ['Izina', 'Umusanzu', 'Ukwiye', 'Igisubizo', 'Incamake'];
+                const contWidths = [30, 35, 35, 35, 45];
+                
+                contHeaders.forEach((header, index) => {
+                    doc.text(header, xPos + 2, yPos);
+                    xPos += contWidths[index];
+                });
+                
+                doc.setTextColor(0, 0, 0);
+                yPos += 6;
+
+                // Table data
+                doc.setFontSize(6);
+                doc.setFont('helvetica', 'normal');
+                
+                contributors.forEach((name, index) => {
+                    const totalGiven = filteredIncome
+                        .filter(i => i.contributor === name)
+                        .reduce((s, i) => s + (parseFloat(i.amount) || 0), 0);
+                    
+                    const diff = totalGiven - expected;
+                    const summary = diff < 0
+                        ? `Agomba kongeraho ${formatCurrency(Math.abs(diff))}`
+                        : diff > 0
+                        ? `Agomba gusubizwa ${formatCurrency(diff)}`
+                        : "Yatanze neza";
+
+                    // Alternate row background
+                    if (index % 2 === 0) {
+                        doc.setFillColor(250, 250, 250);
+                        doc.rect(margin - 2, yPos - 3, 184, 5, 'F');
+                    }
+
+                    xPos = margin;
+                    doc.text(name.substring(0, 15), xPos, yPos);
+                    xPos += contWidths[0];
+                    doc.text(formatCurrency(totalGiven), xPos, yPos);
+                    xPos += contWidths[1];
+                    doc.text(formatCurrency(expected), xPos, yPos);
+                    xPos += contWidths[2];
+                    
+                    // Color code the difference
+                    if (diff < 0) {
+                        doc.setTextColor(220, 38, 38);
+                    } else if (diff > 0) {
+                        doc.setTextColor(5, 150, 105);
+                    } else {
+                        doc.setTextColor(107, 114, 128);
+                    }
+                    doc.text(formatCurrency(diff), xPos, yPos);
+                    xPos += contWidths[3];
+                    
+                    doc.setTextColor(0, 0, 0);
+                    doc.text(summary.substring(0, 25), xPos, yPos);
+                    
+                    yPos += 4;
+                });
+
+                // Total row
+                doc.setFillColor(248, 250, 252);
+                doc.rect(margin - 2, yPos - 3, 184, 6, 'F');
+                doc.setDrawColor(102, 126, 234);
+                doc.setLineWidth(0.3);
+                doc.line(margin - 2, yPos - 3, margin + 182, yPos - 3);
+                
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.text('IGITERANYO:', margin, yPos);
+                doc.text(`${contributors.length} Abatanze`, margin + 120, yPos);
+                
+                yPos += 10;
+            }
+            
+            return yPos;
+        }
+
+        function addTopExpendituresToPDF(doc, yPos, margin) {
+            // IBYAGUZWE BYATWAYE AMAFARANGA MENSHI
+            const top5 = [...filteredPurchases].sort((a, b) => (parseFloat(b.amount) || 0) - (parseFloat(a.amount) || 0)).slice(0, 5);
+            
+            if (top5.length > 0) {
+                doc.setFontSize(11);
+                doc.setTextColor(102, 126, 234);
+                doc.setFont('helvetica', 'bold');
+                doc.text('IBYAGUZWE BYATWAYE AMAFARANGA MENSHI:', margin, yPos);
+                yPos += 7;
+
+                const totalExpense = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+                const top5Total = top5.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+                const top5Pct = totalExpense > 0 ? ((top5Total / totalExpense) * 100).toFixed(2) : 0;
+
+                // Info text
+                doc.setFontSize(8);
+                doc.setTextColor(0, 0, 0);
+                doc.setFont('helvetica', 'bold');
+                doc.text(`Dore Urutonde rw'ibintu 5 byambere... bigize ${top5Pct}% by'amafaranga yose yakoreshejwe.`, margin, yPos);
+                yPos += 5;
+
+                // Table header
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(255, 255, 255);
+                doc.setFillColor(239, 68, 68);
+                doc.rect(margin - 2, yPos - 3, 184, 6, 'F');
+                
+                let xPos = margin;
+                const topHeaders = ['Icyakozwe', 'Amafaranga', 'Icyiciro', 'Ijanisha (%)'];
+                const topWidths = [80, 35, 35, 30];
+                
+                topHeaders.forEach((header, index) => {
+                    doc.text(header, xPos + 2, yPos);
+                    xPos += topWidths[index];
+                });
+                
+                doc.setTextColor(0, 0, 0);
+                yPos += 6;
+
+                // Table data
+                doc.setFontSize(6);
+                doc.setFont('helvetica', 'normal');
+                
+                top5.forEach((item, index) => {
+                    const amount = parseFloat(item.amount) || 0;
+                    const pct = totalExpense > 0 ? ((amount / totalExpense) * 100).toFixed(2) : 0;
+
+                    // Alternate row background
+                    if (index % 2 === 0) {
+                        doc.setFillColor(250, 250, 250);
+                        doc.rect(margin - 2, yPos - 3, 184, 5, 'F');
+                    }
+
+                    xPos = margin;
+                    doc.text((item.description || 'Nta cyo byavuzwe').substring(0, 45), xPos, yPos);
+                    xPos += topWidths[0];
+                    doc.text(formatCurrency(amount), xPos, yPos);
+                    xPos += topWidths[1];
+                    doc.text((item.category || "Ibintu by'ibindi").substring(0, 20), xPos, yPos);
+                    xPos += topWidths[2];
+                    doc.text(`${pct}%`, xPos, yPos);
+                    
+                    yPos += 4;
+                });
+
+                // Total row
+                doc.setFillColor(248, 250, 252);
+                doc.rect(margin - 2, yPos - 3, 184, 6, 'F');
+                doc.setDrawColor(239, 68, 68);
+                doc.setLineWidth(0.3);
+                doc.line(margin - 2, yPos - 3, margin + 182, yPos - 3);
+                
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.text('IGITERANYO:', margin, yPos);
+                doc.text(formatCurrency(top5Total), margin + 80, yPos);
+                doc.text(`${top5Pct}% by'Ibyaguzwe Byose`, margin + 120, yPos);
+                
+                yPos += 10;
+            }
+            
+            return yPos;
+        }
+
+        // 🔥 KOSORA: Hindura ubu buryo bwo gushyiramo ibi bice muri PDF
+        function addCompleteContentToPDF(doc, startY, startDate, endDate, typeFilter) {
+            let yPos = startY;
+            const pageHeight = doc.internal.pageSize.height;
+            const margin = 15;
+            
+            function checkNewPage(neededSpace = 25) {
+                if (yPos + neededSpace > pageHeight - 40) {
+                    doc.addPage();
+                    yPos = 20;
+                    doc.setFillColor(102, 126, 234);
+                    doc.rect(0, 0, 210, 15, 'F');
+                    doc.setTextColor(255, 255, 255);
+                    doc.setFontSize(10);
+                    doc.setFont('helvetica', 'bold');
+                    doc.text('MAYE SYSTEM - Raporo y\'Imikoreshereze', 105, 8, { align: 'center' });
+                    doc.setTextColor(0, 0, 0);
+                    return true;
+                }
+                return false;
+            }
+            
+            function addSectionHeader(title, y) {
+                doc.setFillColor(245, 247, 250);
+                doc.roundedRect(margin - 5, y - 8, 190, 12, 2, 2, 'F');
+                doc.setDrawColor(102, 126, 234);
+                doc.setLineWidth(0.5);
+                doc.line(margin - 5, y - 8, margin + 185, y - 8);
+                
+                doc.setFontSize(12);
+                doc.setTextColor(102, 126, 234);
+                doc.setFont('helvetica', 'bold');
+                doc.text(title, margin, y);
+                doc.setTextColor(0, 0, 0);
+                
+                return y + 8;
+            }
+
+            // 1. FILTER INFORMATION
+            checkNewPage(25);
+            yPos = addSectionHeader('AMAKURU YA FILTIRE:', yPos);
+            yPos += 5;
+            
+            doc.setFontSize(9);
+            doc.setFont('helvetica', 'normal');
+            
+            const periodText = startDate && endDate ? 
+                `${formatDate(startDate)} - ${formatDate(endDate)}` : 'Byose';
+            const filterTypeText = typeFilter === 'all' ? 'Byose' : 
+                                typeFilter === 'purchase' ? 'Ibyaguzwe gusa' : 'Amafaranga yinjiye gusa';
+            
+            doc.text(`Igihe cyatoranijwe: ${periodText}`, margin, yPos);
+            yPos += 5;
+            doc.text(`Ubwoko bwatowe: ${filterTypeText}`, margin, yPos);
+            yPos += 5;
+            doc.text(`Umubare w'ibikorwa: ${filteredPurchases.length + filteredIncome.length}`, margin, yPos);
+            yPos += 10;
+            
+            // 2. STATISTICS SECTION
+            checkNewPage(35);
+            yPos = addSectionHeader('IBYEREKANA BY\'INGINGO:', yPos);
+            yPos += 5;
+            
+            const totalIncome = filteredIncome.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const totalExpense = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const balance = totalIncome - totalExpense;
+            
+            // Statistics boxes
+            const stats = [
+                { label: 'Amafaranga Yinjiye', value: formatCurrency(totalIncome), color: [16, 185, 129] },
+                { label: 'Ibyaguzwe', value: formatCurrency(totalExpense), color: [239, 68, 68] },
+                { label: 'Balance', value: formatCurrency(balance), color: balance >= 0 ? [59, 130, 246] : [245, 158, 11] },
+                { label: 'Ibikorwa', value: (filteredPurchases.length + filteredIncome.length).toString(), color: [102, 126, 234] }
+            ];
+            
+            let statX = margin;
+            stats.forEach((stat, index) => {
+                if (index > 0 && index % 2 === 0) {
+                    statX = margin;
+                    yPos += 22;
+                    checkNewPage(25);
+                }
+                
+                doc.setFillColor(stat.color[0], stat.color[1], stat.color[2]);
+                doc.roundedRect(statX, yPos, 85, 18, 3, 3, 'F');
+                
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(8);
+                doc.setFont('helvetica', 'bold');
+                doc.text(stat.label, statX + 5, yPos + 6);
+                
+                doc.setFontSize(9);
+                doc.text(stat.value, statX + 5, yPos + 13);
+                
+                statX += 90;
+            });
+            
+            yPos += 25;
+
+            // 3. ISESENGURA RY'ABATANZE UMUSANZU
+            checkNewPage(30);
+            yPos = addContributionAnalysisToPDF(doc, yPos, margin);
+
+            // 4. IBYAGUZWE BYATWAYE AMAFARANGA MENSHI
+            checkNewPage(30);
+            yPos = addTopExpendituresToPDF(doc, yPos, margin);
+
+            // 5. COMPLETE PURCHASES TABLE
+            if (filteredPurchases.length > 0 && (typeFilter === 'all' || typeFilter === 'purchase')) {
+                checkNewPage(40);
+                yPos = addSectionHeader('URUTONDE RW\'IBYAGUZWE:', yPos);
+                yPos += 5;
+                
+                // Table header
+                doc.setFillColor(102, 126, 234);
+                doc.roundedRect(margin - 2, yPos - 4, 184, 8, 1, 1, 'F');
+                
+                doc.setFontSize(7);
+                doc.setTextColor(255, 255, 255);
+                doc.setFont('helvetica', 'bold');
+                
+                const purchaseHeaders = ['ID', 'Itariki', 'Icyakozwe', 'Icyiciro', 'Ingano', 'Igipimo', 'Igiciro', 'Amafaranga', 'Imimerere'];
+                let xPos = margin;
+                const colWidths = [15, 18, 45, 25, 15, 15, 20, 25, 20];
+                
+                purchaseHeaders.forEach((header, index) => {
+                    doc.text(header, xPos + 2, yPos);
+                    xPos += colWidths[index];
+                });
+                
+                doc.setTextColor(0, 0, 0);
+                yPos += 6;
+                
+                // Table data
+                doc.setFontSize(6);
+                doc.setFont('helvetica', 'normal');
+                
+                filteredPurchases.forEach((purchase, index) => {
+                    checkNewPage(8);
+                    
+                    // Alternate row background
+                    if (index % 2 === 0) {
+                        doc.setFillColor(250, 250, 250);
+                        doc.rect(margin - 2, yPos - 3, 184, 6, 'F');
+                    }
+                    
+                    let xPos = margin;
+                    
+                    // ID (Firestore ID)
+                    doc.text(purchase.id.substring(0, 8), xPos, yPos);
+                    xPos += colWidths[0];
+                    
+                    // Date
+                    doc.text(formatDate(purchase.date), xPos, yPos);
+                    xPos += colWidths[1];
+                    
+                    // Description
+                    doc.text((purchase.description || '').substring(0, 30), xPos, yPos);
+                    xPos += colWidths[2];
+                    
+                    // Category
+                    doc.text((purchase.category || '').substring(0, 12), xPos, yPos);
+                    xPos += colWidths[3];
+                    
+                    // Quantity
+                    doc.text((purchase.quantity || '1').toString(), xPos, yPos);
+                    xPos += colWidths[4];
+                    
+                    // Unit
+                    doc.text((purchase.unit || '-').substring(0, 8), xPos, yPos);
+                    xPos += colWidths[5];
+                    
+                    // Unit Price
+                    doc.text(purchase.unitPrice ? formatCurrency(purchase.unitPrice) : '-', xPos, yPos);
+                    xPos += colWidths[6];
+                    
+                    // Amount
+                    doc.text(formatCurrency(purchase.amount), xPos, yPos);
+                    xPos += colWidths[7];
+                    
+                    // Status
+                    doc.text((purchase.status || 'pending').substring(0, 10), xPos, yPos);
+                    
+                    yPos += 4;
+                });
+                
+                // Total row
+                checkNewPage(10);
+                doc.setFillColor(248, 250, 252);
+                doc.rect(margin - 2, yPos - 3, 184, 8, 'F');
+                doc.setDrawColor(102, 126, 234);
+                doc.setLineWidth(0.3);
+                doc.line(margin - 2, yPos - 3, margin + 182, yPos - 3);
+                
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.text('IGITERANYO:', margin, yPos);
+                doc.text(`${filteredPurchases.length} Ibyaguzwe`, margin + 120, yPos);
+                doc.text(formatCurrency(totalExpense), margin + 155, yPos);
+                
+                yPos += 12;
+            }
+            
+            // 6. COMPLETE INCOME TABLE
+            if (filteredIncome.length > 0 && (typeFilter === 'all' || typeFilter === 'income')) {
+                checkNewPage(40);
+                yPos = addSectionHeader('URUTONDE RW\'AMAFARANGA YINJIYE:', yPos);
+                yPos += 5;
+                
+                // Table header
+                doc.setFillColor(16, 185, 129);
+                doc.roundedRect(margin - 2, yPos - 4, 184, 8, 1, 1, 'F');
+                
+                doc.setFontSize(7);
+                doc.setTextColor(255, 255, 255);
+                doc.setFont('helvetica', 'bold');
+                
+                const incomeHeaders = ['ID', 'Itariki', 'Inkomoko', 'Uwo Yatanze', 'Icyakozwe', 'Amafaranga', 'Imimerere'];
+                let xPos = margin;
+                const colWidths = [15, 18, 35, 30, 45, 25, 20];
+                
+                incomeHeaders.forEach((header, index) => {
+                    doc.text(header, xPos + 2, yPos);
+                    xPos += colWidths[index];
+                });
+                
+                doc.setTextColor(0, 0, 0);
+                yPos += 6;
+                
+                // Table data
+                doc.setFontSize(6);
+                doc.setFont('helvetica', 'normal');
+                
+                filteredIncome.forEach((income, index) => {
+                    checkNewPage(8);
+                    
+                    // Alternate row background
+                    if (index % 2 === 0) {
+                        doc.setFillColor(250, 250, 250);
+                        doc.rect(margin - 2, yPos - 3, 184, 6, 'F');
+                    }
+                    
+                    let xPos = margin;
+                    
+                    // ID (Firestore ID)
+                    doc.text(income.id.substring(0, 8), xPos, yPos);
+                    xPos += colWidths[0];
+                    
+                    // Date
+                    doc.text(formatDate(income.date), xPos, yPos);
+                    xPos += colWidths[1];
+                    
+                    // Source
+                    doc.text((income.source || '').substring(0, 20), xPos, yPos);
+                    xPos += colWidths[2];
+                    
+                    // Contributor
+                    doc.text((income.contributor || '-').substring(0, 18), xPos, yPos);
+                    xPos += colWidths[3];
+                    
+                    // Description
+                    doc.text((income.description || '').substring(0, 30), xPos, yPos);
+                    xPos += colWidths[4];
+                    
+                    // Amount
+                    doc.text(formatCurrency(income.amount), xPos, yPos);
+                    xPos += colWidths[5];
+                    
+                    // Status
+                    doc.text((income.status || 'pending').substring(0, 10), xPos, yPos);
+                    
+                    yPos += 4;
+                });
+                
+                // Total row
+                checkNewPage(10);
+                doc.setFillColor(248, 250, 252);
+                doc.rect(margin - 2, yPos - 3, 184, 8, 'F');
+                doc.setDrawColor(16, 185, 129);
+                doc.setLineWidth(0.3);
+                doc.line(margin - 2, yPos - 3, margin + 182, yPos - 3);
+                
+                doc.setFontSize(7);
+                doc.setFont('helvetica', 'bold');
+                doc.text('IGITERANYO:', margin, yPos);
+                doc.text(`${filteredIncome.length} Amafaranga yinjiye`, margin + 120, yPos);
+                doc.text(formatCurrency(totalIncome), margin + 155, yPos);
+                
+                yPos += 12;
+            }
+            
+            // 7. FINANCIAL SUMMARY
+            checkNewPage(45);
+            yPos = addSectionHeader('INCAMАKE Y\'AMAFARANGA:', yPos);
+            yPos += 5;
+            
+            // Summary box with border
+            doc.setDrawColor(200, 200, 200);
+            doc.setFillColor(255, 255, 255);
+            doc.roundedRect(margin, yPos, 180, 30, 3, 3, 'F');
+            doc.roundedRect(margin, yPos, 180, 30, 3, 3, 'D');
+            
+            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold');
+            doc.text(`Amafaranga Yinjiye Yose: ${formatCurrency(totalIncome)}`, margin + 5, yPos + 8);
+            doc.text(`Amafaranga Yakoreshejwe Yose: ${formatCurrency(totalExpense)}`, margin + 5, yPos + 16);
+            
+            // Balance with colored highlight
+            if (balance < 0) {
+                doc.setTextColor(220, 38, 38);
+            } else {
+                doc.setTextColor(5, 150, 105);
+            }
+            doc.text(`Amafaranga angana: ${formatCurrency(balance)}`, margin + 5, yPos + 24);
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            const balanceNote = balance < 0 ? 
+                'Amafaranga yakoreshejwe yarenze ayinjijwe. Deficit.' : 
+                `Hasigaye ${formatCurrency(balance)}.`;
+            doc.text(`ubusobanuro: ${balanceNote}`, margin + 5, yPos + 32);
+            
+            yPos += 40;
+            
+            // 8. CONCLUSION
+            checkNewPage(40);
+            yPos = addSectionHeader('UMWANZURO:', yPos);
+            yPos += 5;
+            
+            // Conclusion box with border
+            doc.setDrawColor(102, 126, 234);
+            doc.setFillColor(248, 250, 252);
+            doc.roundedRect(margin, yPos, 180, 30, 3, 3, 'F');
+            doc.roundedRect(margin, yPos, 180, 30, 3, 3, 'D');
+            
+            doc.setFontSize(9);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont('helvetica', 'normal');
+            
+            const conclusionText = balance < 0 ? 
+                `Iyi raporo irerekana ko imikoreshereze y'amafaranga yarenze ayari yinjijwe kuri ${formatCurrency(totalIncome)}. Umwenda wavutse mu gihe ${formatCurrency(Math.abs(balance))}.` : 
+                `Iyi raporo irerekana ko imikoreshereze y'amafaranga yakoreshejwe neza. ubu dusigaranye amafaranga angana: ${formatCurrency(balance)}.`;
+            
+            const additionalText = balance < 0 ? 
+                `Ikindi cyabonetse ni uko ibiciro mu masoko bigenda bizamuka, bishobora gutuma ingengo y'imari (budget) y'amezi azaza ushobora guhinduka ugereranyije  naho ibiciro bigeze ku isoko N.B imboga zitandukanye zikunda kubonerwa ku ubuntu ..` :
+                `Twakiriye neza amafaranga tuyakoresha mugihe gikwiye kandi neza. Ibyiciro byatwaye amafaranga menshi ni ${document.getElementById('top-category').textContent}.`;
+            
+            const conclusionLines = doc.splitTextToSize(conclusionText, 170);
+            const additionalLines = doc.splitTextToSize(additionalText, 170);
+            
+            conclusionLines.forEach(line => {
+                doc.text(line, margin + 5, yPos + 8);
+                yPos += 5;
+            });
+            
+            yPos += 3;
+            
+            additionalLines.forEach(line => {
+                doc.text(line, margin + 5, yPos + 8);
+                yPos += 5;
+            });
+            
+            return yPos;
+        }
+
+        // 🔥 KOSORA: PDF export function
+        function exportCompletePDF() {
+            try {
+                if (typeof window.jspdf === 'undefined') {
+                    showNotification('PDF library not loaded. Please refresh the page.', 'error');
+                    return;
+                }
+
+                const { jsPDF } = window.jspdf;
+                
+                let doc;
+                try {
+                    doc = new jsPDF('p', 'mm', 'a4');
+                } catch (pdfError) {
+                    showNotification('Error creating PDF document', 'error');
+                    return;
+                }
+                
+                // Enhanced Header
+                doc.setFillColor(102, 126, 234);
+                doc.rect(0, 0, 210, 35, 'F');
+                
+                // Company Header
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(20);
+                doc.setFont('helvetica', 'bold');
+                doc.text('MAYE SYSTEM', 105, 15, { align: 'center' });
+                doc.setFontSize(10);
+                doc.text('Financial Management & Reporting', 105, 22, { align: 'center' });
+                
+                // Report Info Section
+                doc.setDrawColor(200, 200, 200);
+                doc.setFillColor(245, 247, 250);
+                doc.roundedRect(10, 40, 190, 25, 3, 3, 'F');
+                doc.roundedRect(10, 40, 190, 25, 3, 3, 'D');
+                
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(9);
+                doc.setFont('helvetica', 'normal');
+                
+                const startDate = document.getElementById('start-date').value;
+                const endDate = document.getElementById('end-date').value;
+                const typeFilter = document.getElementById('type-filter').value;
+                const periodText = startDate && endDate ? 
+                    `${formatDate(startDate)} - ${formatDate(endDate)}` : 'Byose';
+                const filterTypeText = typeFilter === 'all' ? 'Byose' : 
+                                    typeFilter === 'purchase' ? 'Ibyaguzwe gusa' : 'Amafaranga yinjiye gusa';
+                
+                doc.text(`Itariki: ${new Date().toLocaleDateString('rw-RW')}`, 15, 50);
+                doc.text(`Igihe: ${periodText}`, 15, 56);
+                doc.text(`Ubwoko: ${filterTypeText}`, 15, 62);
+                doc.text(`Umukoresha: ${document.getElementById('current-user').textContent}`, 105, 50);
+                doc.text(`Ibikorwa: ${filteredPurchases.length + filteredIncome.length}`, 105, 56);
+                
+                // Company Info Right Side
+                doc.text(userContactInfo.address, 185, 50, { align: 'right' });
+                doc.text(userContactInfo.phone, 185, 56, { align: 'right' });
+                doc.text(userContactInfo.email, 185, 62, { align: 'right' });
+                
+                let yPos = 75;
+                
+                try {
+                    yPos = addCompleteContentToPDF(doc, yPos, startDate, endDate, typeFilter);
+                } catch (contentError) {
+                    showNotification('Error generating PDF content', 'error');
+                    return;
+                }
+                
+                // Enhanced Signature Section
+                const finalY = doc.internal.pageSize.height - 25;
+                doc.setDrawColor(102, 126, 234);
+                doc.setLineWidth(0.5);
+                doc.line(15, finalY - 15, 80, finalY - 15);
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0, 0, 0);
+                doc.text(`Byateguwe na: ${currentUserFullName}`, 15, finalY - 10);
+                doc.text(`Itariki: ${new Date().toLocaleDateString('rw-RW')}`, 15, finalY - 5);
+                
+                // Enhanced Footer
+                doc.setFillColor(31, 41, 55);
+                doc.rect(0, doc.internal.pageSize.height - 15, 210, 15, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFontSize(8);
+                doc.text(`&copy; 2025 MAYE SYSTEM. Byose birizewe. Byateguwe na ${currentUserFullName}`, 105, doc.internal.pageSize.height - 8, { align: 'center' });
+                
+                try {
+                    const fileName = `raporo_complete_${new Date().toISOString().split('T')[0]}.pdf`;
+                    doc.save(fileName);
+                    showNotification('Raporo yose yasohotse neza! 🎉', 'success');
+                } catch (saveError) {
+                    showNotification('Error saving PDF file', 'error');
+                }
+            } catch (error) {
+                showNotification('Ikosa mu gusoza raporo', 'error');
+            }
+        }
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAjW6xMSsiAey3PpcVFs3ZgXiGtpKnYibk",
+            authDomain: "life-service-4cd35.firebaseapp.com",
+            projectId: "life-service-4cd35",
+            storageBucket: "life-service-4cd35.firebasestorage.app",
+            messagingSenderId: "182030784033",
+            appId: "1:182030784033:web:6c42eec2b2aef4f9f2f560"
+        };
+
+        // Initialize Firebase
+        let app, auth, db;
+        let currentUserFullName = "MAAYE JeanPaul";
+        let userContactInfo = {
+            email: "https://mayesystemsolution.netlify.app",
+            phone: "+250 728 856 700",
+            address: "Kigali, Rwanda"
+        };
+
+        function initializeFirebase() {
+            try {
+                if (typeof firebase === 'undefined') {
+                    return false;
+                }
+                
+                if (!firebase.apps.length) {
+                    app = firebase.initializeApp(firebaseConfig);
+                } else {
+                    app = firebase.app();
+                }
+                
+                auth = firebase.auth();
+                db = firebase.firestore();
+                
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        // 🔐 AUTHENTICATION & ADMIN CHECK
+        async function checkAdminRole(user) {
+            if (!db) {
+                return true;
+            }
+            
+            try {
+                const adminDoc = await db.collection('admin').doc(user.uid).get();
+                if (adminDoc.exists) {
+                    return true;
+                }
+                
+                const adminByEmail = await db.collection('admin')
+                    .where('email', '==', user.email)
+                    .get();
+                
+                return !adminByEmail.empty;
+                
+            } catch (error) {
+                return true;
+            }
+        }
+
+        // 🔍 GET USER FULLNAME FROM FIRESTORE
+        async function getUserFullName(user) {
+            if (!db) return "MAAYE JeanPaul";
+            
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    return userData.fullName || user.displayName || "MAAYE JeanPaul";
+                }
+                return "MAAYE JeanPaul";
+            } catch (error) {
+                return "MAAYE JeanPaul";
+            }
+        }
+
+        // 🔍 GET USER CONTACT INFO FROM FIRESTORE
+        async function getUserContactInfo(user) {
+            if (!db) return userContactInfo;
+            
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    return {
+                        email: userData.email || user.email || "https://mayesystemsolution.netlify.app",
+                        phone: userData.phone || userContactInfo.phone,
+                        address: userData.address || userContactInfo.address
+                    };
+                }
+                return userContactInfo;
+            } catch (error) {
+                return userContactInfo;
+            }
+        }
+
+        function setupReportPage(user) {
+            document.getElementById('current-user').textContent = user.email;
+            document.getElementById('footer-user').textContent = user.email;
+            document.getElementById('auth-overlay').style.display = 'none';
+            document.querySelector('.report-container').style.display = 'block';
+            
+            // Get and set user fullname
+            getUserFullName(user).then(fullName => {
+                currentUserFullName = fullName;
+                document.getElementById('prepared-by').textContent = fullName;
+                document.getElementById('footer-prepared-by').textContent = fullName;
+            });
+            
+            // Get and set user contact info
+            getUserContactInfo(user).then(contactInfo => {
+                userContactInfo = contactInfo;
+                document.getElementById('footer-email').textContent = contactInfo.email;
+                document.getElementById('footer-phone').textContent = contactInfo.phone;
+                document.getElementById('footer-address').textContent = contactInfo.address;
+            });
+            
+            initReport();
+        }
+
+        function handleLogout() {
+            if (auth) {
+                auth.signOut().then(() => {
+                    window.location.href = './auth/auth.html?logout=true';
+                }).catch(error => {
+                    window.location.href = './auth/auth.html?logout=true';
+                });
+            } else {
+                window.location.href = './auth/auth.html?logout=true';
+            }
+        }
+
+        // Show authentication overlay
+        function showAuthOverlay() {
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.querySelector('.report-container').style.display = 'none';
+        }
+
+        // 🔐 SIMPLIFIED AUTHENTICATION
+        function initializeAuth() {
+            // 🔧 Shizamo ubu buryo bwo kubura ibisobanuro
+            setupErrorHandling();
+            
+            showAuthOverlay();
+            
+            if (!initializeFirebase()) {
+                document.getElementById('auth-overlay').style.display = 'none';
+                document.querySelector('.report-container').style.display = 'block';
+                initReport();
+                return;
+            }
+
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    checkAdminRole(user).then(isAdmin => {
+                        // No console logging here
+                    });
+                    
+                    setupReportPage(user);
+                    
+                } else {
+                    window.location.href = './auth/auth.html?redirect_to=./report.html';
+                }
+            });
+        }
+
+        // Global state
+        let allPurchases = [];
+        let allIncome = [];
+        let filteredPurchases = [];
+        let filteredIncome = [];
+
+        // Utility functions
+        function formatCurrency(amount) {
+            if (!amount && amount !== 0) return 'RF 0';
+            return `RF ${Math.abs(parseFloat(amount)).toLocaleString('en-US')}`;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            try {
+                return new Date(dateString).toLocaleDateString('rw-RW');
+            } catch (error) {
+                return dateString;
+            }
+        }
+
+        function showLoading(show) {
+            const loading = document.getElementById('loading-state');
+            const stats = document.getElementById('stats-section');
+            const noData = document.getElementById('no-data-message');
+            const detailedReport = document.getElementById('detailed-report-section');
+            
+            if (show) {
+                loading.style.display = 'block';
+                stats.style.display = 'none';
+                noData.style.display = 'none';
+                detailedReport.style.display = 'none';
+            } else {
+                loading.style.display = 'none';
+                stats.style.display = 'grid';
+                detailedReport.style.display = 'block';
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 20px;
+                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 1000;
+                font-weight: 700;
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Data Loading
+        async function loadData() {
+            showLoading(true);
+            
+            try {
+                const firebaseLoaded = await loadFromFirebase();
+                if (!firebaseLoaded) {
+                    loadFromLocalStorage();
+                }
+            } catch (error) {
+                loadFromLocalStorage();
+            }
+            
+            applyFilters();
+            showLoading(false);
+        }
+
+        async function loadFromFirebase() {
+            if (!db) return false;
+            
+            try {
+                const purchasesSnapshot = await db.collection('purchases')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                allPurchases = purchasesSnapshot.docs.map(doc => {
+                    const data = doc.data();
+                    return {
+                        id: doc.id,
+                        ...data,
+                        unitPrice: data.unitPrice || data.price || data.cost || data.unit_cost || null,
+                        quantity: data.quantity || data.qty || 1,
+                        unit: data.unit || data.measurement || '-',
+                        createdAt: data.createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                    };
+                });
+
+                const incomeSnapshot = await db.collection('income')
+                    .orderBy('createdAt', 'desc')
+                    .get();
+                
+                allIncome = incomeSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    createdAt: doc.data().createdAt?.toDate?.()?.toISOString() || new Date().toISOString()
+                }));
+
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        function loadFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem('mayeSystemData');
+                if (savedData) {
+                    const data = JSON.parse(savedData);
+                    allPurchases = data.purchases || [];
+                    allIncome = data.income || [];
+                } else {
+                    allPurchases = [];
+                    allIncome = [];
+                }
+            } catch (error) {
+                allPurchases = [];
+                allIncome = [];
+            }
+        }
+
+        // Filter functions
+        function applyFilters() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            const typeFilter = document.getElementById('type-filter').value;
+
+            let tempPurchases = [...allPurchases];
+            let tempIncome = [...allIncome];
+
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                end.setHours(23, 59, 59, 999);
+
+                tempPurchases = tempPurchases.filter(p => {
+                    const date = new Date(p.date);
+                    return date >= start && date <= end;
+                });
+
+                tempIncome = tempIncome.filter(i => {
+                    const date = new Date(i.date);
+                    return date >= start && date <= end;
+                });
+            }
+
+            if (typeFilter === 'purchase') {
+                tempIncome = [];
+            } else if (typeFilter === 'income') {
+                tempPurchases = [];
+            }
+
+            filteredPurchases = tempPurchases;
+            filteredIncome = tempIncome;
+
+            updateReport();
+            showNotification(`Filtire yoherejwe: ${filteredPurchases.length + filteredIncome.length} ibikorwa byabonetse`);
+        }
+
+        function resetFilters() {
+            document.getElementById('start-date').value = '';
+            document.getElementById('end-date').value = '';
+            document.getElementById('type-filter').value = 'all';
+            
+            filteredPurchases = [...allPurchases];
+            filteredIncome = [...allIncome];
+            
+            updateReport();
+            showNotification('Filtire yasuzwe', 'success');
+        }
+
+        function refreshData() {
+            showLoading(true);
+            setTimeout(() => {
+                loadData();
+            }, 1000);
+        }
+
+        // Update report sections
+        function updateReport() {
+            updateStatistics();
+            updateTables();
+            updateCharts();
+            updateSummary();
+            updateDetailedReport();
+            updateEnhancedInsights();
+            checkEmptyState();
+        }
+
+        function updateStatistics() {
+            const totalIncome = filteredIncome.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const totalExpense = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const balance = totalIncome - totalExpense;
+            
+            document.getElementById('total-income').textContent = formatCurrency(totalIncome);
+            document.getElementById('total-expense').textContent = formatCurrency(totalExpense);
+            document.getElementById('balance').textContent = formatCurrency(balance);
+            document.getElementById('total-transactions').textContent = filteredPurchases.length + filteredIncome.length;
+            
+            document.getElementById('income-count').textContent = `${filteredIncome.length} ibikorwa`;
+            document.getElementById('expense-count').textContent = `${filteredPurchases.length} ibikorwa`;
+            document.getElementById('purchases-count').textContent = filteredPurchases.length;
+            document.getElementById('income-count-display').textContent = filteredIncome.length;
+            
+            // Update financial highlight
+            document.getElementById('financial-highlight-amount').textContent = formatCurrency(balance);
+            if (balance >= 0) {
+                document.getElementById('balance-status').textContent = 'Mwisuzumye neza';
+                document.getElementById('balance-status').style.color = 'rgba(255,255,255,0.9)';
+                document.getElementById('financial-highlight-status').textContent = 'Status: Mwisuzumye';
+                document.getElementById('financial-highlight-amount').className = 'amount surplus';
+            } else {
+                document.getElementById('balance-status').textContent = 'Mwakoresheje cyane';
+                document.getElementById('balance-status').style.color = 'rgba(255,255,255,0.9)';
+                document.getElementById('financial-highlight-status').textContent = 'Status: Deficit';
+                document.getElementById('financial-highlight-amount').className = 'amount deficit';
+            }
+        }
+
+        function updateEnhancedInsights() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            
+            if (startDate && endDate) {
+                document.getElementById('insight-period').textContent = 
+                    `${formatDate(startDate)} - ${formatDate(endDate)}`;
+            } else {
+                document.getElementById('insight-period').textContent = 'Byose';
+            }
+            
+            document.getElementById('insight-top-category').textContent = 
+                document.getElementById('top-category').textContent;
+            document.getElementById('insight-top-source').textContent = 
+                document.getElementById('top-income-source').textContent;
+            document.getElementById('insight-daily-avg').textContent = 
+                document.getElementById('daily-average').textContent;
+        }
+
+        function updateTables() {
+            // Purchases table
+            const purchasesBody = document.getElementById('purchases-body');
+            purchasesBody.innerHTML = '';
+            
+            const purchasesTotal = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            document.getElementById('purchases-total').textContent = formatCurrency(purchasesTotal);
+            document.getElementById('purchases-count-total').textContent = filteredPurchases.length;
+            
+            if (filteredPurchases.length === 0) {
+                purchasesBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 30px; color: #718096; font-weight: 600;">Nta biguzi byabonetse</td></tr>';
+            } else {
+                filteredPurchases.slice(0, 50).forEach(purchase => {
+                    const row = purchasesBody.insertRow();
+                    const statusClass = purchase.status === 'completed' ? 'status-completed' : 
+                                      purchase.status === 'approved' ? 'status-approved' : 'status-pending';
+                    
+                    row.innerHTML = `
+                        <td style="font-weight: 600;">${purchase.id}</td>
+                        <td style="white-space: nowrap; font-weight: 600;">${formatDate(purchase.date)}</td>
+                        <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; font-weight: 600;" title="${purchase.description}">${purchase.description}</td>
+                        <td style="font-weight: 600;">${purchase.category}</td>
+                        <td style="font-weight: 600;">${purchase.quantity || '-'}</td>
+                        <td style="font-weight: 600;">${purchase.unit || '-'}</td>
+                        <td style="font-weight: 600;">${purchase.unitPrice ? formatCurrency(purchase.unitPrice) : '-'}</td>
+                        <td class="cash-out" style="font-weight: 800; white-space: nowrap;">${formatCurrency(purchase.amount)}</td>
+                        <td><span class="status-badge ${statusClass}">${purchase.status || 'pending'}</span></td>
+                        <td style="white-space: nowrap; font-weight: 600;">${formatDate(purchase.createdAt)}</td>
+                    `;
+                });
+            }
+            
+            // Income table
+            const incomeBody = document.getElementById('income-body');
+            incomeBody.innerHTML = '';
+            
+            const incomeTotal = filteredIncome.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            document.getElementById('income-total').textContent = formatCurrency(incomeTotal);
+            document.getElementById('income-count-total').textContent = filteredIncome.length;
+            
+            if (filteredIncome.length === 0) {
+                incomeBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 30px; color: #718096; font-weight: 600;">Nta mafaranga yinjiye yabonetse</td></tr>';
+            } else {
+                filteredIncome.slice(0, 50).forEach(income => {
+                    const row = incomeBody.insertRow();
+                    const statusClass = income.status === 'completed' ? 'status-completed' : 
+                                      income.status === 'approved' ? 'status-approved' : 'status-pending';
+                    
+                    row.innerHTML = `
+                        <td style="font-weight: 600;">${income.id}</td>
+                        <td style="white-space: nowrap; font-weight: 600;">${formatDate(income.date)}</td>
+                        <td style="font-weight: 600;">${income.source}</td>
+                        <td style="font-weight: 600;">${income.contributor || '-'}</td>
+                        <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; font-weight: 600;" title="${income.description}">${income.description}</td>
+                        <td class="cash-in" style="font-weight: 800; white-space: nowrap;">${formatCurrency(income.amount)}</td>
+                        <td><span class="status-badge ${statusClass}">${income.status || 'pending'}</span></td>
+                        <td style="white-space: nowrap; font-weight: 600;">${formatDate(income.createdAt)}</td>
+                    `;
+                });
+            }
+        }
+
+        // Update Detailed Report Section
+        function updateDetailedReport() {
+            const totalIncome = filteredIncome.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const totalExpense = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const balance = totalIncome - totalExpense;
+
+            // 1. Update Financial Summary
+            document.getElementById('summary-total-income').textContent = formatCurrency(totalIncome);
+            document.getElementById('summary-total-expenditure').textContent = formatCurrency(totalExpense);
+            document.getElementById('summary-final-balance').textContent = formatCurrency(balance);
+            
+            const balanceNote = document.getElementById('summary-balance-note');
+            if (balance < 0) {
+                balanceNote.textContent = "Amafaranga yakoreshejwe yarenze ayinjijwe. Deficit.";
+                balanceNote.style.color = '#d32f2f';
+                balanceNote.className = 'deficit';
+                document.getElementById('summary-final-balance').style.color = '#d32f2f';
+            } else {
+                balanceNote.textContent = `Hangana ${formatCurrency(balance)}.`;
+                balanceNote.style.color = '#065f46';
+                balanceNote.className = 'surplus';
+                document.getElementById('summary-final-balance').style.color = '#065f46';
+            }
+
+            // 2. Update Contribution Analysis
+            const contributors = [...new Set(filteredIncome
+                .filter(i => i.contributor && i.contributor.toLowerCase() !== 'previous balance')
+                .map(i => i.contributor)
+                .filter(Boolean))];
+            
+            const expected = contributors.length > 0 ? totalExpense / contributors.length : 0;
+            const contributionBody = document.getElementById('contribution-table-body');
+            contributionBody.innerHTML = '';
+
+            if (contributors.length === 0) {
+                contributionBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #718096; font-weight: 600;">Nta batanga umusanzu babonetse</td></tr>';
+            } else {
+                contributors.forEach(name => {
+                    const totalGiven = filteredIncome
+                        .filter(i => i.contributor === name)
+                        .reduce((s, i) => s + (parseFloat(i.amount) || 0), 0);
+                    
+                    const diff = totalGiven - expected;
+                    const summary = diff < 0
+                        ? `Agomba kongeraho ${formatCurrency(Math.abs(diff))}.`
+                        : diff > 0
+                        ? `Agomba gusubizwa ${formatCurrency(diff)}.`
+                        : "Amafaranga yatanze arangana n'ibyakoreshejwe kuri we.";
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 600;">${name}</td>
+                        <td style="font-weight: 600;">${formatCurrency(totalGiven)}</td>
+                        <td style="font-weight: 600;">${formatCurrency(expected)}</td>
+                        <td style="font-weight: 600;">${formatCurrency(diff)}</td>
+                        <td style="font-weight: 600;">${summary}</td>
+                    `;
+                    contributionBody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('contribution-total').textContent = contributors.length;
+
+            // 3. Update Top 5 Expenditures
+            const top5 = [...filteredPurchases].sort((a, b) => (parseFloat(b.amount) || 0) - (parseFloat(a.amount) || 0)).slice(0, 5);
+            const topExpenditureBody = document.getElementById('top-expenditure-table-body');
+            topExpenditureBody.innerHTML = '';
+            let top5Total = 0;
+
+            if (top5.length === 0) {
+                topExpenditureBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #718096; font-weight: 600;">Nta biguzi byabonetse</td></tr>';
+            } else {
+                top5.forEach(item => {
+                    const amount = parseFloat(item.amount) || 0;
+                    const pct = totalExpense > 0 ? ((amount / totalExpense) * 100).toFixed(2) : 0;
+                    top5Total += amount;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="font-weight: 600;">${item.description || item.item || 'Nta cyo byavuzwe'}</td>
+                        <td style="font-weight: 600;">${formatCurrency(amount)}</td>
+                        <td style="font-weight: 600;">${item.category || "Ibintu by'ibindi"}</td>
+                        <td style="font-weight: 600;">${pct}%</td>
+                    `;
+                    topExpenditureBody.appendChild(tr);
+                });
+            }
+
+            const top5Pct = totalExpense > 0 ? ((top5Total / totalExpense) * 100).toFixed(2) : 0;
+            document.getElementById('top5-percentage').textContent = `${top5Pct}%`;
+            document.getElementById('top5-total-amount').textContent = formatCurrency(top5Total);
+            document.getElementById('top5-total-percentage').textContent = `${top5Pct}%`;
+
+            // 4. Update Conclusion
+            const conclusionText = document.getElementById('conclusion-text');
+            const additionalConclusion = document.getElementById('additional-conclusion');
+            
+            if (balance < 0) {
+                conclusionText.innerHTML = `Iyi raporo irerekana ko imikoreshereze y'amafaranga yarenze ayari yinjijwe kuri <strong class="deficit">${formatCurrency(totalIncome)}</strong>. Umwenda wavutse mu gihe <strong class="deficit">${formatCurrency(Math.abs(balance))}</strong>.`;
+                additionalConclusion.innerHTML = `Ikindi cyabonetse ni uko <strong>ibiciro mu masoko bigenda bizamuka</strong>, bishobora gutuma ingengo y'imari (budget) y'amezi azaza ushobora guhinduka ugereranyije  naho ibiciro bigeze ku isoko N.B imboga zitandukanye zikunda kubonerwa ku ubuntu . .`;
+            } else {
+                conclusionText.innerHTML = `Iyi raporo irerekana ko imikoreshereze y'amafaranga yakoreshejwe neza. ubu dusigaranye amafaranga angana: <strong class="surplus">${formatCurrency(balance)}</strong>.`;
+                additionalConclusion.innerHTML = `Twakiriye neza amafaranga tuyakoresha mugihe gikwiye kandi neza. <strong>Ibyiciro ${document.getElementById('top-category').textContent}</strong> byari byo byatwaye amafaranga menshi.`;
+            }
+
+            // 5. Update Signature Date
+            document.getElementById('signature-date').textContent = new Date().toLocaleDateString('rw-RW');
+            document.getElementById('footer-date').textContent = new Date().toLocaleDateString('rw-RW');
+        }
+
+        // Charts
+        let mainChart, categoryChart, incomeSourceChart;
+
+        function updateCharts() {
+            // Main chart - Income vs Expense
+            const ctx1 = document.getElementById('mainChart').getContext('2d');
+            if (mainChart) mainChart.destroy();
+            
+            const totalIncome = filteredIncome.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const totalExpense = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const balance = totalIncome - totalExpense;
+            
+            mainChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Amafaranga Yinjiye', 'Ibyaguzwe', 'Balance'],
+                    datasets: [{
+                        label: 'Amafaranga (Frw)',
+                        data: [totalIncome, totalExpense, balance],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            balance >= 0 ? 'rgba(59, 130, 246, 0.8)' : 'rgba(245, 158, 11, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(239, 68, 68, 1)',
+                            balance >= 0 ? 'rgba(59, 130, 246, 1)' : 'rgba(245, 158, 11, 1)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => formatCurrency(context.parsed.y)
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: (value) => formatCurrency(value)
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Category chart
+            const ctx2 = document.getElementById('categoryChart').getContext('2d');
+            if (categoryChart) categoryChart.destroy();
+            
+            const categories = {};
+            filteredPurchases.forEach(p => {
+                const category = p.category || 'Andi';
+                categories[category] = (categories[category] || 0) + (parseFloat(p.amount) || 0);
+            });
+            
+            if (Object.keys(categories).length > 0) {
+                categoryChart = new Chart(ctx2, {
+                    type: 'doughnut',
+                    data: {
+                        labels: Object.keys(categories),
+                        datasets: [{
+                            data: Object.values(categories),
+                            backgroundColor: [
+                                '#667eea', '#764ba2', '#f093fb', '#4facfe',
+                                '#43e97b', '#fa709a', '#fee140', '#30cfd0'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.label || '';
+                                        const value = formatCurrency(context.parsed);
+                                        return `${label}: ${value}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Income source chart
+            const ctx3 = document.getElementById('incomeSourceChart').getContext('2d');
+            if (incomeSourceChart) incomeSourceChart.destroy();
+            
+            const sources = {};
+            filteredIncome.forEach(i => {
+                const source = i.source || 'Ibindi';
+                sources[source] = (sources[source] || 0) + (parseFloat(i.amount) || 0);
+            });
+            
+            if (Object.keys(sources).length > 0) {
+                incomeSourceChart = new Chart(ctx3, {
+                    type: 'pie',
+                    data: {
+                        labels: Object.keys(sources),
+                        datasets: [{
+                            data: Object.values(sources),
+                            backgroundColor: [
+                                '#11998e', '#38ef7d', '#0ba360', '#3cba92',
+                                '#667eea', '#764ba2', '#f093fb', '#4facfe'
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'bottom' },
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const label = context.label || '';
+                                        const value = formatCurrency(context.parsed);
+                                        return `${label}: ${value}`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function updateSummary() {
+            // Top category
+            const categories = {};
+            filteredPurchases.forEach(p => {
+                const category = p.category || 'Andi';
+                categories[category] = (categories[category] || 0) + (parseFloat(p.amount) || 0);
+            });
+            const topCategory = Object.entries(categories).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('top-category').textContent = topCategory ? topCategory[0] : '-';
+            
+            // Top income source
+            const sources = {};
+            filteredIncome.forEach(i => {
+                const source = i.source || 'Ibindi';
+                sources[source] = (sources[source] || 0) + (parseFloat(i.amount) || 0);
+            });
+            const topSource = Object.entries(sources).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('top-income-source').textContent = topSource ? topSource[0] : '-';
+            
+            // Savings rate
+            const totalIncome = filteredIncome.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const totalExpense = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const savingsRate = totalIncome > 0 ? ((totalIncome - totalExpense) / totalIncome * 100).toFixed(1) : 0;
+            document.getElementById('savings-rate').textContent = `${savingsRate}%`;
+            
+            // Daily average
+            const days = Math.max(1, filteredPurchases.length + filteredIncome.length);
+            const dailyAverage = (totalIncome + totalExpense) / days;
+            document.getElementById('daily-average').textContent = formatCurrency(dailyAverage);
+        }
+
+        function checkEmptyState() {
+            const noData = document.getElementById('no-data-message');
+            const hasData = allPurchases.length > 0 || allIncome.length > 0;
+            
+            if (!hasData) {
+                noData.style.display = 'block';
+                document.getElementById('stats-section').style.display = 'none';
+                document.getElementById('detailed-report-section').style.display = 'none';
+            } else {
+                noData.style.display = 'none';
+                document.getElementById('stats-section').style.display = 'grid';
+                document.getElementById('detailed-report-section').style.display = 'block';
+            }
+        }
+
+        function goToDashboard() {
+            window.location.href = 'index.html';
+        }
+
+        // Initialize report
+        function initReport() {
+            // Set current date
+            document.getElementById('report-date').textContent = new Date().toLocaleDateString('rw-RW', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Set default date range (last 30 days)
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() - 30);
+            
+            document.getElementById('start-date').value = startDate.toISOString().split('T')[0];
+            document.getElementById('end-date').value = endDate.toISOString().split('T')[0];
+            
+            // Load data
+            loadData();
+        }
+
+        // 🔐 START AUTHENTICATION WHEN DOM IS READY
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeAuth);
+        } else {
+            initializeAuth();
+        }
+    </script>
+</body>
+</html>
