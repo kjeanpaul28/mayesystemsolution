@@ -1,820 +1,1614 @@
-<!-- ===== COMPACT DRIVING TEST FOOTER - BEAUTIFUL BACKGROUND ===== -->
-<footer id="drivingFooter" class="driving-footer-compact fade-in no-print" role="contentinfo" aria-label="Amakuru y'inyuma - Driving Test">
+<!DOCTYPE html>
+<html lang="rw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAYE SYSTEM - Amaguru (Footer)</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <style>
-        /* ===== COMPACT DRIVING TEST FOOTER - BEAUTIFUL STYLES ===== */
-        .driving-footer-compact {
-            /* Beautiful gradient background - from deep blue to vibrant red */
-            background: linear-gradient(145deg, 
-                #0a2351 0%,      /* Deep Navy Blue */
-                #1e3a8a 30%,     /* Police Blue */
-                #b22234 70%,     /* Fire Brick Red */
-                #8b0000 100%     /* Dark Red */
-            );
-            color: #fff;
-            padding: 2rem 1rem 1rem 1rem;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 0.75rem;
-            letter-spacing: 0.01em;
-            user-select: none;
-            box-shadow: 0 -8px 25px rgba(0, 0, 0, 0.25);
-            border-top: 4px solid #fbbf24;
+        /* ============================================
+           SMART FOOTER - MAYE SYSTEM
+           ============================================ */
+        * {
+            box-sizing: border-box;
+        }
+        
+        #footerSection {
+            background: linear-gradient(135deg, #0a2351 0%, #0f172a 50%, #1a0a0a 100%);
+            color: white;
             position: relative;
             overflow: hidden;
+            border-top: 4px solid #fbbf24;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin-top: 3rem;
         }
-
-        /* Animated overlay for extra beauty */
-        .driving-footer-compact::before {
+        
+        #footerSection::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(251, 191, 36, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 40%);
             pointer-events: none;
-            z-index: 1;
-            animation: softGlow 8s ease-in-out infinite;
+            z-index: 0;
         }
-
-        /* Second overlay for depth */
-        .driving-footer-compact::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(90deg, 
-                transparent 0%,
-                rgba(255, 255, 255, 0.05) 50%,
-                transparent 100%
-            );
-            animation: shimmer 6s ease-in-out infinite;
-            z-index: 1;
-        }
-
-        @keyframes softGlow {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-            100% { transform: translateX(200%); }
-        }
-
-        .footer-container {
-            max-width: 1200px;
+        
+        #footerSection .footer-container {
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 0 0.5rem;
+            padding: 2.5rem 1.5rem 1.5rem;
             position: relative;
-            z-index: 2; /* Above overlays */
+            z-index: 1;
         }
-
-        /* ===== 3 COLUMNS GRID - COMPACT ===== */
-        .footer-grid-compact {
+        
+        /* ============================================
+           VIDEO SECTION - "A" ACCORDION
+           ============================================ */
+        .footer-video-section {
+            margin-bottom: 2.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-section-header {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.4) 0%, rgba(220, 38, 38, 0.3) 100%);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        
+        .video-section-header:hover {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(220, 38, 38, 0.5) 100%);
+        }
+        
+        .video-section-header.active {
+            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+            border-bottom: 2px solid #fbbf24;
+        }
+        
+        .video-section-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+        
+        .video-badge-a {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0a2351;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 900;
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+            animation: pulseBadge 2s infinite;
+            flex-shrink: 0;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        @keyframes pulseBadge {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 12px 30px rgba(251, 191, 36, 0.6);
+            }
+        }
+        
+        .video-section-text h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0 0 0.3rem 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .video-section-text p {
+            font-size: 0.85rem;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+        
+        .video-section-arrow {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.1rem;
+            color: #fbbf24;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            flex-shrink: 0;
+        }
+        
+        .video-section-header.active .video-section-arrow {
+            transform: rotate(180deg);
+            background: #fbbf24;
+            color: #0a2351;
+        }
+        
+        .video-section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.6s ease;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-section-header.active + .video-section-content {
+            max-height: 5000px;
+        }
+        
+        .videos-grid {
             display: grid;
-            grid-template-columns: 1.2fr 1.5fr 1.2fr;
-            gap: 25px;
-            margin-bottom: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.25rem;
+            padding: 1.5rem;
         }
-
-        .footer-col {
-            padding: 0 8px;
+        
+        /* ============================================
+           VIDEO CARD
+           ============================================ */
+        .video-card {
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
             border-radius: 16px;
-            padding: 1rem;
-            border: 1px solid rgba(251, 191, 36, 0.2);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.2);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
         }
-
-        .footer-col:hover {
+        
+        .video-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(251, 191, 36, 0.2);
-            border-color: rgba(251, 191, 36, 0.4);
-            background: rgba(255, 255, 255, 0.08);
+            border-color: #fbbf24;
+            box-shadow: 0 15px 35px rgba(251, 191, 36, 0.25);
         }
-
-        .footer-col h4 {
+        
+        .video-card.active {
+            border-color: #fbbf24;
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.4);
+        }
+        
+        .video-card-header {
+            padding: 0.85rem 1rem;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(220, 38, 38, 0.4) 100%);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 2px solid rgba(251, 191, 36, 0.3);
+        }
+        
+        .video-card.active .video-card-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+        }
+        
+        .video-number {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0a2351;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(251, 191, 36, 0.4);
+        }
+        
+        .video-card-title {
+            flex: 1;
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: white;
+            line-height: 1.3;
+        }
+        
+        .video-card-toggle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
             color: #fbbf24;
             font-size: 0.85rem;
-            margin-bottom: 0.8rem;
-            border-bottom: 2px solid rgba(251, 191, 36, 0.4);
-            padding-bottom: 5px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .footer-col h4 i {
-            font-size: 0.8rem;
-            color: #fbbf24;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
-        }
-
-        /* ===== COMPACT INFO ROWS ===== */
-        .info-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.6rem;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.95);
-            cursor: pointer;
-            padding: 4px 8px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .info-row i {
-            width: 18px;
-            margin-right: 8px;
-            text-align: center;
-            font-size: 0.7rem;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
-        }
-
-        .info-row a, .info-row span {
-            color: rgba(255, 255, 255, 0.95);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .info-row:hover {
-            background: rgba(251, 191, 36, 0.15);
-            transform: translateX(5px);
-            color: #fbbf24;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .info-row:hover i {
-            color: #fbbf24;
-        }
-
-        .info-row:hover a, .info-row:hover span {
-            color: #fbbf24;
-        }
-
-        /* ===== POLICE BADGES ===== */
-        .police-badge-mini {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            border-radius: 20px;
-            padding: 0.25rem 0.8rem;
-            font-size: 0.6rem;
-            white-space: nowrap;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #0a2351;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
-        }
-
-        .police-badge-mini i {
-            color: #0a2351;
-            font-size: 0.6rem;
-        }
-
-        /* ===== GAZETTE MINI PREVIEW ===== */
-        .gazette-mini {
-            background: rgba(10, 35, 81, 0.6);
-            backdrop-filter: blur(4px);
-            border-radius: 12px;
-            padding: 0.8rem;
-            margin: 0.8rem 0;
-            border-left: 4px solid #fbbf24;
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
             border: 1px solid rgba(251, 191, 36, 0.3);
         }
-
-        .gazette-item-mini {
-            display: flex;
-            align-items: center;
-            font-size: 0.65rem;
-            margin-bottom: 0.3rem;
-            color: rgba(255, 255, 255, 0.95);
-            padding: 2px 0;
-        }
-
-        .gazette-item-mini i {
-            color: #fbbf24;
-            margin-right: 6px;
-            font-size: 0.6rem;
-            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
-        }
-
-        .gazette-art {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        
+        .video-card.active .video-card-toggle {
+            transform: rotate(180deg);
+            background: #fbbf24;
             color: #0a2351;
-            padding: 2px 6px;
-            border-radius: 12px;
-            font-size: 0.5rem;
-            font-weight: bold;
-            margin-left: 6px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-
-        /* ===== APK BUTTON - BEAUTIFUL ===== */
-        .apk-btn-compact {
-            background: linear-gradient(135deg, 
-                #fbbf24 0%,
-                #f59e0b 50%,
-                #d97706 100%
-            );
-            color: #0a2351;
-            padding: 0.7rem 1rem;
-            border-radius: 50px;
-            font-weight: 700;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.8rem;
-            margin: 0.8rem 0;
-            box-shadow: 0 8px 15px rgba(251, 191, 36, 0.3);
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            width: 100%;
-            justify-content: center;
-            cursor: pointer;
+        
+        .video-card-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            padding: 0 1rem;
+        }
+        
+        .video-card.active .video-card-body {
+            max-height: 800px;
+            padding: 1rem;
+        }
+        
+        .video-player-wrapper {
             position: relative;
-            z-index: 10;
-            text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+            width: 100%;
+            padding-bottom: 56.25%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 0.75rem;
+            border: 2px solid rgba(251, 191, 36, 0.2);
         }
-
-        .apk-btn-compact:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px rgba(251, 191, 36, 0.4);
-            background: linear-gradient(135deg, 
-                #f59e0b 0%,
-                #fbbf24 50%,
-                #f59e0b 100%
-            );
-            border-color: rgba(255, 255, 255, 0.4);
+        
+        .video-player-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
         }
-
-        .apk-btn-compact:active {
-            transform: translateY(-1px);
-            box-shadow: 0 8px 12px rgba(251, 191, 36, 0.3);
+        
+        .video-summary {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+            border-left: 4px solid #fbbf24;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.75rem;
         }
-
-        .apk-size-mini {
-            background: rgba(10, 35, 81, 0.2);
-            padding: 3px 8px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-            margin-left: 5px;
-            white-space: nowrap;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* ===== DEVICE ICONS ROW ===== */
-        .device-row {
-            display: flex;
-            gap: 8px;
-            margin: 0.8rem 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .device-tag {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(4px);
-            padding: 4px 10px;
-            border-radius: 30px;
-            font-size: 0.6rem;
+        
+        .video-summary-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #fbbf24;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.35rem;
             display: flex;
             align-items: center;
-            gap: 5px;
-            border: 1px solid rgba(251, 191, 36, 0.3);
-            transition: all 0.2s ease;
+            gap: 0.4rem;
         }
-
-        .device-tag:hover {
-            background: rgba(251, 191, 36, 0.2);
-            transform: scale(1.05);
+        
+        .video-summary-text {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .video-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .video-btn {
+            flex: 1;
+            padding: 0.65rem 1rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            border: none;
+        }
+        
+        .video-btn-download {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+        
+        .video-btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(16, 185, 129, 0.5);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+        
+        .video-btn-watch {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3);
+        }
+        
+        .video-btn-watch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 15px rgba(59, 130, 246, 0.5);
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+        }
+        
+        /* ============================================
+           CONTACT SECTION - PERSISTENT
+           ============================================ */
+        .footer-contact-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(251, 191, 36, 0.15);
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            border: 1px solid rgba(251, 191, 36, 0.1);
+        }
+        
+        .contact-item:hover {
+            background: rgba(251, 191, 36, 0.1);
+            transform: translateY(-3px);
+            border-color: rgba(251, 191, 36, 0.4);
+            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.2);
+        }
+        
+        .contact-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .contact-icon.whatsapp {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        }
+        
+        .contact-icon.location {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+        
+        .contact-icon.website {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        
+        .contact-icon.email {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        
+        .contact-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .contact-info strong {
+            display: block;
+            font-size: 0.85rem;
+            color: #fbbf24;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+        }
+        
+        .contact-info span {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* ============================================
+           FOOTER SMART INFO
+           ============================================ */
+        .footer-smart-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(251, 191, 36, 0.15);
+        }
+        
+        .footer-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.85rem;
+        }
+        
+        .footer-info-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(220, 38, 38, 0.2) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fbbf24;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        
+        .footer-info-text strong {
+            display: block;
+            color: white;
+            font-weight: 700;
+            margin-bottom: 0.15rem;
+        }
+        
+        .footer-info-text span {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        /* ============================================
+           QUICK LINKS - HIDDEN BY DEFAULT
+           ============================================ */
+        .footer-quick-links-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.5) 0%, rgba(220, 38, 38, 0.4) 100%);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto 1.5rem;
+            max-width: 300px;
+            text-align: center;
+        }
+        
+        .footer-quick-links-trigger:hover {
+            background: linear-gradient(135deg, #1e3a8a 0%, #dc2626 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
             border-color: #fbbf24;
         }
-
-        .device-tag i {
+        
+        .footer-quick-links-trigger i {
+            transition: transform 0.3s ease;
             color: #fbbf24;
         }
-
-        /* ===== QUICK LINKS GRID ===== */
+        
+        .footer-quick-links-trigger.active i {
+            transform: rotate(180deg);
+        }
+        
+        .footer-quick-links-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .footer-quick-links-container.active {
+            max-height: 800px;
+        }
+        
         .quick-links-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 0.5rem;
-        }
-
-        .quick-link-item {
-            font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.95);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 8px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            padding: 1.5rem;
             background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            margin-bottom: 1.5rem;
         }
-
-        .quick-link-item:hover {
-            background: rgba(251, 191, 36, 0.15);
-            color: #fbbf24;
-            transform: translateX(3px);
-        }
-
-        .quick-link-item i {
-            font-size: 0.6rem;
-            width: 14px;
-            color: #fbbf24;
-        }
-
-        /* ===== SOCIAL/CONTACT ROW ===== */
-        .contact-row {
-            display: flex;
-            gap: 12px;
-            margin: 0.8rem 0;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .contact-icon {
-            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.1));
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
+        
+        .quick-link-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            color: rgba(255, 255, 255, 0.85);
             text-decoration: none;
-            border: 2px solid rgba(251, 191, 36, 0.3);
-            backdrop-filter: blur(4px);
-            font-size: 1rem;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .contact-icon:hover {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #0a2351;
-            transform: scale(1.15) rotate(5deg);
-            border-color: white;
-            box-shadow: 0 8px 20px rgba(251, 191, 36, 0.4);
-        }
-
-        /* ===== BOTTOM BAR - ULTRA COMPACT ===== */
-        .footer-bottom-compact {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            margin-top: 0.5rem;
-            border-top: 2px solid rgba(251, 191, 36, 0.3);
-            font-size: 0.6rem;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.8rem 1rem;
-            border-radius: 50px;
-            backdrop-filter: blur(4px);
-        }
-
-        .footer-copy-compact {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .footer-links-compact {
-            display: flex;
-            gap: 12px;
-        }
-
-        .footer-links-compact a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .footer-links-compact a:hover {
-            color: #fbbf24;
-            background: rgba(251, 191, 36, 0.1);
-        }
-
-        .version-mini {
-            background: rgba(251, 191, 36, 0.2);
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 0.55rem;
-            border: 1px solid rgba(251, 191, 36, 0.3);
-        }
-
-        /* ===== TOAST ===== */
-        .footer-toast-compact {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #0a2351, #1e3a8a);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 50px;
             font-size: 0.85rem;
-            z-index: 10000;
-            transform: translateY(100px);
-            opacity: 0;
+            font-weight: 500;
             transition: all 0.3s ease;
-            border-left: 4px solid #fbbf24;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            max-width: 300px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(251, 191, 36, 0.3);
+            border: 1px solid rgba(251, 191, 36, 0.1);
         }
-
-        .footer-toast-compact.show {
-            transform: translateY(0);
-            opacity: 1;
+        
+        .quick-link-item:hover {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(220, 38, 38, 0.15) 100%);
+            color: #fbbf24;
+            transform: translateX(5px);
+            border-color: rgba(251, 191, 36, 0.4);
         }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .footer-grid-compact {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .footer-bottom-compact {
-                flex-direction: column;
-                gap: 10px;
-                text-align: center;
-                border-radius: 20px;
-            }
-            
-            .apk-btn-compact {
-                width: 100%;
-            }
-            
-            .footer-toast-compact {
-                left: 20px;
-                right: 20px;
-                max-width: none;
-            }
-            
-            .footer-col:hover {
-                transform: translateY(-3px);
-            }
+        
+        .quick-link-item i {
+            width: 20px;
+            text-align: center;
+            color: #fbbf24;
+            font-size: 1rem;
         }
-
-        /* Decorative elements */
-        .footer-col::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 50px;
-            height: 50px;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 70%);
+        
+        /* ============================================
+           FOOTER BOTTOM - COPYRIGHT
+           ============================================ */
+        .footer-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(251, 191, 36, 0.15);
+            text-align: center;
+        }
+        
+        .footer-bottom-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-bottom-logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 2px solid #fbbf24;
+            object-fit: cover;
+        }
+        
+        .footer-bottom-logo h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+        
+        .footer-copyright {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+        
+        .footer-status {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 0.5rem;
+        }
+        
+        .footer-status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            pointer-events: none;
+            display: inline-block;
+        }
+        
+        .status-dot.online {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+            animation: pulseDot 2s infinite;
+        }
+        
+        .status-dot.locked {
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+        
+        .status-dot.unlocked {
+            background: #10b981;
+            box-shadow: 0 0 10px #10b981;
+        }
+        
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            #footerSection .footer-container {
+                padding: 1.5rem 1rem 1rem;
+            }
+            
+            .video-section-header {
+                padding: 1rem 1.25rem;
+            }
+            
+            .video-badge-a {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .video-section-text h3 {
+                font-size: 1.05rem;
+            }
+            
+            .video-section-text p {
+                font-size: 0.75rem;
+            }
+            
+            .videos-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1rem;
+            }
+            
+            .footer-contact-section {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .footer-smart-info {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .quick-links-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .footer-quick-links-trigger {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.8rem;
+            }
+            
+            .footer-copyright {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .video-section-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .video-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .video-section-arrow {
+                align-self: flex-end;
+                margin-top: -50px;
+            }
+            
+            .video-actions {
+                flex-direction: column;
+            }
+        }
+        
+        /* Download notification */
+        .download-notification {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 99999;
+            transform: translateY(150%);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+        
+        .download-notification.show {
+            transform: translateY(0);
         }
     </style>
+</head>
+<body>
 
-    <div class="footer-container">
-        
-        <!-- 3 COLUMNS - EVERYTHING COMPACT -->
-        <div class="footer-grid-compact">
-                
-            <!-- COLUMN 1: CONTACT + POLICE + QUICK LINKS -->
-            <div class="footer-col">
-                <h4><i class="fas fa-map-marker-alt"></i> MAYE SYSTEMS</h4>
-                
-                <!-- Contact Info - Compact -->
-                <div class="info-row" onclick="openDrivingLocation()">
-                    <i class="fas fa-map-marker-alt" style="color: #fbbf24;"></i>
-                    <span>KN 12 Av, Muhima, Kigali</span>
+    <!-- ============================================
+         SMART FOOTER SECTION
+         ============================================ -->
+    <footer id="footerSection" class="fade-in no-print" role="contentinfo" aria-label="Amaguru y'urubuga">
+        <div class="footer-container">
+            
+            <!-- ============================================
+                 VIDEO SECTION "A" - GUTSINDA URUGERO
+                 ============================================ -->
+            <div class="footer-video-section">
+                <div class="video-section-header" id="videoSectionHeader" onclick="toggleVideoSection()">
+                    <div class="video-section-title">
+                        <div class="video-badge-a">A</div>
+                        <div class="video-section-text">
+                            <h3>
+                                <i class="fas fa-graduation-cap" style="color: #fbbf24;"></i>
+                                AMATEGEKO Y'UMUHANDA - VIDEO ZO GUTSINDA
+                            </h3>
+                            <p>Kanda hano urebe video 8 zizagufasha Wita umwanya wo gusoma Gazette no gutsinda ibibazo byose</p>
+                        </div>
+                    </div>
+                    <div class="video-section-arrow">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
                 
-                <div class="info-row" onclick="makeDrivingPhoneCall()">
-                    <i class="fas fa-phone" style="color: #fbbf24;"></i>
-                    <span>+250 784 067 694</span>
-                </div>
-                
-                <div class="info-row" onclick="sendDrivingEmail()">
-                    <i class="fas fa-envelope" style="color: #fbbf24;"></i>
-                    <span>kjeanpaul28@gmail.com</span>
-                </div>
-
-                <!-- Police Badge -->
-                <div style="margin: 0.8rem 0;">
-                    <span class="police-badge-mini">
-                        <i class="fas fa-shield-alt"></i> Police Rwanda
-                    </span>
-                </div>
-
-                <!-- Quick Links - 2x2 Grid -->
-                <h4 style="margin-top: 1rem;"><i class="fas fa-link"></i> Quick Links</h4>
-                <div class="quick-links-grid">
-                    <a href="/driving-test.html" class="quick-link-item">
-                        <i class="fas fa-home"></i> Home
-                    </a>
-                    <a href="/driving-test.html#categories" class="quick-link-item">
-                        <i class="fas fa-folder"></i> Ibyiciro
-                    </a>
-                    <a href="/driving-test.html#study" class="quick-link-item">
-                        <i class="fas fa-graduation-cap"></i> Kwiga
-                    </a>
-                    <a href="/dereva/auth/auth.html" class="quick-link-item">
-                        <i class="fas fa-sign-in-alt"></i> Injira
-                    </a>
-                    <a href="/dereva/admin/results.html" target="_blank" class="quick-link-item">
-                        <i class="fas fa-chart-line"></i> Admin
-                    </a>
-                    <a href="/contact.html" class="quick-link-item">
-                        <i class="fas fa-headset"></i> Support
-                    </a>
+                <div class="video-section-content" id="videoSectionContent">
+                    <div class="videos-grid">
+                        
+                        <!-- VIDEO 1 -->
+                        <div class="video-card" data-video-id="video1">
+                            <div class="video-card-header" onclick="toggleVideoCard('video1')">
+                                <div class="video-number">1</div>
+                                <div class="video-card-title">
+                                    VIDEO 1: Ijambo ry'ibanze
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO1.mp4?updatedAt=1791814849325" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye n'ijambo ry'ibanze ry'amategeko y'umuhanda.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO1.mp4?updatedAt=1791814849325', 'Amategeko-Video-1.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO1.mp4?updatedAt=1791814849325" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- VIDEO 2 -->
+                        <div class="video-card" data-video-id="video2">
+                            <div class="video-card-header" onclick="toggleVideoCard('video2')">
+                                <div class="video-number">2</div>
+                                <div class="video-card-title">
+                                    VIDEO 2: Ibimenyetso Icyiciro 1
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO%202.mp4?updatedAt=1791821645368" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye n'ibimenyetso by'umuhanda icyiciro cya 1.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO%202.mp4?updatedAt=1791821645368', 'Amategeko-Video-2.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO%202.mp4?updatedAt=1791821645368" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- VIDEO 3 -->
+                        <div class="video-card" data-video-id="video3">
+                            <div class="video-card-header" onclick="toggleVideoCard('video3')">
+                                <div class="video-number">3</div>
+                                <div class="video-card-title">
+                                    VIDEO 3: Ibimenyetso Icyiciro 2
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO%203.mp4?updatedAt=1791825097982" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye n'ibimenyetso byo kuburira n'akaga.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO%203.mp4?updatedAt=1791825097982', 'Amategeko-Video-3.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO%203.mp4?updatedAt=1791825097982" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- VIDEO 4 -->
+                        <div class="video-card" data-video-id="video4">
+                            <div class="video-card-header" onclick="toggleVideoCard('video4')">
+                                <div class="video-number">4</div>
+                                <div class="video-card-title">
+                                    VIDEO 4: Ibimenyetso Icyiciro 3
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO%204.mp4?updatedAt=1791830171714" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye n'ibimenyetso by'itegeko.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO%204.mp4?updatedAt=1791830171714', 'Amategeko-Video-4.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO%204.mp4?updatedAt=1791830171714" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- VIDEO 5 -->
+                        <div class="video-card" data-video-id="video5">
+                            <div class="video-card-header" onclick="toggleVideoCard('video5')">
+                                <div class="video-number">5</div>
+                                <div class="video-card-title">
+                                    VIDEO 5: Ibimenyetso Icyiciro 4
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO%205.mp4?updatedAt=1791852438792" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye n'ibimenyetso byo kuyobora.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO%205.mp4?updatedAt=1791852438792', 'Amategeko-Video-5.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO%205.mp4?updatedAt=1791852438792" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- VIDEO 6 -->
+                        <div class="video-card" data-video-id="video6">
+                            <div class="video-card-header" onclick="toggleVideoCard('video6')">
+                                <div class="video-number">6</div>
+                                <div class="video-card-title">
+                                    VIDEO 6: Umuvuduko n'Ingendo
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO%206.mp4?updatedAt=1791854406817" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye n'umuvuduko n'ingendo mu muhanda.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO%206.mp4?updatedAt=1791854406817', 'Amategeko-Video-6.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO%206.mp4?updatedAt=1791854406817" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- VIDEO 7 -->
+                        <div class="video-card" data-video-id="video7">
+                            <div class="video-card-header" onclick="toggleVideoCard('video7')">
+                                <div class="video-number">7</div>
+                                <div class="video-card-title">
+                                    VIDEO 7: Gupaka n'Ihuriro
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO%207.mp4?updatedAt=1791854913809" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye no gupaka n'ihuriro ry'umuhanda.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO%207.mp4?updatedAt=1791854913809', 'Amategeko-Video-7.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO%207.mp4?updatedAt=1791854913809" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- VIDEO 8 -->
+                        <div class="video-card" data-video-id="video8">
+                            <div class="video-card-header" onclick="toggleVideoCard('video8')">
+                                <div class="video-number">8</div>
+                                <div class="video-card-title">
+                                    VIDEO 8: Ubwishingizi n'Indishyi
+                                    <div style="font-size: 0.7rem; color: rgba(255,255,255,0.7); font-weight: 400; margin-top: 0.15rem;">
+                                        Iyi video izagufasha Wita umwanya wo gusoma Gazette
+                                    </div>
+                                </div>
+                                <div class="video-card-toggle">
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="video-card-body">
+                                <div class="video-player-wrapper">
+                                    <video controls preload="none" 
+                                           poster="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png">
+                                        <source src="https://ik.imagekit.io/ttioqvtod/VIDEO%208.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                                <div class="video-summary">
+                                    <div class="video-summary-title">
+                                        <i class="fas fa-info-circle"></i>
+                                        Iyi video izagufasha
+                                    </div>
+                                    <p class="video-summary-text">
+                                        Wita umwanya wo gusoma Gazette, kandi izagufasha gutsinda ibibazo byose bijyanye n'ubwishingizi n'indishyi z'impanuka.
+                                    </p>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="video-btn video-btn-download" onclick="downloadVideo('https://ik.imagekit.io/ttioqvtod/VIDEO%208.mp4', 'Amategeko-Video-8.mp4')">
+                                        <i class="fas fa-download"></i> Download
+                                    </button>
+                                    <a href="https://ik.imagekit.io/ttioqvtod/VIDEO%208.mp4" target="_blank" class="video-btn video-btn-watch">
+                                        <i class="fas fa-expand"></i> Full Screen
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
                 </div>
             </div>
-
-            <!-- COLUMN 2: GAZETTE + STUDY + DOWNLOADS -->
-            <div class="footer-col">
-                <h4><i class="fas fa-file-contract"></i> Gazette y'Amategeko</h4>
-                
-                <!-- Gazette Mini Preview -->
-                <div class="gazette-mini">
-                    <div class="gazette-item-mini">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Umuvuduko: 40km/h mu mujyi</span>
-                        <span class="gazette-art">Art 1</span>
+            
+            <!-- ============================================
+                 CONTACT SECTION - PERSISTENT (Always Visible)
+                 ============================================ -->
+            <div class="footer-contact-section">
+                <a href="https://wa.me/250784067694?text=Muraho%2C%20ndashaka%20ubufasha%20kuri%20MAYE%20SYSTEM" 
+                   target="_blank" 
+                   class="contact-item">
+                    <div class="contact-icon whatsapp">
+                        <i class="fab fa-whatsapp"></i>
                     </div>
-                    <div class="gazette-item-mini">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Alcool: 0.8g/l</span>
-                        <span class="gazette-art">Art 45</span>
+                    <div class="contact-info">
+                        <strong>WhatsApp</strong>
+                        <span>+250 784 067 694</span>
                     </div>
-                    <div class="gazette-item-mini">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Permis: A, B, C, D, E</span>
-                        <span class="gazette-art">Art 12</span>
-                    </div>
-                    <div class="gazette-item-mini">
-                        <i class="fas fa-check-circle"></i>
-                        <span>Ceinture: Itegeko</span>
-                        <span class="gazette-art">Art 23</span>
-                    </div>
-                    
-                    <!-- Download Full Gazette Link -->
-                    <a href="https://ik.imagekit.io/73qho7kh9/amategeko.pdf?updatedAt=1771155324708" 
-                       target="_blank"
-                       style="display: flex; align-items: center; gap: 5px; margin-top: 0.8rem; font-size: 0.7rem; color: #fbbf24; text-decoration: none;"
-                       onclick="trackGazetteDownload()">
-                        <i class="fas fa-file-pdf"></i>
-                        <span>Download Full Gazette PDF</span>
-                    </a>
-                </div>
-
-                <!-- APK Download - LOCAL PATH -->
-                <h4 style="margin-top: 1rem;"><i class="fas fa-download"></i> Download App</h4>
-                
-                <!-- LOCAL APK BUTTON - /downloads/amategeko.apk -->
-                <a href="/downloads/amategeko.apk" 
-                   class="apk-btn-compact"
-                   download="Amategeko-App.apk"
-                   onclick="trackLocalApkDownload()">
-                    <i class="fab fa-android"></i>
-                    <span>Download APK - Amategeko App</span>
-                    <span class="apk-size-mini">6.5 MB</span>
                 </a>
-
-                <!-- Device Compatibility - Icons Row -->
-                <div class="device-row">
-                    <span class="device-tag"><i class="fas fa-mobile-alt"></i> Android</span>
-                    <span class="device-tag"><i class="fab fa-apple"></i> iPhone*</span>
-                    <span class="device-tag"><i class="fas fa-tablet-alt"></i> Tablet</span>
-                    <span class="device-tag"><i class="fab fa-android"></i> iPad*</span>
-                </div>
-                <p style="font-size: 0.55rem; color: rgba(255,255,255,0.7); text-align: center; margin-top: 0;">
-                    *APK ikora kuri Android gusa. iOS ikoresha browser.
-                </p>
-
-                <!-- Study Tips -->
-                <div class="info-row" onclick="showDrivingTips()" style="margin-top: 0.5rem;">
-                    <i class="fas fa-lightbulb" style="color: #fbbf24;"></i>
-                    <span>Gutsinda Ikizamini - Tips</span>
-                </div>
-            </div>
-
-            <!-- COLUMN 3: TEST INFO + SUPPORT + SOCIAL -->
-            <div class="footer-col">
-                <h4><i class="fas fa-car"></i> Driving Test</h4>
                 
-                <!-- Test Stats -->
-                <div class="info-row">
-                    <i class="fas fa-question-circle" style="color: #fbbf24;"></i>
-                    <span>440+ Ibibazo bya Police</span>
-                </div>
-                <div class="info-row">
-                    <i class="fas fa-clock" style="color: #fbbf24;"></i>
-                    <span>Igihe: 30 min / 20 Q</span>
-                </div>
-                <div class="info-row">
-                    <i class="fas fa-trophy" style="color: #fbbf24;"></i>
-                    <span>Gutsinda: 75% byibuze</span>
-                </div>
-
-                <!-- Study Materials Links -->
-                <h4 style="margin-top: 1rem;"><i class="fas fa-book"></i> Kwiga</h4>
-                
-                <div class="info-row">
-                    <a href="/driving-test.html#study">
-                        <i class="fas fa-video"></i> Amasomo yose
-                    </a>
-                </div>
-                <div class="info-row">
-                    <a href="#" onclick="showDrivingTips()">
-                        <i class="fas fa-check-circle"></i> Inama zo gutsinda
-                    </a>
-                </div>
-
-                <!-- Contact Icons Row -->
-                <h4 style="margin-top: 1rem;"><i class="fas fa-comments"></i> Support</h4>
-                
-                <div class="contact-row">
-                    <div class="contact-icon" onclick="makeDrivingPhoneCall()" title="Telefona">
-                        <i class="fas fa-phone"></i>
-                    </div>
-                    <div class="contact-icon" onclick="sendDrivingEmail()" title="Email">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="contact-icon" onclick="openDrivingLocation()" title="Maps">
+                <a href="https://www.google.com/maps/search/?api=1&query=KN+12+Avenue,+Rugenge,+Muhima,+Kigali" 
+                   target="_blank" 
+                   class="contact-item">
+                    <div class="contact-icon location">
                         <i class="fas fa-map-marker-alt"></i>
                     </div>
-                    <a href="https://wa.me/250784067694?text=Nshaka%20ubufasha%20kuri%20Driving%20Test" 
-                       target="_blank"
-                       class="contact-icon" 
-                       title="WhatsApp">
-                        <i class="fab fa-whatsapp"></i>
+                    <div class="contact-info">
+                        <strong>Address</strong>
+                        <span>KN 12 Ave, Muhima, Kigali</span>
+                    </div>
+                </a>
+                
+                <a href="https://mayesystemsolution.netlify.app/driving-test" 
+                   target="_blank" 
+                   class="contact-item">
+                    <div class="contact-icon website">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="contact-info">
+                        <strong>Website</strong>
+                        <span>mayesystemsolution.netlify.app</span>
+                    </div>
+                </a>
+                
+                <a href="mailto:kjeanpaul28@gmail.com?subject=Ubufasha%20kuri%20MAYE%20SYSTEM" 
+                   class="contact-item">
+                    <div class="contact-icon email">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-info">
+                        <strong>Email</strong>
+                        <span>kjeanpaul28@gmail.com</span>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- ============================================
+                 SMART FOOTER - COMPACT INFO
+                 ============================================ -->
+            <div class="footer-smart-info">
+                <div class="footer-info-item">
+                    <div class="footer-info-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="footer-info-text">
+                        <strong>MAYE SYSTEM</strong>
+                        <span>Gutegura abashoferi b'umutekano</span>
+                    </div>
+                </div>
+                <div class="footer-info-item">
+                    <div class="footer-info-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="footer-info-text">
+                        <strong><span id="footerTotalQuestions">440</span> Ibibazo</strong>
+                        <span>Bihuje na Police Rwanda</span>
+                    </div>
+                </div>
+                <div class="footer-info-item">
+                    <div class="footer-info-icon">
+                        <i class="fas fa-folder"></i>
+                    </div>
+                    <div class="footer-info-text">
+                        <strong><span id="footerTotalCategories">22</span> Ibyiciro</strong>
+                        <span>Amategeko y'umuhanda</span>
+                    </div>
+                </div>
+                <div class="footer-info-item">
+                    <div class="footer-info-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="footer-info-text">
+                        <strong>Icyangombwa</strong>
+                        <span>Ihabwa abatsinza</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ============================================
+                 QUICK LINKS - HIDDEN BY DEFAULT
+                 ============================================ -->
+            <div class="footer-quick-links-trigger" id="quickLinksTrigger" onclick="toggleQuickLinks()">
+                <i class="fas fa-link"></i>
+                <span>Quick Links</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            
+            <div class="footer-quick-links-container" id="quickLinksContainer">
+                <div class="quick-links-grid">
+                    <a href="/driving-test.html" class="quick-link-item">
+                        <i class="fas fa-home"></i>
+                        <span>Ahabanza</span>
+                    </a>
+                    <a href="/driving-test.html#categories" class="quick-link-item">
+                        <i class="fas fa-folder-open"></i>
+                        <span>Ibyiciro by'ikizamini</span>
+                    </a>
+                    <a href="/driving-test.html#study" class="quick-link-item">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Kwiga amategeko</span>
+                    </a>
+                    <a href="/driving-test.html#results" class="quick-link-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Ibisubizo</span>
+                    </a>
+                    <a href="/dereva/auth/suspension.html" class="quick-link-item">
+                        <i class="fas fa-lock"></i>
+                        <span>Test Lock</span>
+                    </a>
+                    <a href="/dereva/auth/auth.html" class="quick-link-item">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Injira</span>
+                    </a>
+                    <a href="/dereva/auth/terms.html" class="quick-link-item">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Amasezerano</span>
+                    </a>
+                    <a href="mailto:kjeanpaul28@gmail.com" class="quick-link-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>Tuvugishe</span>
                     </a>
                 </div>
-
-                <!-- Terms Links -->
-                <div style="display: flex; gap: 12px; margin-top: 0.8rem; flex-wrap: wrap; justify-content: center;">
-                    <a href="/dereva/auth/terms.html" style="color: rgba(255,255,255,0.8); font-size: 0.6rem; text-decoration: none; transition: color 0.2s;">Amategeko</a>
-                    <span style="color: rgba(251,191,36,0.5);">|</span>
-                    <a href="/privacy.html" style="color: rgba(255,255,255,0.8); font-size: 0.6rem; text-decoration: none; transition: color 0.2s;">Privacy</a>
-                    <span style="color: rgba(251,191,36,0.5);">|</span>
-                    <a href="/about.html" style="color: rgba(255,255,255,0.8); font-size: 0.6rem; text-decoration: none; transition: color 0.2s;">About</a>
+            </div>
+            
+            <!-- ============================================
+                 FOOTER BOTTOM - COPYRIGHT
+                 ============================================ -->
+            <div class="footer-bottom">
+                <div class="footer-bottom-logo">
+                    <img src="https://ik.imagekit.io/73qho7kh9/file_000000003e9471f88734aae4d52e7513%20(1).png" alt="MAYE SYSTEM">
+                    <h4>MAYE SYSTEM © <span id="footerYear">2025</span></h4>
+                </div>
+                <div class="footer-copyright">
+                    <span><i class="fas fa-shield-alt" style="color: #fbbf24;"></i> Ikizamini cy'Agateganyo</span>
+                    <span>•</span>
+                    <span>Ubuntu 100%</span>
+                </div>
+                <div class="footer-status">
+                    <div class="footer-status-item">
+                        <span class="status-dot online"></span>
+                        <span>Sisitemu ikora neza</span>
+                    </div>
+                    <div class="footer-status-item">
+                        <span class="status-dot unlocked" id="footerTestStatus"></span>
+                        <span id="footerTestStatusText">Test Ifunguye</span>
+                    </div>
+                    <div class="footer-status-item">
+                        <i class="fas fa-clock"></i>
+                        <span id="footerCurrentTime"></span>
+                    </div>
                 </div>
             </div>
+            
         </div>
-
-        <!-- BOTTOM BAR - ULTRA COMPACT -->
-        <div class="footer-bottom-compact">
-            <div class="footer-copy-compact">
-                <span>© <span id="driving-compact-year">2026</span> MAYE SYSTEMS</span>
-                <span class="version-mini">v3.3.0</span>
-            </div>
-
-            <div class="footer-links-compact">
-                <a href="/dereva/auth/terms.html">Terms</a>
-                <a href="/contact.html">Contact</a>
-                <a href="#" onclick="showDrivingCredits()">Credits</a>
-            </div>
-
-            <div>
-                <span style="color: #fbbf24;">
-                    <i class="fas fa-shield-alt"></i> Police Rwanda
-                </span>
-            </div>
-        </div>
+    </footer>
+    
+    <!-- Download Notification -->
+    <div class="download-notification" id="downloadNotification">
+        <i class="fas fa-download"></i>
+        <span id="downloadNotificationText">Download itangira...</span>
     </div>
 
-    <!-- Compact Toast -->
-    <div id="footerToastCompact" class="footer-toast-compact"></div>
-</footer>
+    <!-- ============================================
+         FOOTER JAVASCRIPT
+         ============================================ -->
+    <script>
+        // ============================================
+        // FIREBASE INITIALIZATION
+        // ============================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4VnHyXpCm_1PiKHSjr0JL4XEBade1OwY",
+            authDomain: "driving-e8a66.firebaseapp.com",
+            databaseURL: "https://driving-e8a66-default-rtdb.firebaseio.com",
+            projectId: "driving-e8a66",
+            storageBucket: "driving-e8a66.appspot.com",
+            messagingSenderId: "629983254477",
+            appId: "1:629983254477:web:efe9505af7212013e51684"
+        };
 
-<script>
-    // ============================================
-    // LOCAL APK DOWNLOAD - /downloads/amategeko.apk
-    // ============================================
-    (function() {
-        // Local APK path
-        const LOCAL_APK_PATH = '/downloads/amategeko.apk';
-        
-        console.log('📲 Local APK Ready - Path:', LOCAL_APK_PATH);
-        
-        // ============================================
-        // TRACKING FUNCTIONS
-        // ============================================
-        window.trackLocalApkDownload = function() {
-            console.log('📊 [Analytics] APK Download: Amategeko App (Local)');
-            showFooterToast('📲 Gutangiza download ya Amategeko App...');
-            
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'download_apk', {
-                    'event_category': 'app',
-                    'event_label': 'Amategeko App - Local'
-                });
+        let footerFirebaseApp = null;
+        let footerFirebaseDatabase = null;
+
+        try {
+            if (typeof firebase !== 'undefined') {
+                if (firebase.apps.length === 0) {
+                    footerFirebaseApp = firebase.initializeApp(firebaseConfig);
+                } else {
+                    footerFirebaseApp = firebase.apps[0];
+                }
+                footerFirebaseDatabase = firebase.database();
+                console.log('✅ Firebase initialized in footer');
             }
-        };
-
-        window.trackGazetteDownload = function() {
-            console.log('📊 [Analytics] PDF Download: Gazette');
-            showFooterToast('📄 Gufungura Gazette PDF...');
-            
-            if (typeof gtag !== 'undefined') {
-                gtag('event', 'download_pdf', {
-                    'event_category': 'document',
-                    'event_label': 'Gazette'
-                });
-            }
-        };
-
-        // ============================================
-        // CONTACT FUNCTIONS
-        // ============================================
-        window.makeDrivingPhoneCall = function() {
-            window.location.href = 'tel:+250784067694';
-            showFooterToast('📞 Guhamagara...');
-        };
-
-        window.sendDrivingEmail = function() {
-            window.location.href = 'mailto:kjeanpaul28@gmail.com?subject=Driving%20Test%20Support';
-            showFooterToast('📧 Gufungura email...');
-        };
-
-        window.openDrivingLocation = function() {
-            window.open('https://www.google.com/maps/search/?api=1&query=KN+12+Avenue,+Rugenge,+Muhima,+Kigali', '_blank');
-            showFooterToast('🗺️ Gufungura Maps...');
-        };
-
-        window.showDrivingTips = function() {
-            alert('✅ Gutsinda Ikizamini:\n\n1. Soma buri kibazo neza\n2. Tekereza mbere yo gusubiza\n3. Reba ibimenyetso by\'umuhanda\n4. Witinya amakosa\n\nMurakoze!');
-        };
-
-        window.showDrivingCredits = function() {
-            alert('MAYE SYSTEMS - Driving Test\n\nVersion 3.3.0\n© 2026\n\nAmategeko App v1.0\n\n📁 Path: /downloads/amategeko.apk');
-        };
-
-        // ============================================
-        // TOAST SYSTEM
-        // ============================================
-        function showFooterToast(message) {
-            const toast = document.getElementById('footerToastCompact');
-            if (!toast) {
-                console.log('Toast:', message);
-                return;
-            }
-            
-            toast.textContent = message;
-            toast.classList.add('show');
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+        } catch (error) {
+            console.warn('⚠️ Firebase init error in footer:', error);
         }
 
         // ============================================
-        // UTILITY FUNCTIONS
+        // VIDEO SECTION TOGGLE ("A" BUTTON)
         // ============================================
-        function updateYear() {
-            const yearEl = document.getElementById('driving-compact-year');
+        function toggleVideoSection() {
+            const header = document.getElementById('videoSectionHeader');
+            const content = document.getElementById('videoSectionContent');
+            
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+            
+            // When closing the section, pause all videos and close all cards
+            if (!header.classList.contains('active')) {
+                // Pause and close all video cards
+                document.querySelectorAll('.video-card').forEach(card => {
+                    card.classList.remove('active');
+                    const video = card.querySelector('video');
+                    if (video && !video.paused) {
+                        video.pause();
+                    }
+                });
+            }
+            
+            // Scroll into view when opening
+            if (header.classList.contains('active')) {
+                setTimeout(() => {
+                    header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }
+        }
+        
+        // ============================================
+        // VIDEO CARD TOGGLE - ONLY ONE OPEN AT A TIME
+        // ============================================
+        function toggleVideoCard(videoId) {
+            const currentCard = document.querySelector(`.video-card[data-video-id="${videoId}"]`);
+            if (!currentCard) return;
+            
+            const isCurrentlyActive = currentCard.classList.contains('active');
+            
+            // Close ALL video cards and pause their videos
+            document.querySelectorAll('.video-card').forEach(card => {
+                card.classList.remove('active');
+                const video = card.querySelector('video');
+                if (video && !video.paused) {
+                    video.pause();
+                }
+            });
+            
+            // If the clicked card was not active, open it
+            if (!isCurrentlyActive) {
+                currentCard.classList.add('active');
+                
+                // Scroll into view
+                setTimeout(() => {
+                    currentCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 300);
+            }
+        }
+        
+        // ============================================
+        // QUICK LINKS TOGGLE
+        // ============================================
+        function toggleQuickLinks() {
+            const trigger = document.getElementById('quickLinksTrigger');
+            const container = document.getElementById('quickLinksContainer');
+            
+            trigger.classList.toggle('active');
+            container.classList.toggle('active');
+        }
+        
+        // ============================================
+        // VIDEO DOWNLOAD FUNCTION
+        // ============================================
+        function downloadVideo(url, filename) {
+            const notification = document.getElementById('downloadNotification');
+            const notificationText = document.getElementById('downloadNotificationText');
+            
+            // Show notification
+            notificationText.textContent = `Download itangira: ${filename}`;
+            notification.classList.add('show');
+            
+            // Create download link
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.blob();
+                })
+                .then(blob => {
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                    
+                    notificationText.textContent = `✅ ${filename} yakuwe neza!`;
+                    
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error('Download error:', error);
+                    notificationText.textContent = '⚠️ Download yananiwe. Kanda "Full Screen" ugerageze.';
+                    
+                    // Fallback: open in new tab
+                    setTimeout(() => {
+                        window.open(url, '_blank');
+                        notification.classList.remove('show');
+                    }, 1500);
+                });
+        }
+        
+        // ============================================
+        // UPDATE FOOTER TIME
+        // ============================================
+        function updateFooterTime() {
+            const timeEl = document.getElementById('footerCurrentTime');
+            if (timeEl) {
+                const now = new Date();
+                timeEl.textContent = now.toLocaleTimeString('rw-RW', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        }
+        
+        // ============================================
+        // UPDATE FOOTER YEAR
+        // ============================================
+        function updateFooterYear() {
+            const yearEl = document.getElementById('footerYear');
             if (yearEl) {
                 yearEl.textContent = new Date().getFullYear();
             }
         }
-
-        function loadFontAwesome() {
-            if (!document.querySelector('link[href*="font-awesome"]')) {
-                const faLink = document.createElement('link');
-                faLink.rel = 'stylesheet';
-                faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-                document.head.appendChild(faLink);
+        
+        // ============================================
+        // LOAD TEST STATUS FROM FIREBASE
+        // ============================================
+        function loadFooterTestStatus() {
+            if (!footerFirebaseDatabase) return;
+            
+            try {
+                footerFirebaseDatabase.ref('test_control').on('value', (snapshot) => {
+                    const control = snapshot.val();
+                    if (control) {
+                        const isLocked = control.isLocked === true;
+                        const dot = document.getElementById('footerTestStatus');
+                        const text = document.getElementById('footerTestStatusText');
+                        
+                        if (dot && text) {
+                            dot.className = 'status-dot ' + (isLocked ? 'locked' : 'unlocked');
+                            text.textContent = isLocked ? 'Test Ifunze' : 'Test Ifunguye';
+                        }
+                    }
+                });
+            } catch (error) {
+                console.warn('Could not load test status:', error);
             }
         }
-
+        
         // ============================================
-        // INITIALIZATION
+        // LOAD STATS FROM FIREBASE
+        // ============================================
+        function loadFooterStats() {
+            if (!footerFirebaseDatabase) return;
+            
+            try {
+                footerFirebaseDatabase.ref('questions').once('value').then(snapshot => {
+                    if (snapshot.exists()) {
+                        const count = snapshot.numChildren();
+                        const el = document.getElementById('footerTotalQuestions');
+                        if (el) el.textContent = count;
+                    }
+                });
+                
+                footerFirebaseDatabase.ref('categories').once('value').then(snapshot => {
+                    if (snapshot.exists()) {
+                        const count = snapshot.numChildren();
+                        const el = document.getElementById('footerTotalCategories');
+                        if (el) el.textContent = count;
+                    }
+                });
+            } catch (error) {
+                console.warn('Could not load stats:', error);
+            }
+        }
+        
+        // ============================================
+        // PAUSE VIDEOS WHEN OUT OF VIEW
+        // ============================================
+        function setupVideoObserver() {
+            if (!('IntersectionObserver' in window)) return;
+            
+            const videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        const video = entry.target;
+                        if (!video.paused) video.pause();
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('#videoSectionContent video').forEach(video => {
+                videoObserver.observe(video);
+            });
+        }
+        
+        // ============================================
+        // ATTACH FOOTER EVENTS (Called from parent)
+        // ============================================
+        function attachFooterEvents() {
+            console.log('✅ Footer events attached');
+            
+            updateFooterYear();
+            updateFooterTime();
+            loadFooterTestStatus();
+            loadFooterStats();
+            setupVideoObserver();
+            
+            // Update time every minute
+            setInterval(updateFooterTime, 60000);
+        }
+        
+        // ============================================
+        // INITIALIZE
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
-            updateYear();
-            loadFontAwesome();
-            window.showFooterToast = showFooterToast;
-            
-            console.log('✅ Driving Test Footer initialized with BEAUTIFUL BACKGROUND');
-            console.log('📲 APK Path:', LOCAL_APK_PATH);
+            console.log('🚀 Footer initializing...');
+            attachFooterEvents();
         });
-    })();
-</script>
+        
+        // Expose globally
+        window.toggleVideoSection = toggleVideoSection;
+        window.toggleVideoCard = toggleVideoCard;
+        window.toggleQuickLinks = toggleQuickLinks;
+        window.downloadVideo = downloadVideo;
+        window.attachFooterEvents = attachFooterEvents;
+        
+        console.log('✅ Footer script loaded');
+    </script>
+</body>
+</html>
